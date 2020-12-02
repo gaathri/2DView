@@ -1,0 +1,137 @@
+<div class="select-table-cols form-panel">
+  <nz-form-item>
+    <nz-form-label>
+      Shot Progress - (Max 5)
+    </nz-form-label>
+    <div class="row mt-2">
+      <nz-form-control>
+        <nz-checkbox-wrapper
+          style="width: 100%;"
+          (nzOnChange)="changeHandler($event, 'overall')"
+        >
+          <div nz-row>
+            <div *ngFor="let status of statuses" nz-col nzSpan="8">
+              <label
+                [nzDisabled]="isDisabled(status, 'overall')"
+                nz-checkbox
+                [nzValue]="status"
+                [ngModel]="isChecked(status, 'overall')"
+                >{{ status.name }}</label
+              >
+            </div>
+          </div>
+        </nz-checkbox-wrapper>
+      </nz-form-control>
+    </div>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>
+      Asset Progress - (Max 5)
+    </nz-form-label>
+    <div class="row mt-2">
+      <nz-form-control>
+        <nz-checkbox-wrapper
+          style="width: 100%;"
+          (nzOnChange)="changeHandler($event, 'asset')"
+        >
+          <div nz-row>
+            <div *ngFor="let status of statuses" nz-col nzSpan="8">
+              <label
+                [nzDisabled]="isDisabled(status, 'asset')"
+                nz-checkbox
+                [nzValue]="status"
+                [ngModel]="isChecked(status, 'asset')"
+                >{{ status.name }}</label
+              >
+            </div>
+          </div>
+        </nz-checkbox-wrapper>
+      </nz-form-control>
+    </div>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>
+      Task Progress - (Max 5)
+    </nz-form-label>
+    <div class="row mt-2">
+      <nz-form-control>
+        <nz-checkbox-wrapper
+          style="width: 100%;"
+          (nzOnChange)="changeHandler($event, 'task')"
+        >
+          <div nz-row>
+            <div *ngFor="let status of allWorkStatuses" nz-col nzSpan="8">
+              <label
+                [nzDisabled]="isDisabled(status, 'task')"
+                nz-checkbox
+                [nzValue]="status"
+                [ngModel]="isChecked(status, 'task')"
+                >{{ status.name }}</label
+              >
+            </div>
+          </div>
+        </nz-checkbox-wrapper>
+      </nz-form-control>
+    </div>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>
+      Star Show Progress - (Max 4)
+    </nz-form-label>
+    <div class="row mt-2">
+      <nz-form-control>
+        <nz-checkbox-wrapper
+          style="width: 100%;"
+          (nzOnChange)="changeHandler($event, 'star')"
+        >
+          <div nz-row>
+            <div *ngFor="let status of statuses" nz-col nzSpan="8">
+              <label
+                [nzDisabled]="isDisabled(status, 'star')"
+                nz-checkbox
+                [nzValue]="status"
+                [ngModel]="isChecked(status, 'star')"
+                >{{ status.name }}</label
+              >
+            </div>
+          </div>
+        </nz-checkbox-wrapper>
+      </nz-form-control>
+    </div>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>
+      Star User Progress - (Max 2)
+    </nz-form-label>
+    <div class="row mt-2">
+      <nz-form-control>
+        <nz-checkbox-wrapper
+          style="width: 100%;"
+          (nzOnChange)="changeHandler($event, 'star_user')"
+        >
+          <div nz-row>
+            <div *ngFor="let status of statuses" nz-col nzSpan="8">
+              <label
+                [nzDisabled]="isDisabled(status, 'star_user')"
+                nz-checkbox
+                [nzValue]="status"
+                [ngModel]="isChecked(status, 'star_user')"
+                >{{ status.name }}</label
+              >
+            </div>
+          </div>
+        </nz-checkbox-wrapper>
+      </nz-form-control>
+    </div>
+  </nz-form-item>
+
+  <div class="submit-btn-parent">
+    <button nz-button nzType="primary" (click)="submitHandler()">
+      Apply
+    </button>
+  </div>
+</div>

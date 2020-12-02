@@ -1,0 +1,211 @@
+<nz-layout class="app-layout">
+  <nz-header>
+    <div *ngIf="isDataReady" class="app-header" nzTheme="dark">
+      <div class="app-logo">
+        <!-- <img src="assets/images/logo.png" /> -->
+        <img [src]="appLogo" [default]="" />
+      </div>
+      <div class="app-header-right-icons float-right">
+        <ul>
+          <li
+            *ngIf="isValidArr(addMenu)"
+            title="Add New"
+            (click)="addClickHandler()"
+          >
+            <i nz-icon nzType="plus-circle" nzTheme="fill"></i>
+          </li>
+          <li
+            *ngIf="isValidArr(listMenu)"
+            title="Listing"
+            (click)="listClickHandler()"
+          >
+            <i nz-icon nzType="unordered-list" nzTheme="outline"></i>
+          </li>
+          <li title="Notification" (click)="bellHandler()" *ngIf="isNotificationEnabled()">
+            <nz-badge nzDot [nzShowDot]="isDotVisible">
+              <i nz-icon nzType="bell" nzTheme="fill"></i>
+            </nz-badge>
+          </li>
+          <li title="Profile">
+            <button
+              nzTrigger="click"
+              class="btn-more"
+              nz-button
+              nz-dropdown
+              [nzDropdownMenu]="menu1"
+              nzPlacement="bottomRight"
+            >
+              <app-avatar [info]="getAvatarInfo()"> </app-avatar>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nz-header>
+  <nz-layout>
+    <nz-sider
+      class="menu-sidebar"
+      nzWidth="256px"
+      [(nzCollapsed)]="isCollapsed"
+      [nzTrigger]="null"
+      [ngStyle]="{ 'height.px': siderHeight }"
+      (window:resize)="onResize()"
+    >
+      <ul
+        nz-menu
+        nzTheme="dark"
+        nzMode="inline"
+        [nzInlineCollapsed]="isCollapsed"
+      >
+        <li title="Dashboard" class="mb-0" nz-menu-item nzMatchRouter>
+          <a [routerLink]="getRouterLinkNew(dashboardMenu)">
+            <i nz-icon nzType="dashboard" nzTheme="outline"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+
+        <ng-container *ngIf="isValidArr(sideMenu)">
+          <li
+            [title]="menu.actionName"
+            class="mb-0"
+            *ngFor="let menu of sideMenu"
+            nz-menu-item
+            nzMatchRouter
+          >
+            <a [routerLink]="getRouterLinkNew(menu)">
+              <!-- <i nz-icon>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                  <path d="M0 0h24v24H0z" fill="none" />
+                  <path
+                    d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z" />
+                </svg>
+              </i> -->
+              <i
+                nz-icon
+                [nzType]="getIcon(menu.actionName)"
+                nzTheme="outline"
+              ></i>
+              <span>{{ menu.actionName }}</span>
+            </a>
+          </li>
+        </ng-container>
+
+        <li
+          *ngIf="canShowGantt"
+          title="Gantt"
+          class="mb-0"
+          nz-menu-item
+          nzMatchRouter
+        >
+          <a [routerLink]="getRouterLinkNew(ganttMenu)">
+            <i nz-icon nzType="sliders" nzTheme="outline"></i>
+            <span>Gantt</span>
+          </a>
+        </li>
+
+        <li class="fixed-side-list-margin"></li>
+        <li
+          title="Settings"
+          *ngIf="isAdmin"
+          nz-menu-item
+          nzMatchRouter
+          class="fixed-side-list-two"
+        >
+          <a routerLink="/system/listing/configs/settings">
+            <i nz-icon nzType="setting" nzTheme="fill"></i>
+            <span>Settings</span>
+          </a>
+        </li>
+        <li title="Help" nz-menu-item nzMatchRouter class="fixed-side-list-one">
+          <a routerLink="/system/help">
+            <i nz-icon nzType="question-circle" nzTheme="fill"></i>
+            <span>Help</span>
+          </a>
+        </li>
+      </ul>
+    </nz-sider>
+    <nz-content
+      [ngStyle]="{
+        'height.px': siderHeight,
+        'width.px': antLayoutContentWidth
+      }"
+      (window:resize)="onResize()"
+    >
+      <div *ngIf="isDataReady" class="inner-content">
+        <!-- <app-breadcrumb></app-breadcrumb> -->
+        <router-outlet></router-outlet>
+      </div>
+    </nz-content>
+  </nz-layout>
+  <!-- <nz-footer>
+    &copy; All Rights Reserved. TrackIT - v{{ version }} - {{ versionBE }}
+  </nz-footer> -->
+  <nz-footer>
+    &copy; All Rights Reserved. 2dview - v {{ versionBE }}
+  </nz-footer>
+</nz-layout>
+<ng-template #drawerHeader let-drawerRef="drawerRef">
+  <div class="title-row">
+    <div class="left-icon" [ngSwitch]="drawerTitle">
+      <ng-container *ngSwitchCase="'Add New'">
+        <app-icon-picker iconType="add"></app-icon-picker>
+      </ng-container>
+      <ng-container *ngSwitchCase="'Listing'">
+        <i nz-icon nzType="unordered-list" nzTheme="outline"></i>
+      </ng-container>
+      <ng-container *ngSwitchCase="'Notifications'">
+        <i nz-icon nzType="bell" nzTheme="fill"></i>
+      </ng-container>
+      <ng-container *ngSwitchCase="'My Account'">
+        <app-icon-picker iconType="account"></app-icon-picker>
+      </ng-container>
+    </div>
+    <div class="title-text">
+      {{ drawerTitle }}
+    </div>
+    <div class="right-icon">
+      <i
+        (click)="closeAddNewForm()"
+        nz-icon
+        nzType="right"
+        nzTheme="outline"
+      ></i>
+    </div>
+  </div>
+</ng-template>
+
+<nz-dropdown-menu #menu1="nzDropdownMenu">
+  <ul nz-menu class="profile-menu">
+    <li nz-menu-item (click)="profileHandler()">
+      <app-icon-picker nz-icon iconType="account"></app-icon-picker>
+      Account Settings
+    </li>
+    <li nz-menu-item (click)="supportHandler()">
+      <app-icon-picker nz-icon iconType="support"></app-icon-picker>
+      Support
+    </li>
+    <li nz-menu-item (click)="logoutHandler()">
+      <app-icon-picker nz-icon iconType="logout"></app-icon-picker>
+      Sign Out
+    </li>
+  </ul>
+</nz-dropdown-menu>
+
+<!--Modal for delete shot confirmation START-->
+<nz-modal
+  [(nzVisible)]="isAlertVisible"
+  nzTitle="Sign out Confirmation?"
+  nzOkText="Yes"
+  nzCancelText="No"
+  (nzOnOk)="logoutConfirm()"
+  (nzOnCancel)="logoutCancel()"
+  nzOkType="primary"
+  nzClosable="false"
+  nzWrapClassName="confirm-modal"
+  nzNoAnimation="true"
+>
+  <b class="modal-content-del-prefix"
+    >Are you sure, you want to sign out of the application?</b
+  >
+</nz-modal>
+<!--Modal for delete shot confirmation END-->

@@ -1,0 +1,2 @@
+Sequence,Shot Code,Head In,Tail Out,Cut In,Cut Out,Frames Per Second,Plate Path,Task,Task Description,Client Bid,Client ETA,Artist Bid,Start Date,End Date,Artist,Accountable,Delivery Date,Annotation Path,Priority,Complexity
+Sequence1,Shot_001,1000,2000,3000,4000,,,PAINT,Some description goes here,5,"May 3,2020",4,"April 22,2020","April 26,2020",ArtistUser,supervisor,"May 1,2020",,,

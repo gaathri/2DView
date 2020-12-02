@@ -1,0 +1,157 @@
+<form
+  *ngIf="isDataReady"
+  class="form-panel"
+  nz-form
+  [nzNoColon]="true"
+  [formGroup]="roleForm"
+  (ngSubmit)="submitHandler()"
+  autocomplete="off"
+>
+  <nz-form-item>
+    <nz-form-label nzFor="roleName" nzRequired>Role Name</nz-form-label>
+    <nz-form-control [nzErrorTip]="rNameTpl">
+      <input
+        nz-input
+        formControlName="roleName"
+        [maxLength]="roleNameMaxLength"
+        placeholder="Role Name"
+      />
+      <ng-template #rNameTpl let-control>
+        <ng-container *ngIf="control.hasError('pattern')"
+          >Role Name should contain only letters</ng-container
+        >
+        <ng-container *ngIf="control.hasError('required')"
+          >Name is required</ng-container
+        >
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>Role Description</nz-form-label>
+    <nz-form-control nzErrorTip="Please input role description!">
+      <input
+        nz-input
+        formControlName="roleDesc"
+        [maxLength]="roleDescMaxLength"
+        placeholder="Role Description"
+      />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Access Permissions</nz-form-label>
+    <nz-collapse [nzBordered]="false">
+      <nz-collapse-panel
+        #p
+        [nzHeader]="permissionPanel.name"
+        [nzActive]="permissionPanel.active"
+        [ngStyle]="permissionPanel.customStyle"
+      >
+        <div style="padding-bottom: 20px;" formArrayName="permissions">
+          <div
+            class="checkbox-group row justify-content-start"
+            *ngFor="
+              let permission of roleForm.get('permissions')['controls'];
+              let i = index
+            "
+            [formGroup]="permission"
+          >
+            <ng-container *ngIf="isNewGroup(i)">
+              <div class="group" [class.group-line]="i != 0">
+                {{ allPermissions[i].functionalGroupName }}
+              </div>
+            </ng-container>
+
+            <div class="col-6">
+              <!-- <label>
+                <input type="checkbox" formControlName="isSelected" />{{
+                  allPermissions[i].actionName
+                }}
+              </label> -->
+              <label
+                nz-checkbox
+                formControlName="isSelected"
+                [class.selected]="permission.value.isSelected"
+                (ngModelChange)="accessCheckChangeHandler(permission)"
+                [nzDisabled]="isPermissionDisabled(i)"
+              >
+                {{ allPermissions[i].actionName }}
+              </label>
+            </div>
+
+            <div class="col-6">
+              <div class="row">
+                <!-- <div
+                  *ngFor="let grant of grantsArray"
+                  class="checkbox d-flex justify-content-start ml-2"
+                  [class.disabled]="getDisabledFlag(permission)"
+                >
+                  <label>
+                    <input
+                      formControlName="actionType"
+                      [id]="i"
+                      type="radio"
+                      [value]="grant.id"
+                      [checked]="getCheckededFlag(permission, grant.id)"
+                    />
+                    {{ grant.title }}
+                  </label>
+                </div> -->
+                <nz-radio-group
+                  formControlName="actionType"
+                  [ngModel]="permission.value.actionType"
+                  [class.disabled]="getDisabledFlag(permission)"
+                >
+                  <label
+                    nz-radio
+                    *ngFor="let grant of grantsArray"
+                    [nzValue]="grant.id"
+                    >{{ grant.title }}</label
+                  >
+                </nz-radio-group>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nz-collapse-panel>
+    </nz-collapse>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Reports</nz-form-label>
+    <nz-collapse [nzBordered]="false">
+      <nz-collapse-panel
+        #p
+        [nzHeader]="reportPanel.name"
+        [nzActive]="reportPanel.active"
+        [ngStyle]="reportPanel.customStyle"
+      >
+        <div class="checkbox-group">
+          <div
+            *ngFor="let report of allReports; let i = index"
+            class="checkbox"
+          >
+            <label
+              nz-checkbox
+              [formControl]="(getReportsFormGroup()?.controls)[report.id]"
+              [nzDisabled]="isReportDisabled(i)"
+            >
+              {{ allReports[i]?.reportTypeName }}
+            </label>
+          </div>
+        </div>
+      </nz-collapse-panel>
+    </nz-collapse>
+  </nz-form-item>
+  <!-- <nz-form-item>
+    <nz-form-control>
+      <button nz-button nzType="primary">Submit</button>
+    </nz-form-control>
+  </nz-form-item> -->
+</form>
+<div *ngIf="isDataReady" class="submit-btn-parent">
+  <button nz-button nzType="primary" (click)="submitHandler()">
+    {{ btnName }}
+  </button>
+</div>
+<!-- <pre style="color: greenyellow">{{ roleForm.value.permissions | json }}</pre> -->

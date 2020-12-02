@@ -1,0 +1,58 @@
+<div class="page-container">
+  <!-- <div class="row">
+    <div class="head-container">
+      <h4 class="heading">Listing Page</h4>
+    </div>
+  </div> -->
+  <div class="row">
+    <div class="col-md-9">
+      <div class="row">
+        <div class="card-container" *ngFor="let item of listArr; let i = index">
+          <div class="card list-box" (click)="clickHandler(item)">
+            <i
+              class="material-icons"
+              [ngStyle]="{
+                'font-size': '75px',
+                color: item.iconColor ? item.iconColor : iconDefaultColor
+              }"
+              >{{ item.icon }}</i
+            >
+            <h4
+              [ngClass]="
+                i === listArr.length - 1 ? 'heading1 heading1-add' : 'heading1'
+              "
+            >
+              {{ item.title }}
+            </h4>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-2 rt-content">
+      <div class="legend help1"><b>Help Field</b></div>
+      <div class="legend help2"><b>Listing page</b></div>
+      <div class="legend help3">
+        <p>The following lists are based on the VFX - animation template</p>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #drawerHeader let-drawerRef="drawerRef">
+  <div class="row title-row">
+    <div class="d-flex align-items-center left-icon">
+      <i nz-icon nzType="plus-circle" nzTheme="fill"></i>
+    </div>
+    <div class="title-text">
+      Add New
+    </div>
+    <div class="d-flex align-items-center right-icon">
+      <i
+        (click)="closeAddNewForm()"
+        nz-icon
+        nzType="right"
+        nzTheme="outline"
+      ></i>
+    </div>
+  </div>
+</ng-template>

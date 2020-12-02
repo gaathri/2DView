@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Spellbound</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <!-- <link
+      href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap"
+      rel="stylesheet"
+    /> -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap"
+      rel="stylesheet"
+    />
+    <link href="assets/video-js.css" rel="stylesheet" />
+    <script src="assets/videojs-ie8.min.js"></script>
+
+    <script language="javascript">
+      var ganttCenterPointRef = 0;
+      function createLineArrow(
+        points,
+        fillColor,
+        strokeColor,
+        strokeWidth,
+        opacity
+      ) {
+        fabric.LineArrow = fabric.util.createClass(fabric.Line, {
+          type: "lineArrow",
+          initialize: function (element, options) {
+            options || (options = {});
+            this.callSuper("initialize", element, options);
+          },
+          toObject: function () {
+            return fabric.util.object.extend(this.callSuper("toObject"));
+          },
+          _render: function (ctx) {
+            this.ctx = ctx;
+            this.callSuper("_render", ctx);
+            let p = this.calcLinePoints();
+            let xDiff = this.x2 - this.x1;
+            let yDiff = this.y2 - this.y1;
+            let angle = Math.atan2(yDiff, xDiff);
+            this.drawArrow(angle, p.x2, p.y2, true);
+            ctx.save();
+          },
+          drawArrow: function (angle, xPos, yPos, head) {
+            this.ctx.save();
+            if (head) {
+              this.ctx.translate(xPos, yPos);
+              this.ctx.rotate(angle);
+              this.ctx.beginPath();
+              // Move 5px in front of line to start the arrow so it does not have the square line end showing in front (0,0)
+              this.ctx.moveTo(10, 0);
+              this.ctx.lineTo(-15, 15);
+              this.ctx.lineTo(-15, -15);
+              this.ctx.closePath();
+            }
+            this.ctx.fillStyle = this.stroke;
+            this.ctx.fill();
+            this.ctx.restore();
+          },
+        });
+        fabric.LineArrow.fromObject = function (object, callback) {
+          callback &&
+            callback(
+              new fabric.LineArrow(
+                [object.x1, object.y1, object.x2, object.y2],
+                object
+              )
+            );
+        };
+        fabric.LineArrow.async = true;
+        strokeWidth = strokeWidth > 10 ? 10 : strokeWidth;
+
+        var arrowLine = new fabric.LineArrow(points, {
+          strokeWidth: strokeWidth,
+          fill: fillColor,
+          stroke: strokeColor,
+          opacity: opacity,
+          originX: "center",
+          originY: "center",
+          objectCaching: false,
+          perPixelTargetFind: true,
+        });
+        return arrowLine;
+      }
+
+      function loadSVG(svgData) {
+        document.getElementById("svgLoader").innerHTML = svgData;
+      }
+
+      function createMovableSlider() {
+        var gmainLeftMinWidth = 150;
+        var gMainLeftDiv = document.querySelector("div.gmain.gmainleft");
+        var gContainer = document.querySelector("div.gchartcontainer");
+
+        var isHandlerDragging = false;
+
+        if (gMainLeftDiv !== null) {
+          var ganttHandler = document.createElement("div");
+          var ganttToggleButton = document.createElement("button");
+          ganttToggleButton.innerHTML = "<<";
+          ganttToggleButton.onclick = function () {
+            if (this.innerText === "<<") {
+              gMainLeftDiv.style.width = gmainLeftMinWidth + "px";
+              this.innerHTML = "&gt&gt";
+            } else {
+              gMainLeftDiv.style.width = ganttCenterPointRef + "px";
+              this.innerHTML = "&lt&lt";
+            }
+            ganttToggleButton.style.left =
+              ganttHandler.getBoundingClientRect().left + "px";
+            return false;
+          };
+          ganttToggleButton.setAttribute("class", "ganttToggleButton");
+          ganttHandler.setAttribute("class", "ganttHandler");
+          gMainLeftDiv.parentNode.insertBefore(
+            ganttHandler,
+            gMainLeftDiv.nextSibling
+          );
+          ganttHandler.parentNode.insertBefore(
+            ganttToggleButton,
+            ganttHandler.nextSibling
+          );
+          var ganttHandlerRect = ganttHandler.getBoundingClientRect();
+          ganttToggleButton.style.top = ganttHandlerRect.top - 35 + "px";
+          ganttToggleButton.style.left = ganttHandlerRect.left + "px";
+          if (ganttCenterPointRef > 0) {
+            gMainLeftDiv.style.width = ganttCenterPointRef + "px";
+            ganttToggleButton.style.left =
+              ganttHandler.getBoundingClientRect().left + "px";
+          } else {
+            ganttCenterPointRef =
+              ganttHandlerRect.left - gContainer.getBoundingClientRect().left;
+          }
+          document.addEventListener("mousedown", function (e) {
+            if (e.target === ganttHandler) {
+              isHandlerDragging = true;
+            }
+          });
+          document.addEventListener("mousemove", function (e) {
+            if (!isHandlerDragging) {
+              return false;
+            }
+
+            var containerOffsetLeft = gContainer.getBoundingClientRect().left;
+            var pointerRelativeXpos = e.clientX - containerOffsetLeft;
+            gMainLeftDiv.style.width =
+              Math.max(gmainLeftMinWidth, pointerRelativeXpos - 8) + "px";
+            gMainLeftDiv.style.flexGrow = 0;
+            var ganttHandlerRectLeft = ganttHandler.getBoundingClientRect()
+              .left;
+            ganttCenterPointRef =
+              ganttHandlerRectLeft - gContainer.getBoundingClientRect().left;
+            ganttToggleButton.style.left = ganttHandlerRectLeft + "px";
+          });
+          document.addEventListener("mouseup", function (e) {
+            isHandlerDragging = false;
+          });
+        }
+      }
+
+      function createMovableSliderOld() {
+        var gMainLeftDiv = document.querySelector("div.gmain.gmainleft");
+        var gContainer = document.querySelector("div.gchartcontainer");
+
+        var isHandlerDragging = false;
+
+        if (gMainLeftDiv !== null) {
+          var ganttHandler = document.createElement("div");
+
+          ganttHandler.setAttribute("class", "ganttHandler");
+
+          gMainLeftDiv.parentNode.insertBefore(
+            ganttHandler,
+            gMainLeftDiv.nextSibling
+          );
+
+          document.addEventListener("mousedown", function (e) {
+            if (e.target === ganttHandler) {
+              isHandlerDragging = true;
+            }
+          });
+
+          document.addEventListener("mousemove", function (e) {
+            if (!isHandlerDragging) {
+              return false;
+            }
+
+            var containerOffsetLeft = gContainer.offsetLeft;
+
+            var pointerRelativeXpos = e.clientX - containerOffsetLeft;
+
+            var boxAminWidth = 100;
+
+            gMainLeftDiv.style.width =
+              Math.max(boxAminWidth, pointerRelativeXpos - 8) + "px";
+
+            gMainLeftDiv.style.flexGrow = 0;
+          });
+
+          document.addEventListener("mouseup", function (e) {
+            isHandlerDragging = false;
+          });
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <app-root></app-root>
+  </body>
+</html>

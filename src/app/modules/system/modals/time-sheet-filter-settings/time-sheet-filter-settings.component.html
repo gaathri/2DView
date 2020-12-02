@@ -1,0 +1,105 @@
+<form
+  *ngIf="isDataReady"
+  class="form-panel"
+  nz-form
+  [formGroup]="dataForm"
+  (ngSubmit)="submitHandler()"
+  autocomplete="off"
+>
+  <nz-form-item>
+    <nz-form-label nzFor="showIds">Show Name</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="showIds"
+        formControlName="showIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Show"
+        [nzDisabled]="!isValidArr(shows)"
+        (ngModelChange)="showChangeHandler($event)"
+      >
+        <nz-option
+          *ngFor="let show of shows"
+          [nzLabel]="show.showName"
+          [nzValue]="show.id"
+        ></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Task Type</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="taskTypeId"
+        formControlName="taskTypeIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Task Type"
+        [nzDisabled]="!isValidArr(taskTypes)"
+        nzMode="multiple"
+      >
+        <nz-option
+          *ngFor="let taskType of taskTypes"
+          [nzLabel]="taskType.taskTypeName"
+          [nzValue]="taskType.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzFor="departmentIds">Department Name</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="departmentIds"
+        formControlName="departmentIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Department"
+        [nzDisabled]="!isValidArr(departments)"
+        nzMode="multiple"
+      >
+        <nz-option
+          *ngFor="let department of departments"
+          [nzLabel]="department.departmentName"
+          [nzValue]="department.id"
+        ></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+<!-- <div *ngIf="isDataReady" class="row">
+  <div class="col">
+    <div class="mb-2 float-right">
+      <button class="mr-1" nz-button (click)="resetHandler()">Reset</button>
+      <button
+        nz-button
+        nzType="primary"
+        type="submit"
+        (click)="submitHandler()"
+      >
+        Apply
+      </button>
+    </div>
+  </div>
+</div> -->
+<div *ngIf="isDataReady" class="row submit-btn-parent">
+  <div class="col px-0">
+    <div>
+      <button
+        nz-button
+        nzType="primary"
+        type="submit"
+        (click)="submitHandler()"
+      >
+        Apply
+      </button>
+      <button class="mr-1" nz-button (click)="resetHandler()">
+        Reset
+      </button>
+    </div>
+  </div>
+</div>
+<!-- <span style="color: greenyellow">{{ type | json }}</span> -->

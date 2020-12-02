@@ -1,0 +1,213 @@
+<form
+  *ngIf="isDataReady"
+  class="form-panel"
+  nz-form
+  [formGroup]="dataForm"
+  (ngSubmit)="submitHandler()"
+  autocomplete="off"
+>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="firstName">First Name</nz-form-label>
+    <!-- <nz-form-control nzErrorTip="Please input your first name!"> -->
+    <nz-form-control [nzErrorTip]="fNameTpl">
+      <input
+        id="firstName"
+        nz-input
+        [maxLength]="nameMaxLength"
+        placeholder="First Name"
+        formControlName="firstName"
+        autocomplete="none"
+      />
+      <ng-template #fNameTpl let-control>
+        <ng-container *ngIf="control.hasError('pattern')"
+          >First Name should contain only letters</ng-container
+        >
+        <ng-container *ngIf="control.hasError('required')"
+          >First Name is required</ng-container
+        >
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="lastName">Last Name</nz-form-label>
+    <nz-form-control [nzErrorTip]="lNameTpl">
+      <input
+        nz-input
+        [maxLength]="nameMaxLength"
+        placeholder="Last Name"
+        formControlName="lastName"
+        autocomplete="none"
+      />
+      <ng-template #lNameTpl let-control>
+        <ng-container *ngIf="control.hasError('pattern')"
+          >Last Name should contain only letters</ng-container
+        >
+        <ng-container *ngIf="control.hasError('required')"
+          >Last Name is required</ng-container
+        >
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <div class="row">
+      <nz-form-label>
+        <label>User Thumbnail</label>
+      </nz-form-label>
+    </div>
+    <div class="row mt-2">
+      <app-image-upload
+        [imageUrl]="userOutCopy.thumbnail"
+        (onChange)="onUploadChange($event)"
+      >
+      </app-image-upload>
+    </div>
+  </nz-form-item>
+  <!-- Thumbnail Image Section End -->
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="loginId">Email Id</nz-form-label>
+    <nz-form-control nzErrorTip="The input is not valid E-mail!">
+      <input
+        nz-input
+        [readonly]="mode == 'update' ? true : false"
+        [class.read-only]="mode == 'update'"
+        [maxLength]="nameMaxLength"
+        placeholder="Email Id"
+        id="loginId"
+        formControlName="loginId"
+        autocomplete="none"
+      />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Designation</nz-form-label>
+    <nz-form-control>
+      <input
+        nz-input
+        [maxLength]="nameMaxLength"
+        placeholder="Designation"
+        formControlName="designation"
+      />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Rating</nz-form-label>
+    <nz-form-control>
+      <!-- [ngModel]="grade" -->
+      <nz-rate formControlName="grade" nzAllowHalf></nz-rate>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Skills</nz-form-label>
+    <nz-form-control>
+      <input
+        nz-input
+        [maxLength]="nameMaxLength"
+        placeholder="Skills"
+        formControlName="skillSets"
+      />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>
+      Storage Space
+    </nz-form-label>
+    <nz-form-control>
+      <nz-input-group [nzAddOnAfter]="addOnAfterTemplate">
+        <input
+          type="number"
+          numeric
+          numericType="number"
+          nz-input
+          formControlName="allocatedDiskSpace"
+        />
+      </nz-input-group>
+
+      <ng-template #addOnAfterTemplate>
+        <nz-select
+          style="width: 80px; display: inline-block; vertical-align: middle;"
+          formControlName="storageUnit"
+        >
+          <nz-option [nzLabel]="'GB'" [nzValue]="'GB'"></nz-option>
+          <nz-option [nzLabel]="'TB'" [nzValue]="'TB'"></nz-option>
+        </nz-select>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="roleIds">Select Role</nz-form-label>
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <nz-select
+        id="roleIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Role"
+        formControlName="roleIds"
+        [nzDisabled]="!isValidArr(roles) || mode == 'update'"
+        (ngModelChange)="checkRoleSelect()"
+      >
+        <nz-option
+          *ngFor="let role of roles"
+          [nzLabel]="role.roleName"
+          [nzValue]="role.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzRequired]="isDepartmentReq()" nzFor="clientId"
+      >Select Department</nz-form-label
+    >
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <nz-select
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Department"
+        [nzDisabled]="!isValidArr(departments)"
+        formControlName="department"
+      >
+        <nz-option
+          *ngFor="let department of departments"
+          [nzLabel]="department.departmentName"
+          [nzValue]="department.id"
+        ></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item *ngIf="showClientSelect">
+    <nz-form-label nzRequired nzFor="clientId">Select Client</nz-form-label>
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <nz-select
+        id="clientId"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Client"
+        formControlName="clientId"
+      >
+        <nz-option
+          *ngFor="let client of clients"
+          [nzLabel]="client.title"
+          [nzValue]="client.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div *ngIf="isDataReady" class="submit-btn-parent">
+  <button nz-button nzType="primary" (click)="submitHandler()">
+    {{ btnName }}
+  </button>
+</div>
+
+<!-- <span style="color: greenyellow">{{ dataForm.value | json }}</span> -->

@@ -1,0 +1,129 @@
+.canvas {
+  top: 0;
+  left: 0;
+  // background-color: rgba(255, 0, 0, 0.5);
+  &.screen-shot {
+    //visibility: hidden;
+    display: none;
+  }
+}
+
+.video-js .vjs-tech {
+  pointer-events: none;
+}
+
+.videoHolder {
+  top: 0;
+  left: 0;
+}
+
+.fill-icon {
+  stroke: white;
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.myImage {
+  //style="width: 100%; height: auto;"
+  //visibility: visible;
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  //margin: auto;
+  position: static;
+  //display: block;
+  //width: 100%;
+  //height: auto;
+  -o-object-fit: cover;
+  object-fit: cover;
+  &.img-landscape {
+    width: 100%;
+    height: auto;
+  }
+  &.img-portrait {
+    width: auto;
+    height: 100%;
+  }
+  &.img-sm {
+    width: auto;
+    height: auto;
+  }
+}
+
+.canvasHolder {
+  /*display: inline-block;
+  position: absolute !important;
+  top: 70px;
+  left: 0px;
+  background-color: green;
+  opacity: 0.5;*/
+  display: inline-block;
+  position: relative !important;
+  //top: -540px;
+  //top: -479px;
+  //top: -510px;
+  left: 0px;
+  // &.image-top {
+  //   top: -540px;
+  // }
+  //background-color: green;
+  //opacity: 0.5;
+}
+
+.anticon {
+  margin-right: 6px;
+}
+
+.actionBtn {
+  border: 0px;
+  border-radius: 0px !important;
+  background-color: #323232;
+  color: white;
+  font-size: 24px;
+  // opacity: 0.75;
+  margin-right: 4px;
+}
+
+.actionBtn:not([disabled]):hover > i {
+  color: greenyellow;
+}
+
+.horizontalHolder {
+  background-color: #323232;
+  text-align: center;
+}
+
+.greenColor {
+  color: greenyellow;
+}
+
+.whiteColor {
+  color: white;
+}
+
+.spliter {
+  font-size: 24px;
+  opacity: 0.2;
+}
+
+.slider {
+  width: 80px;
+  vertical-align: bottom;
+  margin-right: 6px;
+  display: inline-block;
+}
+
+.disableOverlay {
+  height: 40px !important;
+  z-index: 10;
+  background-color: black;
+  position: absolute;
+  opacity: 65%;
+  display: none;
+}
+.btn-disabled {
+  pointer-events: none;
+  cursor: none;
+  opacity: 0.5;
+}

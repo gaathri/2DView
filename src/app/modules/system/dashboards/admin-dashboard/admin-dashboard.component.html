@@ -1,0 +1,113 @@
+<!-- <div class="common-header">
+  <div class="d-flex justify-content-between db-links">
+    <div class="d-flex justify-content-between">
+      <div class="db-link">
+        Studio Details
+      </div>
+    </div>
+  </div>
+</div> -->
+<div class="edit-studio">
+  <form
+    *ngIf="isDataReady"
+    class="form-panel"
+    nz-form
+    [nzNoColon]="true"
+    [formGroup]="dataForm"
+    (ngSubmit)="submitHandler()"
+    autocomplete="off"
+  >
+    <div class="d-flex justify-content-start">
+      <div>
+        <nz-form-item class="px-0 py-0">
+          <div class="admin-logo">
+            <app-image-upload
+              [imageUrl]="studioOut.studioLogo"
+              (onChange)="onUploadChange($event)"
+              [name]="'logo'"
+            >
+            </app-image-upload>
+          </div>
+        </nz-form-item>
+      </div>
+
+      <div class="admin-form flex-fill">
+        <!-- <div class="common-header">
+          <div class="d-flex justify-content-between db-links">
+            <div class="d-flex justify-content-between">
+              <div class="db-link">
+                Studio Details
+              </div>
+            </div>
+          </div>
+        </div> -->
+
+        <div class="admin-form-title">
+          Studio Details
+        </div>
+
+        <nz-form-item>
+          <nz-form-label nzRequired nzFor="studioName"
+            >Studio Name</nz-form-label
+          >
+          <nz-form-control [nzErrorTip]="nameTpl">
+            <input
+              nz-input
+              [maxLength]="nameMaxLength"
+              placeholder="Studio Name"
+              formControlName="studioName"
+              autocomplete="none"
+              style="width: 500px;"
+            />
+            <ng-template #nameTpl let-control>
+              <ng-container *ngIf="control.hasError('required')"
+                >Studio Name is required
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+
+        <div class="row admin-form-bottom">
+          <div class="col px-0 admin-form-desc">
+            <nz-form-item>
+              <nz-form-label nzRequired nzFor="studioDesc"
+                >Studio Description</nz-form-label
+              >
+              <nz-form-control nzErrorTip="Please provide your input!">
+                <textarea
+                  style="overflow: auto; resize: none;"
+                  formControlName="studioDesc"
+                  nz-input
+                  rows="4"
+                  placeholder="Provide details"
+                ></textarea>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <!-- <div class="col px-0 pipe"></div> -->
+          <div class="col px-0">
+            <nz-form-item>
+              <nz-form-label nzRequired nzFor="services"
+                >Studio Services</nz-form-label
+              >
+              <nz-form-control nzErrorTip="Please provide your input!">
+                <textarea
+                  style="overflow: auto; resize: none;"
+                  formControlName="services"
+                  nz-input
+                  rows="4"
+                  placeholder="Provide details"
+                ></textarea>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <nz-form-item>
+    <div *ngIf="isDataReady" class="submit-btn">
+      <button nz-button nzType="primary" (click)="submitHandler()">Save</button>
+    </div>
+  </nz-form-item>
+</div>

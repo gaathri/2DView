@@ -1,0 +1,46 @@
+<!-- <p>
+    {{data | json}}
+</p> -->
+<div class="notify-content">
+  <div class="n-top d-flex justify-content-start">
+    <div class="n-ava d-flex align-items-center">
+      <app-avatar [info]="getAvatarInfo(data)"> </app-avatar>
+    </div>
+    <div
+      class="n-msg"
+      [innerHTML]="getMsg(data, true)"
+      [title]="getMsg(data, false)"
+    ></div>
+  </div>
+  <div class="n-bot d-flex justify-content-between">
+    <!-- <div class="n-date">{{getDate(data) }} {{getTime(data) | lowercase}}</div> -->
+    <div class="n-date">{{ getTimeLong(data) | lowercase }}</div>
+    <div class="n-act d-flex justify-content-start">
+      <span class="mark-label">{{ getMarkLabel(data) }}</span>
+      <span class="mark-read-icon" [class.hand]="!isMarkDisabled(data)">
+        <i
+          nz-icon
+          nzType="check-circle"
+          [nzTheme]="'fill'"
+          style="font-size: 20px;"
+          class="mark-icon"
+          [class.disabled]="isMarkDisabled(data)"
+          [ngClass]="{
+            'highlight-yellow': !isMarkDisabled(data),
+            'highlight-dark': isMarkDisabled(data)
+          }"
+          (click)="onIconClick(data)"
+        ></i>
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- justify-content-between justify-content-between
+            justify-content-between
+            justify-content-between justify-content-between justify-content-between justify-content-between
+            justify-content-between justify-content-between | justify-content-between justify-content-between
+            justify-content-between
+            justify-content-between justify-content-between justify-content-between justify-content-between
+            justify-content-between justify-content-between  -->
+<!-- [class]="isMarkDisabled(data) ? 'highlight-gray' : 'highlight-yellow'" -->

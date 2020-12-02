@@ -1,0 +1,477 @@
+<div class="playlists">
+  <div *ngIf="isDataReady" class="col-left">
+    <div class="row header">
+      <ng-container *ngIf="isSearching">
+        <nz-input-group [nzSuffix]="suffixTemplate">
+          <input
+            type="text"
+            nz-input
+            placeholder="Search playlist"
+            [formControl]="queryField"
+          />
+        </nz-input-group>
+
+        <ng-template #suffixTemplate>
+          <i
+            nz-icon
+            nz-tooltip
+            class="ant-input-clear-icon"
+            nzTheme="fill"
+            nzType="close-circle"
+            (click)="clearSearch()"
+          ></i>
+        </ng-template>
+      </ng-container>
+      <ng-container *ngIf="!isSearching">
+        <span>Playlists</span>
+        <div class="d-flex justify-content-center align-items-center">
+          <span
+            *ngIf="shotAddBtn"
+            class="list-icons add"
+            (click)="addHandler()"
+          >
+            <app-icon-picker iconType="add"></app-icon-picker>
+          </span>
+          <span
+            class="list-icons filter"
+            [class.divider]="shotAddBtn"
+            (click)="filterHandler()"
+          >
+            <app-icon-picker
+              [class.highlight-yellow]="isFilterApplied"
+              iconType="filter"
+            ></app-icon-picker>
+          </span>
+          <span class="list-icons divider search" (click)="isSearching = true">
+            <app-icon-picker iconType="search"></app-icon-picker>
+          </span>
+        </div>
+      </ng-container>
+    </div>
+    <div class="row template-list">
+      <ng-container *ngIf="!isValidArr(items)">
+        <div class="empty-data">No records found.</div>
+      </ng-container>
+
+      <div
+        class="row template"
+        *ngFor="let t of items; let odd = odd"
+        [ngClass]="odd ? 'odd-item' : 'even-item'"
+        [class.selected]="isSelected(t)"
+        (click)="clickHandler(t)"
+      >
+        <span
+          [title]="t.name"
+          class="text-truncate template-name template-name-sm"
+          >{{ t.name }}</span
+        >
+
+        <div class="d-flex justify-content-center align-items-center">
+          <span class="list-icons lock" *ngIf="t.isLocked == 1">
+            <app-icon-picker iconType="lock"></app-icon-picker>
+          </span>
+          <span
+            class="list-icons info"
+            (click)="infoHandler($event, t)"
+            [nzTooltipTitle]="titleTemplate"
+            nzTooltipPlacement="right"
+            nz-tooltip
+          >
+            <app-icon-picker iconType="info"></app-icon-picker>
+          </span>
+          <ng-template #titleTemplate>
+            <div class="playlist-info">
+              <ng-container *ngIf="!isDailies()">
+                <div class="row">
+                  <div class="title">Created by</div>
+                </div>
+                <div class="row bottom-space">
+                  <div class="col text-truncate desc-wrap">
+                    <span [title]="t.createdBy" class="desc">
+                      {{ t.createdBy }}
+                    </span>
+                  </div>
+                </div>
+              </ng-container>
+
+              <div class="row">
+                <div class="title">Tasks in playlist</div>
+              </div>
+              <div class="row bottom-space">
+                <div class="col text-truncate desc-wrap">
+                  <span class="desc"> {{ t.taskCount }} Tasks </span>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col px-0">
+                  <div class="title">Date created</div>
+                </div>
+                <!-- <div class="col px-0"><div class="title">Shared with</div></div> -->
+              </div>
+              <div class="row">
+                <div class="col text-truncate desc-wrap">
+                  <span
+                    [title]="t.createdDate ? getDisplayDate(t.createdDate) : ''"
+                    class="desc"
+                    >{{ getDisplayDate(t.createdDate) }}</span
+                  >
+                </div>
+                <!-- <div class="col text-truncate desc-wrap">
+                  <span class="desc">TitleTitleTitleTitleTitleTitleTitle</span>
+                </div> -->
+              </div>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-right playlist-tab">
+    <app-playlist-internal-table
+      [playlistType]="playlistType"
+      (action)="onPlaylistAction($event)"
+    ></app-playlist-internal-table>
+  </div>
+</div>
+
+<!--Template content for edit season drawer header START-->
+<ng-template #drawerHeader let-drawerRef="drawerRef">
+  <div class="title-row">
+    <div class="left-icon" [ngSwitch]="drawerTitle">
+      <ng-container *ngSwitchCase="'Add Playlist'">
+        <app-icon-picker iconType="add"></app-icon-picker>
+      </ng-container>
+      <ng-container *ngSwitchCase="'Edit Playlist'">
+        <app-icon-picker iconType="edit"></app-icon-picker>
+      </ng-container>
+    </div>
+    <div class="title-text cap">
+      {{ drawerTitle }}
+    </div>
+    <div class="right-icon">
+      <i (click)="closeForm()" nz-icon nzType="right" nzTheme="outline"></i>
+    </div>
+  </div>
+</ng-template>
+<!--Template content for edit season drawer header END-->
+
+<!--Filter Modal Start-->
+<nz-modal
+  nzWrapClassName="vertical-center-modal"
+  [(nzVisible)]="isFilterVisible"
+  [nzTitle]="modalTitleTpl"
+  nzKeyboard="false"
+  nzClosable="false"
+  nzNoAnimation="true"
+>
+  <div class="d-flex justify-content-start align-items-center playlist-filter">
+    <div class="col-8 px-0">
+      <nz-form-item>
+        <nz-form-control>
+          <nz-radio-group
+            [(ngModel)]="userType"
+            (ngModelChange)="onUserTypeChange()"
+          >
+            <label nz-radio nzValue="Artist">Artist</label>
+            <label nz-radio nzValue="Client">Client</label>
+          </nz-radio-group>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+  <div class="d-flex justify-content-start align-items-center">
+    <div class="col-8 px-0">
+      <nz-form-item>
+        <nz-form-label>Select User</nz-form-label>
+        <nz-form-control>
+          <nz-select
+            nzShowSearch
+            nzPlaceHolder="Select user"
+            [(ngModel)]="userId"
+          >
+            <nz-option
+              *ngFor="let user of users"
+              [nzLabel]="getUserName(user)"
+              [nzValue]="user.id"
+            >
+            </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div *nzModalFooter>
+    <button nz-button nzType="default" (click)="resetFilter()">Reset</button>
+    <button nz-button nzType="primary" (click)="applyFilter()">Apply</button>
+  </div>
+</nz-modal>
+<ng-template #modalTitleTpl>
+  <div class="title-row">
+    <div class="left-icon">
+      <app-icon-picker iconType="filter"></app-icon-picker>
+    </div>
+    <div class="title-text cap">{{ modalTitle }}</div>
+    <div class="right-icon">
+      <i
+        (click)="isFilterVisible = false"
+        nz-icon
+        nzType="close"
+        nzTheme="outline"
+      ></i>
+    </div>
+  </div>
+</ng-template>
+<!--Filter Modal End-->
+
+<!--Send Modal Start-->
+<nz-modal
+  nzWrapClassName="vertical-center-modal"
+  [(nzVisible)]="isSendVisible"
+  [nzTitle]="sendModalTitleTpl"
+  nzKeyboard="false"
+  nzClosable="false"
+  nzNoAnimation="true"
+>
+  <ng-container *ngIf="!isInternal()">
+    <div
+      class="d-flex justify-content-start align-items-center playlist-filter"
+    >
+      <div class="col-8 px-0">
+        <nz-form-item>
+          <nz-form-control>
+            <nz-radio-group
+              [(ngModel)]="sendUserType"
+              (ngModelChange)="onSendUserTypeChange()"
+            >
+              <label nz-radio nzValue="Supervisor">Supervisor</label>
+              <label nz-radio nzValue="Client">Client</label>
+            </nz-radio-group>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+  </ng-container>
+  <div class="d-flex justify-content-start align-items-center">
+    <div class="col-8 px-0">
+      <nz-form-item>
+        <nz-form-label
+          >Select
+          {{
+            sendUserType == "Supervisor" ? "Supervisors" : "Clients"
+          }}</nz-form-label
+        >
+        <nz-form-control>
+          <nz-select
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="Select users"
+            [(ngModel)]="sendUserIds"
+            nzMode="multiple"
+            nzMaxTagCount="5"
+          >
+            <nz-option
+              *ngFor="let user of sendUsers"
+              [nzLabel]="getUserName(user)"
+              [nzValue]="user.id"
+            >
+            </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div *nzModalFooter>
+    <button nz-button nzType="primary" (click)="sendPlaylist()">Send</button>
+  </div>
+</nz-modal>
+<ng-template #sendModalTitleTpl>
+  <div class="title-row">
+    <div class="left-icon">
+      <!-- <app-icon-picker iconType="share"></app-icon-picker> -->
+      <!-- <i nz-icon nzType="send" nzTheme="outline"></i> -->
+      <i nz-icon nzType="right" nzTheme="outline"></i>
+    </div>
+    <div class="title-text cap">Send Playlist</div>
+    <div class="right-icon">
+      <i
+        (click)="isSendVisible = false"
+        nz-icon
+        nzType="close"
+        nzTheme="outline"
+      ></i>
+    </div>
+  </div>
+</ng-template>
+<!--Send Modal End-->
+
+<!--Share Modal Start-->
+<nz-modal
+  nzWrapClassName="vertical-center-modal"
+  [(nzVisible)]="isShareVisible"
+  [nzTitle]="shareModalTitleTpl"
+  nzKeyboard="false"
+  nzClosable="false"
+  nzNoAnimation="true"
+>
+  <ng-container *ngIf="!isInternal() && !isExternal()">
+    <div
+      class="d-flex justify-content-start align-items-center playlist-filter"
+    >
+      <div class="col-8 px-0">
+        <nz-form-item>
+          <nz-form-control>
+            <nz-radio-group
+              [(ngModel)]="shareUserType"
+              (ngModelChange)="onShareUserTypeChange()"
+            >
+              <label nz-radio nzValue="Artist">Artist</label>
+              <label nz-radio nzValue="Client">Client</label>
+            </nz-radio-group>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+  </ng-container>
+  <div class="d-flex justify-content-start align-items-center">
+    <div class="col-8 px-0">
+      <nz-form-item>
+        <nz-form-label
+          >Select
+          {{ shareUserType == "Artist" ? "Artists" : "Clients" }}</nz-form-label
+        >
+        <nz-form-control>
+          <nz-select
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="Select users"
+            [(ngModel)]="shareUserIds"
+            nzMode="multiple"
+            nzMaxTagCount="5"
+          >
+            <nz-option
+              *ngFor="let user of shareUsers"
+              [nzLabel]="getUserName(user)"
+              [nzValue]="user.id"
+            >
+            </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div *nzModalFooter>
+    <button nz-button nzType="primary" (click)="sharePlaylist()">Share</button>
+  </div>
+</nz-modal>
+<ng-template #shareModalTitleTpl>
+  <div class="title-row">
+    <div class="left-icon">
+      <app-icon-picker iconType="share"></app-icon-picker>
+    </div>
+    <div class="title-text cap">Share Playlist</div>
+    <div class="right-icon">
+      <i
+        (click)="isShareVisible = false"
+        nz-icon
+        nzType="close"
+        nzTheme="outline"
+      ></i>
+    </div>
+  </div>
+</ng-template>
+<!--Share Modal End-->
+
+<!--Modal for delete playlist confirmation START-->
+<nz-modal
+  [(nzVisible)]="isDeleteVisible"
+  nzTitle="Are you sure to delete this playlist?"
+  nzOkText="Yes"
+  nzCancelText="No"
+  (nzOnOk)="deletePlaylistConfirm()"
+  (nzOnCancel)="deletePlaylistCancel()"
+  nzOkType="primary"
+  nzClosable="false"
+  nzWrapClassName="confirm-modal"
+  nzNoAnimation="true"
+>
+  <b class="modal-content-del-prefix" *ngIf="selectedItem != null"
+    >Playlist Name :
+    <span class="modal-content-del-suffix">{{ selectedItem.name }}</span></b
+  >
+</nz-modal>
+<!--Modal for delete playlist confirmation END-->
+
+<!--Email Modal Start-->
+<nz-modal
+  nzWrapClassName="vertical-center-modal"
+  [(nzVisible)]="isEmailVisible"
+  [nzTitle]="emailModalTitleTpl"
+  nzKeyboard="false"
+  nzClosable="false"
+  nzNoAnimation="true"
+>
+  <div class="d-flex justify-content-start align-items-center playlist-filter">
+    <div class="col-8 px-0">
+      <nz-form-item>
+        <nz-form-control>
+          <nz-radio-group
+            [(ngModel)]="emailUserType"
+            (ngModelChange)="onEmailUserTypeChange()"
+          >
+            <label nz-radio nzValue="Artist">Artist</label>
+            <label nz-radio nzValue="Client">Client</label>
+          </nz-radio-group>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+  <div class="d-flex justify-content-start align-items-center">
+    <div class="col-8 px-0">
+      <nz-form-item>
+        <nz-form-label>Select Users</nz-form-label>
+        <nz-form-control>
+          <nz-select
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="Select users"
+            [(ngModel)]="emailUserIds"
+            nzMode="multiple"
+            nzMaxTagCount="5"
+          >
+            <nz-option
+              *ngFor="let user of emailUsers"
+              [nzLabel]="getUserName(user)"
+              [nzValue]="user.id"
+            >
+            </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div *nzModalFooter>
+    <button nz-button nzType="primary" (click)="emailPlaylist()">Send</button>
+  </div>
+</nz-modal>
+<ng-template #emailModalTitleTpl>
+  <div class="title-row">
+    <div class="left-icon">
+      <app-icon-picker iconType="feedback"></app-icon-picker>
+    </div>
+    <div class="title-text cap">Email Feedbacks</div>
+    <div class="right-icon">
+      <i
+        (click)="isEmailVisible = false"
+        nz-icon
+        nzType="close"
+        nzTheme="outline"
+      ></i>
+    </div>
+  </div>
+</ng-template>
+<!--Email Modal End-->

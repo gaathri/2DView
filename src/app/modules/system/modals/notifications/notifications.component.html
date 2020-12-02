@@ -1,0 +1,22 @@
+<div *ngIf="isDataReady" class="notify-wrapper">
+  <div *ngFor="let data of dataArr">
+    <app-notify-item
+      (mark)="markHandler($event)"
+      [data]="data"
+    ></app-notify-item>
+  </div>
+  <div class="notify-page d-flex justify-content-end">
+    <nz-pagination
+      [nzHideOnSinglePage]="true"
+      [nzPageIndex]="1"
+      [nzTotal]="page.totalElements"
+      [nzPageSize]="page.size"
+      [nzSize]="'default'"
+      (nzPageIndexChange)="onPageIndexChange($event)"
+    >
+    </nz-pagination>
+  </div>
+  <!-- <div class="notify-footer d-flex justify-content-center align-items-center">
+        <div>Mark all as read</div>
+    </div> -->
+</div>

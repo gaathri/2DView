@@ -1,0 +1,269 @@
+<div class="email-templates">
+  <div class="col-left">
+    <div class="label mb-2">
+      <span> Email Templates </span>
+    </div>
+    <div class="row template-list">
+      <div
+        class="row template"
+        *ngFor="let t of mailTypes; let odd = odd"
+        [ngClass]="odd ? 'odd-item' : 'even-item'"
+        [class.selected]="isSelected(t)"
+        (click)="clickHandler(t)"
+      >
+        <span [title]="t.mailType" class="text-truncate template-name">
+          {{ t.mailType }}
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="col-right">
+    <div class="table-wrapper lg-pad item-list">
+      <div class="row">
+        <div class="col-md-12 px-0">
+          <div
+            class="table-header-panel-db table-header-panel-db-sm d-flex justify-content-between align-items-center"
+          >
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="label mb-2">
+                <span> Verify Account </span>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between">
+              <div class="quick-filter hand" (click)="onSave()">
+                <span>
+                  <app-icon-picker
+                    class="qf-icon"
+                    iconType="save"
+                  ></app-icon-picker>
+                </span>
+                <span class="quick-filter-text label">Save</span>
+              </div>
+
+              <div class="quick-filter hand last" (click)="onPreview()">
+                <span>
+                  <app-icon-picker
+                    class="qf-icon"
+                    iconType="preview"
+                  ></app-icon-picker>
+                </span>
+                <span class="quick-filter-text label">Preview</span>
+              </div>
+            </div>
+          </div>
+          <div class="email-template">
+            <form
+              *ngIf="isDataReady"
+              class="form-panel2"
+              nz-form
+              [formGroup]="dataForm"
+              (ngSubmit)="submitHandler()"
+              autocomplete="off"
+            >
+              <div class="row clearfix">
+                <div class="col-md-6 px-0">
+                  <nz-form-item>
+                    <nz-form-label nzRequired nzFor="subject">
+                      <label>Subject</label>
+                    </nz-form-label>
+                    <nz-form-control [nzErrorTip]="iNameTpl">
+                      <input
+                        id="subject"
+                        formControlName="subject"
+                        nz-input
+                        [maxLength]="subjectMaxLength"
+                        placeholder="Subject"
+                      />
+                      <ng-template #iNameTpl let-control>
+                        <ng-container *ngIf="control.hasError('required')">
+                          Subject is required!
+                        </ng-container>
+                      </ng-template>
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+              </div>
+
+              <div class="row clearfix">
+                <div class="col-md-6 px-0">
+                  <nz-form-item>
+                    <div class="row">
+                      <nz-form-label>
+                        <label>User Thumbnail</label>
+                      </nz-form-label>
+                    </div>
+                    <div class="row mt-2" style="width: 168px; height: 148px">
+                      <ng-container *ngIf="isImageReady">
+                        <app-image-upload
+                          [name]="'temp-logo'"
+                          [imageUrl]="emailOutCopy.icon"
+                          (onChange)="onUploadChange($event)"
+                        >
+                        </app-image-upload>
+                      </ng-container>
+                    </div>
+                  </nz-form-item>
+                </div>
+              </div>
+
+              <nz-form-item>
+                <nz-form-label>
+                  <label>Body</label>
+                </nz-form-label>
+                <quill-editor
+                  formControlName="body"
+                  [modules]="toolbarOptions"
+                  [customOptions]="customOptions"
+                >
+                </quill-editor>
+                <div style="margin-top: 8px">
+                  <div>
+                    <nz-form-label>
+                      <label>Supported Macros</label>
+                    </nz-form-label>
+                  </div>
+                  <nz-tag
+                    class="m-1"
+                    *ngFor="let macro of getSupportedMacros()"
+                    [nzColor]="'green'"
+                    >{{ macro }}</nz-tag
+                  >
+                </div>
+
+                <!-- <textarea
+                  formControlName="body"
+                  id="body"
+                  nz-input
+                  placeholder="Body"
+                  rows="5"
+                ></textarea> -->
+              </nz-form-item>
+
+              <div class="row clearfix">
+                <div class="col-md-6 px-0">
+                  <nz-form-item>
+                    <nz-form-label>
+                      <label>Button Label</label>
+                    </nz-form-label>
+                    <nz-form-control>
+                      <input
+                        formControlName="buttonLabel"
+                        nz-input
+                        [maxLength]="labelMaxLength"
+                        placeholder="Button Label"
+                      />
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+                <div class="col-md-6 px-0">
+                  <nz-form-item>
+                    <nz-form-label>
+                      <label>Button Link</label>
+                    </nz-form-label>
+                    <nz-form-control>
+                      <input
+                        formControlName="buttonLink"
+                        nz-input
+                        placeholder="Button Link"
+                      />
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- <span style="color: greenyellow;">{{ dataForm?.value | json }}</span> -->
+
+<nz-modal
+  nzTitle="Preview"
+  nzClassName="email-preview"
+  nzKeyboard="false"
+  nzClosable="false"
+  nzNoAnimation="true"
+  [(nzVisible)]="isVisible"
+  [nzFooter]="modalFooter"
+  (nzOnOk)="handleCancel()"
+  (nzOnCancel)="handleCancel()"
+>
+  <ng-container *ngIf="getContent()">
+    <!-- <div innerHTML="{{ getContent() }}"></div>
+    <div [innerHTML]="getContent() | safeHtml"></div>
+    <span>{{ getContent() }}</span> -->
+    <div class="frame alignCenter">
+      <div class="cpadBottom">
+        <img [src]="getAppLogo()" width="30px" />
+        <span style="color: white; font-size: 14px">&nbsp;2dview</span>
+      </div>
+      <div class="alignCenter insideFrame">
+        <div class="cRow cpadBottom cpadTop2X">
+          <div class="cCol textCenter">
+            <img [src]="getImage()" width="100px" />
+          </div>
+        </div>
+
+        <div [innerHTML]="getContent() | safeHtml"></div>
+
+        <div *ngIf="hasFooter()" class="cRow cpadBottom">
+          <div class="cCol textCenter">
+            <hr />
+            <a [href]="getBtnLink()" target="_blank">
+              <button class="cBtn cBtnCustom">{{ getBtnLabel() }}</button>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="cpadTop2X textRight">
+        <img [src]="getAppLogo()" width="30px" />
+        <span style="color: black; font-size: 14px">&nbsp;2dview</span>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- <div class="frame alignCenter">
+    <div class="alignCenter insideFrame">
+      <div class="cRow">
+        <div class="cCol textCenter">
+          <img src="{STUDIO_LOGO}" width="100px" />
+        </div>
+      </div>
+      <div class="cRow cpadBottom cpadTop">
+        <div class="cCol textCenter heading primaryColor">
+          Welcome to STUDIO_NAME
+        </div>
+      </div>
+      <div class="cRow">
+        <div class="cCol">
+          <span class="primaryColor bold">Hi </span>
+          <span class="secondaryColor bold">USER_NAME</span>,<br /><br />
+          Your account has been successfully created for you in STUDIO_NAME, you
+          can use the below credentials to login to your account.
+          <br /><br />
+          <span class="primaryColor bold">Username</span> :
+          <span class="secondaryColor bold">EMAIL</span> <br />
+          <span class="primaryColor bold">Temporary Password</span> :
+          <span class="secondaryColor bold">PASSWORD</span> <br /><br />
+          You can also
+          <a href="{ACTION_URL}" class="linkColor bold">click here</a> to reset
+          your password.
+        </div>
+      </div>
+      <div class="cRow cpadBottom">
+        <div class="cCol textCenter">
+          <hr />
+          <a href="{ACTION_URL}"
+            ><button class="cBtn cBtnCustom">Login</button></a
+          >
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  <ng-template #modalFooter>
+    <button nz-button nzType="primary" (click)="handleCancel()">Close</button>
+  </ng-template>
+</nz-modal>

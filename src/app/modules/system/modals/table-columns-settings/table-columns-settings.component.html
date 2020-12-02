@@ -1,0 +1,103 @@
+<div class="select-table-cols form-panel">
+  <!-- <nz-radio-group [(ngModel)]="radioValue" (ngModelChange)="radioChangeHandler($event)">
+    <label nz-radio nzValue="all">Select All</label>
+    <label nz-radio nzValue="none">Deselect All</label>
+  </nz-radio-group> -->
+  <div
+    *ngFor="let category of tableColumnsArr; let i = index"
+    [class.cat-border]="i != 0"
+  >
+    <!-- {{ category.categoryName }}
+    <nz-divider></nz-divider> -->
+    <div class="cat-padding" [class.pt-0]="i == 0">
+      <div style="display: inline; color: #ffd538">
+        {{ category.categoryName }}
+      </div>
+      <div
+        class="cat-check-all"
+        *ngIf="displayCheckAll(category.fields)"
+        style="padding-bottom: 12px; display: inline; padding-left: 8px"
+      >
+        -&nbsp;&nbsp;
+        <label
+          nz-checkbox
+          [ngModel]="isAllChecked(i)"
+          (ngModelChange)="updateAllChecked($event, i)"
+        >
+          Check all
+        </label>
+      </div>
+    </div>
+
+    <!-- <div class="cat-padding" [class.pt-0]="i == 0">
+      <div *ngIf="!displayCheckAll(category.fields)" style="display: inline;">
+        {{ category.categoryName }}
+      </div>
+      <div
+        class="cat-check-all"
+        *ngIf="displayCheckAll(category.fields)"
+        style="padding-bottom: 12px; display: inline;"
+      >
+        <label
+          nz-checkbox
+          [ngModel]="isAllChecked(i)"
+          (ngModelChange)="updateAllChecked($event, i)"
+        >
+          {{ category.categoryName }}
+        </label>
+      </div>
+    </div> -->
+
+    <nz-form-item>
+      <div
+        *ngIf="displayCheckAll(category.fields) && false"
+        nz-row
+        style="padding-bottom: 12px"
+      >
+        <label
+          nz-checkbox
+          [ngModel]="isAllChecked(i)"
+          (ngModelChange)="updateAllChecked($event, i)"
+        >
+          Check all
+        </label>
+      </div>
+      <nz-checkbox-wrapper
+        style="width: 100%"
+        (nzOnChange)="changeHandler($event, i)"
+      >
+        <div nz-row>
+          <div
+            *ngFor="let column of category.fields; let j = index"
+            nz-col
+            nzSpan="12"
+          >
+            <label
+              [title]="column.displayName"
+              class="text-truncate"
+              style="width: 95%"
+              [class.is-selected]="isChecked(column, i, j)"
+              [nzDisabled]="column.disabled"
+              nz-checkbox
+              [nzValue]="column"
+              [ngModel]="isChecked(column, i, j)"
+              >{{ column.displayName }}</label
+            >
+          </div>
+        </div>
+      </nz-checkbox-wrapper>
+    </nz-form-item>
+  </div>
+  <!-- <nz-form-item>
+    <label
+      nz-checkbox
+      [(ngModel)]="selectAll"
+      (ngModelChange)="allChangeHandler($event)"
+      >Select All</label
+    >
+  </nz-form-item> -->
+
+  <div class="submit-btn-parent">
+    <button nz-button nzType="primary" (click)="clickHandler()">Apply</button>
+  </div>
+</div>

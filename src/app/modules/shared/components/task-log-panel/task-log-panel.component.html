@@ -1,0 +1,157 @@
+<div *ngIf="isDataReady" class="task-log spacer">
+  <div class="row">
+    <div class="col-md-12 pl-0 pr-0">
+      <div
+        class="table-header-panel-db d-flex justify-content-between align-items-center"
+      >
+        <div class="quick-filter last">
+          <span><i nz-icon nzType="calendar" [nzTheme]="'outline'"></i></span>
+          <span>&nbsp;&nbsp;{{ getDate() | date: "MMM dd, yyyy" }}</span>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+          <ng-container *ngIf="!isEmptyData">
+            <div class="quick-filter">Time Logged</div>
+            <div class="quick-filter pipe" [class.last]="!enableAddLog">
+              <span class="highlight-yellow"> {{ getLoggedTime() }} hrs </span>
+              <span> - </span>
+              <span> {{ getLoggedPercent() }} % </span>
+            </div>
+            <!-- <div *ngIf="enableAddLog" class="quick-filter pipe">|</div> -->
+          </ng-container>
+          <div
+            *ngIf="enableAddLog"
+            class="quick-filter hand last"
+            (click)="addHandler()"
+          >
+            <!-- <span><i nz-icon nzType="plus-circle" [nzTheme]="'fill'"></i></span>
+            <span>&nbsp;&nbsp;Add Log</span> -->
+
+            <span>
+              <app-icon-picker class="qf-icon" iconType="add"></app-icon-picker>
+            </span>
+            <span class="quick-filter-text">Add Log</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-container *ngIf="isEmptyData">
+    <div class="row log-panel d-flex justify-content-center p-2">
+      No records found
+    </div>
+  </ng-container>
+  <ng-container *ngIf="!isEmptyData">
+    <div *ngFor="let workLog of workLogs" class="row log-panel">
+      <div class="log-left col-1 align-self-center px-0 py-0">
+        <div class="hrs-text highlight-yellow">{{ workLog.hoursWorked }}</div>
+        <span>Hours</span>
+      </div>
+      <div class="log-mid col-10">
+        <div class="row mb-2">
+          <div class="task-header">
+            <span class="highlight-yellow">
+              {{ getPercent(workLog) }}
+            </span>
+            <span class="status-txt"> Completed </span>
+          </div>
+          <div class="task-header">
+            <span class="status-txt">|</span>
+          </div>
+          <div class="task-header">
+            <span *ngIf="workLog.taskName" class="name-txt">
+              {{ workLog.taskName }}
+            </span>
+          </div>
+        </div>
+        <div class="row mb-2 d-flex">
+          <div *ngIf="workLog.showName" class="task-header">
+            <span class="name-txt">
+              Show Name: <span class="name-val">{{ workLog.showName }}</span>
+            </span>
+          </div>
+          <div *ngIf="workLog.showName" class="task-header">
+            <span class="status-txt">|</span>
+          </div>
+          <div class="task-header">
+            <span *ngIf="workLog.shotCode" class="name-txt">
+              Shot Code: <span class="name-val">{{ workLog.shotCode }}</span>
+            </span>
+            <span *ngIf="workLog.assetName" class="name-txt">
+              Asset Name: <span class="name-val">{{ workLog.assetName }}</span>
+            </span>
+          </div>
+        </div>
+        <ng-container *ngIf="isExtraHoursWorked(workLog)">
+          <div class="row mb-2 d-flex">
+            <div class="task-header" style="font-size: 12px">
+              <span class="status-txt">Extra Hours Worked : </span>
+              <span class="highlight-yellow">
+                {{ workLog.extraHoursWorked }}
+              </span>
+            </div>
+          </div>
+        </ng-container>
+        <pre *ngIf="workLog.notes" class="log-text">{{ workLog.notes }}</pre>
+      </div>
+      <div class="log-right col-1 align-self-center">
+        <div
+          class="hand"
+          [class.disabled]="isReadOnly"
+          (click)="editHandler(workLog)"
+        >
+          <div><span class="highlight-yellow">Edit</span></div>
+        </div>
+
+        <div
+          class="hand"
+          [class.disabled]="isReadOnly"
+          (click)="deleteHandler(workLog)"
+        >
+          <div><span class="highlight-yellow">Delete</span></div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<!--Template content for tabel columns drawer header START-->
+<ng-template #drawerHeader let-drawerRef="drawerRef">
+  <div class="title-row">
+    <div class="left-icon" [ngSwitch]="drawerTitle">
+      <ng-container *ngSwitchCase="'Add Log'">
+        <app-icon-picker iconType="add"></app-icon-picker>
+      </ng-container>
+      <ng-container *ngSwitchCase="'Edit Log'">
+        <app-icon-picker iconType="edit"></app-icon-picker>
+      </ng-container>
+    </div>
+    <div class="title-text">{{ drawerTitle }}</div>
+    <div class="right-icon">
+      <i (click)="closeForm()" nz-icon nzType="right" nzTheme="outline"></i>
+    </div>
+  </div>
+</ng-template>
+<!--Template content for tabel columns drawer header END-->
+
+<!--Modal for delete work log confirmation START-->
+<nz-modal
+  [(nzVisible)]="isAlertVisible"
+  nzTitle="Are you sure to delete this log?"
+  nzOkText="Yes"
+  nzCancelText="No"
+  (nzOnOk)="deleteLogConfirm()"
+  (nzOnCancel)="deleteLogCancel()"
+  nzNoAnimation="true"
+  nzOkType="primary"
+  nzClosable="false"
+  nzWrapClassName="confirm-modal"
+  nzNoAnimation="true"
+>
+  <b class="modal-content-del-prefix" *ngIf="worklogToDelete != null"
+    >Task Name :
+    <span class="modal-content-del-suffix">{{
+      worklogToDelete.taskName
+    }}</span></b
+  >
+</nz-modal>
+<!--Modal for delete work log confirmation END-->

@@ -1,0 +1,109 @@
+<div class="title-pad page-title-second-level d-flex justify-content-between">
+  <h3>Activity Log</h3>
+  <button
+    class="reload-btn ml-2 mr-2 d-flex justify-content-center"
+    nz-button
+    nzType="primary"
+    nzSize="small"
+    (click)="refreshHandler()"
+  >
+    <i nz-icon nzType="reload" nzTheme="outline"></i>
+  </button>
+</div>
+
+<div *ngIf="!isDataEmpty" class="logs-wrapper">
+  <!-- <ng-container *ngIf="isLoading"> -->
+  <!-- <div class="d-flex justify-content-center align-self-center">
+      <div class="spinner-border text-warning" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div> -->
+
+  <div [class.active]="isLoading" class="logs-loader">
+    <div class="d-flex justify-content-center align-self-center">
+      <div class="spinner-border text-warning" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- </ng-container> -->
+  <!-- <ng-container *ngIf="!isLoading"> -->
+  <div *ngFor="let item of activityLogs" class="rectangle-list">
+    <div class="row">
+      <div class="col-10 px-0">
+        <ng-container *ngIf="parent == 'task'">
+          <ng-container *ngIf="isValidArr(getToolip(item))">
+            <div
+              class="n-msg n-msg-lg"
+              [innerHTML]="getMsg(item, true)"
+              [title]="getMsg(item, false)"
+            ></div>
+            <!-- [nzTooltipTitle]="titleTemplate"
+              nzTooltipPlacement="bottomLeft"
+              nzOverlayClassName="n-tooltip"
+              nz-tooltip -->
+
+            <ng-template #titleTemplate>
+              <div *ngIf="isValidArr(getToolip(item))" class="playlist-info">
+                <div *ngFor="let data of getToolip(item)" class="row pb-2">
+                  <div class="desc" [innerHtml]="getInfo(data)"></div>
+                  <br />
+                </div>
+              </div>
+            </ng-template>
+          </ng-container>
+          <ng-container *ngIf="!isValidArr(getToolip(item))">
+            <div
+              class="n-msg"
+              [innerHTML]="getMsg(item, true)"
+              [title]="getMsg(item, false)"
+            ></div>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngIf="parent != 'task'">
+          <div
+            class="n-msg"
+            [innerHTML]="getMsg(item, true)"
+            [title]="getMsg(item, false)"
+          ></div>
+        </ng-container>
+      </div>
+      <div class="col-2 px-0">
+        <span class="timer">{{ get12Format(item) }} </span>
+        <span *ngIf="parent == 'task'" class="timer">
+          {{ displayDate(item) }}
+        </span>
+      </div>
+    </div>
+  </div>
+  <!-- </ng-container> -->
+  <!-- [style.visibility]="!isLoading ? 'visible' : 'hidden'"  -->
+  <div
+    class="notify-page d-flex justify-content-end"
+    [class.task-log]="taskId != null"
+  >
+    <nz-pagination
+      [nzHideOnSinglePage]="true"
+      [nzPageIndex]="pageNumber + 1"
+      [nzTotal]="page.totalElements"
+      [nzPageSize]="page.size"
+      [nzSize]="'default'"
+      (nzPageIndexChange)="onPageIndexChange($event)"
+    >
+    </nz-pagination>
+  </div>
+</div>
+
+<ng-container *ngIf="isDataEmpty">
+  <ng-container *ngIf="parent != 'task'">
+    <div class="d-flex justify-content-center">
+      No activity logs available for today.
+    </div>
+  </ng-container>
+  <ng-container *ngIf="parent == 'task'">
+    <div class="d-flex justify-content-center">
+      No activity logs available for this task.
+    </div>
+  </ng-container>
+</ng-container>

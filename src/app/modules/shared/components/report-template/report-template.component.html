@@ -1,0 +1,498 @@
+<div class="common-header-new">
+  <div class="d-flex justify-content-between db-links">
+    <div class="d-flex justify-content-between">
+      <div
+        class="db-link"
+        [class.active]="isReportTemplateVisible"
+        [class.hand]="!isReportTemplateVisible"
+        (click)="showReportTemplate()"
+      >
+        Reports
+      </div>
+      <div class="db-link pipe">|</div>
+      <div
+        class="db-link"
+        [class.active]="isTemplateListVisible"
+        [class.hand]="!isTemplateListVisible"
+        (click)="showTemplateList()"
+      >
+        Template & Schedule List
+      </div>
+    </div>
+
+    <div *ngIf="isReportTemplateVisible">
+      <span
+        class="db-link hand last settings"
+        [class.disabled]="isSaveDisabled()"
+        (click)="saveHandler()"
+      >
+        <i nz-icon nzType="clock-circle" nzTheme="outline"></i>
+        <span class="label"> &nbsp;&nbsp;{{ getBtnText() }} </span>
+      </span>
+    </div>
+  </div>
+</div>
+
+<ng-container *ngIf="isTemplateListVisible">
+  <app-report-template-list
+    (select)="reportSelectHandler($event)"
+  ></app-report-template-list>
+</ng-container>
+<ng-container *ngIf="isReportTemplateVisible">
+  <div class="report-home">
+    <div class="row">
+      <div class="col">
+        <div class="table-header-panel-db d-flex justify-content-between">
+          <div class="d-flex justify-content-between">
+            <div
+              class="quick-filter-left d-flex align-items-center first title"
+            >
+              <span>
+                Quick Filters
+              </span>
+            </div>
+            <div class="quick-filter-left label d-flex align-items-center">
+              <span>
+                * Report Type
+              </span>
+            </div>
+            <div class="quick-filter-left d-flex align-items-center">
+              <nz-select
+                [nzDisabled]="!isValidArr(reportTypes) || isUpdateMode()"
+                (ngModelChange)="reportTypeChangeHandler($event)"
+                [(ngModel)]="reportTypeId"
+                nzAllowClear
+                nzPlaceHolder="Select Report Type"
+                style="width: 200px;"
+                [nzSize]="'small'"
+              >
+                <nz-option
+                  *ngFor="let reportType of reportTypes"
+                  [nzValue]="reportType.id"
+                  [nzLabel]="reportType.reportTypeName"
+                >
+                </nz-option>
+              </nz-select>
+            </div>
+
+            <ng-container *ngIf="isDateSelect">
+              <div class="quick-filter-left d-flex align-items-center">
+                <!-- <span>
+                  * Date
+                </span> -->
+                <nz-select
+                  [nzDisabled]="!isValidArr(dateTypes)"
+                  (ngModelChange)="dateTypeChangeHandler($event)"
+                  [(ngModel)]="dateTypeId"
+                  nzPlaceHolder="Select Date Type"
+                  style="width: 130px;"
+                  [nzSize]="'small'"
+                >
+                  <nz-option
+                    *ngFor="let dateType of dateTypes"
+                    [nzValue]="dateType.id"
+                    [nzLabel]="dateType.name"
+                  >
+                  </nz-option>
+                </nz-select>
+              </div>
+              <div class="quick-filter-left d-flex align-items-center">
+                <nz-date-picker
+                  id="date"
+                  [nzSize]="'small'"
+                  [(ngModel)]="date"
+                  [nzClassName]="'tcal'"
+                  nzPlaceHolder="Select Date"
+                  [nzDisabledDate]="disabledDate"
+                  [nzFormat]="getDisplayDateFormat()"
+                >
+                </nz-date-picker>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="isShowSelect">
+              <div class="quick-filter-left label d-flex align-items-center">
+                <span>
+                  * Show
+                </span>
+              </div>
+
+              <div class="quick-filter-left d-flex align-items-center">
+              
+                <nz-select
+                  [nzShowSearch]="true"
+                  [nzDisabled]="!isValidArr(shows)"
+                  [(ngModel)]="showId"
+                  nzAllowClear
+                  nzPlaceHolder="Select Show"
+                  style="width: 250px;"
+                  [nzSize]="'small'"
+                >
+                  <nz-option
+                    *ngFor="let show of shows"
+                    [nzValue]="show.id"
+                    [nzLabel]="show.showName"
+                  >
+                  </nz-option>
+                </nz-select>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="isDepartSelect">
+              <div class="quick-filter-left label d-flex align-items-center">
+                <span>
+                  * Department
+                </span>
+              </div>
+
+              <div class="quick-filter-left d-flex align-items-center">
+              
+                <nz-select
+                [(ngModel)]="departmentId"      
+                [nzShowSearch]="true"
+          nzAllowClear
+          nzPlaceHolder="Select Department"
+          [nzDisabled]="!isValidArr(departments)"
+          nzMode="multiple"
+          nzMaxTagCount="3"
+          style="width: auto;min-width:300px;"
+          [nzSize]="'small'"
+        >
+          <nz-option
+            *ngFor="let department of departments"
+            [nzLabel]="department.departmentName"
+            [nzValue]="department.id"
+          ></nz-option>
+        </nz-select>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="isWorkStatusSelect">
+              <div class="quick-filter-left label d-flex align-items-center">
+                <span>
+                  * Status
+                </span>
+              </div>
+
+              <div class="quick-filter-left d-flex align-items-center">
+                <nz-select
+                  [nzShowSearch]="true"
+                  [nzDisabled]="!isValidArr(workStatuses)"
+                  [(ngModel)]="workStatusId"
+                  nzAllowClear
+                  nzPlaceHolder="Select Status"
+                  style="width: 250px;"
+                  [nzSize]="'small'"
+                >
+                  <nz-option
+                    *ngFor="let workStatus of workStatuses"
+                    [nzLabel]="workStatus.name"
+                    [nzValue]="workStatus.id"
+                  >
+                  </nz-option>
+                </nz-select>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="isArtistSelect">
+              <div class="quick-filter-left label d-flex align-items-center">
+                <span>
+                  * Artist
+                </span>
+              </div>
+
+              <div class="quick-filter-left d-flex align-items-center">
+                <nz-select
+                  [nzShowSearch]="true"
+                  [nzDisabled]="!isValidArr(artists)"
+                  [(ngModel)]="artistId"
+                  [nzAllowClear]="false"
+                  nzPlaceHolder="Select Artist"
+                  style="width: 150px;"
+                  [nzSize]="'small'"
+                >
+                  <nz-option
+                    *ngFor="let artist of artists"
+                    [nzValue]="artist.id"
+                    [nzLabel]="getArtistName(artist)"
+                  >
+                  </nz-option>
+                </nz-select>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="isValidArr(ranges)">
+              <div class="quick-filter-left label d-flex align-items-center">
+                <span>
+                  * Date Range
+                </span>
+              </div>
+
+              <div class="quick-filter-left d-flex align-items-center">
+                <nz-select
+                  [nzDisabled]="!isValidArr(ranges)"
+                  (ngModelChange)="rangeChangeHandler($event)"
+                  [(ngModel)]="dateRangeTypeId"
+                  [nzAllowClear]="false"
+                  nzPlaceHolder="Select Range"
+                  style="width: 130px;"
+                  [nzSize]="'small'"
+                >
+                  <nz-option
+                    *ngFor="let range of ranges"
+                    [nzValue]="range.key"
+                    [nzLabel]="range.value"
+                  >
+                  </nz-option>
+                </nz-select>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="isCustom">
+              <div class="quick-filter-left label d-flex align-items-center">
+                <span>
+                  * Custom Range
+                </span>
+              </div>
+
+              <div class="quick-filter-left d-flex align-items-center">
+                <nz-range-picker
+                  [nzAllowClear]="false"
+                  [(ngModel)]="dateRange"
+                  (ngModelChange)="customChangeHandler($event)"
+                  [nzSize]="'small'"
+                  [nzFormat]="getDisplayDateFormat()"
+                >
+                </nz-range-picker>
+              </div>
+            </ng-container>
+          </div>
+          <div class="d-flex justify-content-between">
+            
+            <div
+              class="quick-filter hand d-flex align-items-center"
+              [class.disabled]="isFilterDisabled()"
+              (click)="filterHandler()"
+            >
+              <span> 
+                <app-icon-picker 
+                  class="qf-icon"
+                  [class.highlight-yellow]="isFilterApplied"
+                  iconType="filter"
+                ></app-icon-picker>
+              </span>
+            </div>
+
+            <div
+              [title]="'Apply'"
+              class="quick-filter hand last d-flex align-items-center"
+              [class.disabled]="!isSubmitEnabled()"
+              (click)="submitHandler(false)"
+            >
+              <span>
+                <i
+                  nz-icon
+                  nzType="play-circle"
+                  nzTheme="fill"
+                  style="font-size: 20px;"
+                ></i>
+              </span>
+            </div>
+
+            <div
+              [title]="'Instant Download'"
+              class="quick-filter hand last d-flex align-items-center"
+              [class.disabled]="!isSubmitEnabled()"
+              (click)="submitHandler(true)"
+            >
+              <span>
+                <i
+                  nz-icon
+                  nzType="download"
+                  nzTheme="outline"
+                  style="font-size: 20px;"
+                ></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reports-div">
+      <ng-container
+        *ngIf="
+          !isLoading && !isValidArr(reportData) && !isValidArr(reportTableData)
+        "
+      >
+        <div class="d-flex justify-content-center">
+          Please select required metrics to generate your report.
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="!isLoading && isValidArr(reportTableData)">
+        <ngx-datatable
+          class="material striped"
+          style="
+            min-width: 100%;
+            width: 100%;
+            min-height: 100% !important;
+            height: auto;
+          "
+          [columnMode]="'force'"
+          [headerHeight]="40"
+          [footerHeight]="40"
+          [rowHeight]="40"
+          [rows]="reportTableData"
+          [limit]="10"
+        >
+          <ngx-datatable-column
+            [width]="getColWidth(col.name)"
+            *ngFor="let col of tableColumns"
+            [name]="col.displayName"
+            [sortable]="col.sortable"
+          >
+            <ng-template
+              ngx-datatable-cell-template
+              let-rowIndex="rowIndex"
+              let-row="row"
+              let-value="value"
+            >
+              <div [ngSwitch]="col.name">
+                <span *ngSwitchCase="'date'">
+                  {{ getDate(row[col.name]) }}
+                </span>
+                <span
+                  *ngSwitchCase="'availableArtistCount'"
+                  style="cursor: pointer;"
+                  (click)="viewHandler(row)"
+                >
+                  <span style="color: #3be582;">{{ row[col.name] }}</span>
+                  <!-- <div class="row px-0">
+                                        <div class="col-9 text-truncate px-0">
+                                            {{getAvailableArtists(row[col.name])}}
+                                        </div>
+                                        <div *ngIf="isMoreVisible(row)" class="col-3 text-truncate px-0">
+                                            <span>
+                                                <a href="javascript:void(0)" (click)="viewHandler(row)">
+                                                    <u>more</u>
+                                                </a>
+                                            </span>
+                                        </div>
+                                    </div> -->
+                </span>
+                <span *ngSwitchDefault>
+                  <span>{{ row[col.name] }}</span>
+                </span>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+          <!-- <ngx-datatable-column name="Artist Details" [sortable]="false">
+                        <ng-template let-row="row" ngx-datatable-cell-template>
+                            <span>
+                                <a href="javascript:void(0)" (click)="viewHandler(row)">
+                                    <u>View</u>
+                                </a>
+                            </span>
+                        </ng-template>
+                    </ngx-datatable-column> -->
+        </ngx-datatable>
+      </ng-container>
+
+      <ng-container *ngIf="!isLoading && isValidArr(reportData)">
+        <div class="layer-two row">
+          <div class="col-md-9 px-0">
+            <!-- [class.col-md-9]="hasChart"
+            [class.col-md-12]="!hasChart" -->
+            <div class="box-container">
+              <div
+                class="col-md-12 px-0 box-row"
+                (window:resize)="getBoxHeight()"
+              >
+                <div
+                  *ngFor="let box of boxArrRow1"
+                  class="box"
+                  [class.box-na]="!isValidData(box)"
+                  [style.height.px]="contentHeight"
+                >
+                  <ng-container *ngIf="isValidData(box)">
+                    <div class="label text-truncate">{{ getKey(box) }}</div>
+                    <div class="count">
+                      <!-- {{ getValue(box) | number: "1.0-0" }} -->
+                      {{ getValue(box) | number }}
+                    </div>
+                  </ng-container>
+
+                  <ng-container *ngIf="!isValidData(box)">
+                    <div class="label-na text-truncate">-NA-</div>
+                    <!-- <div class="count">{{getValue(box) | number: '1.0-0' }}</div> -->
+                  </ng-container>
+                </div>
+              </div>
+              <div
+                class="col-md-12 px-0 box-row"
+                (window:resize)="getBoxHeight()"
+              >
+                <div
+                  *ngFor="let box of boxArrRow2"
+                  class="box"
+                  [class.box-na]="!isValidData(box)"
+                  [style.height.px]="contentHeight"
+                >
+                  <ng-container *ngIf="isValidData(box)">
+                    <div class="label text-truncate">{{ getKey(box) }}</div>
+                    <div class="count">
+                      <!-- {{ getValue(box) | number: "1.0-0" }} -->
+                      {{ getValue(box) | number }}
+                    </div>
+                  </ng-container>
+                  <ng-container *ngIf="!isValidData(box)">
+                    <div class="label-na text-truncate">-NA-</div>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 pr-0" *ngIf="hasChart">
+            <div
+              class="graph-container"
+              [style.height.px]="graphContainerHeight"
+              (window:resize)="getBoxHeight()"
+            >
+              <ng-container *ngIf="calcDone">
+                <app-report-chart
+                  [chartWidth]="graphContainerWidth"
+                  [chartHeight]="graphContainerHeight"
+                  [chartData]="chartData"
+                  [barChartData]="barChartData"
+                >
+                </app-report-chart>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</ng-container>
+
+<!--Template content for tabel columns drawer header START-->
+<ng-template #drawerHeader let-drawerRef="drawerRef">
+  <div class="title-row">
+    <div class="left-icon" [ngSwitch]="drawerTitle">
+      <ng-container *ngSwitchCase="'Save Report'">
+        <app-icon-picker iconType="add"></app-icon-picker>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="'Filters'">
+        <app-icon-picker iconType="filter"></app-icon-picker>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="'Artist List'">
+        <app-icon-picker iconType="account"></app-icon-picker>
+      </ng-container>
+    </div>
+    <div class="title-text">{{ drawerTitle }}</div>
+    <div class="right-icon">
+      <i (click)="closeForm()" nz-icon nzType="right" nzTheme="outline"></i>
+    </div>
+  </div>
+</ng-template>
+<!--Template content for tabel columns drawer header END-->

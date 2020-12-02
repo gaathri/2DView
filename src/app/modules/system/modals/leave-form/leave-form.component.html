@@ -1,0 +1,216 @@
+<form
+  *ngIf="isDataReady && mode == 'update'"
+  class="form-panel"
+  nz-form
+  [formGroup]="dataForm"
+  (ngSubmit)="submitHandler()"
+  autocomplete="off"
+>
+  <nz-form-item>
+    <nz-form-label nzFor="showId">User Name</nz-form-label>
+    <nz-form-control>
+      <input readonly class="read-only" nz-input [value]="user.firstName" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <div class="row clearfix">
+    <div class="col-md-6 px-0">
+      <nz-form-item>
+        <nz-form-label>Applied Date</nz-form-label>
+        <nz-form-control>
+          <nz-date-picker
+            [nzDisabled]="true"
+            id="appliedDate"
+            formControlName="appliedDate"
+            [nzClassName]="'tcal'"
+            nzPlaceHolder="Applied Date"
+            [nzFormat]="getDisplayDateFormat()"
+          >
+          </nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-6 px-0">
+      <nz-form-item>
+        <nz-form-label>Session Type</nz-form-label>
+        <nz-form-control style="margin-top: 4px;">
+          <nz-select
+            id="duration"
+            formControlName="duration"
+            nzPlaceHolder="Select Session"
+          >
+            <nz-option
+              *ngFor="let session of sessions"
+              [nzLabel]="session.label"
+              [nzValue]="session.value"
+            ></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="reason">Reason</nz-form-label>
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <textarea
+        formControlName="reason"
+        id="reason"
+        nz-input
+        placeholder="Reason"
+        rows="2"
+        required
+      ></textarea>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<form
+  *ngIf="isDataReady && mode == 'create'"
+  class="form-panel"
+  nz-form
+  autocomplete="off"
+>
+  <nz-form-item>
+    <nz-form-label nzFor="showId">User Name</nz-form-label>
+    <nz-form-control>
+      <input readonly class="read-only" nz-input [value]="user.firstName" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <div class="row clearfix">
+    <div class="col-md-6 px-0">
+      <nz-form-item>
+        <nz-form-label nzRequired>Start Date</nz-form-label>
+        <nz-form-control nzErrorTip="Start Date is required">
+          <nz-date-picker
+            required
+            id="startDate"
+            name="startDate"
+            [(ngModel)]="leaveOutCopy.startDate"
+            [nzClassName]="'tcal'"
+            nzPlaceHolder="Select Start Date"
+            [nzDisabledDate]="disabledStartDate"
+            (ngModelChange)="onStartDateChange($event)"
+            [nzFormat]="getDisplayDateFormat()"
+            [nzAllowClear]="false"
+          >
+            <!-- [nzDisabledDate]="disabledStartDate" -->
+          </nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-6 px-0">
+      <nz-form-item>
+        <nz-form-label nzRequired>End Date</nz-form-label>
+        <nz-form-control
+          nzErrorTip="End Date is required"
+          [nzValidateStatus]="endDateValidateStatus"
+        >
+          <nz-date-picker
+            required
+            [nzDisabled]="isEndDateDisabled()"
+            id="endDate"
+            name="endDate"
+            [(ngModel)]="leaveOutCopy.endDate"
+            [nzClassName]="'tcal'"
+            nzPlaceHolder="Select End Date"
+            [nzDisabledDate]="disabledEndDate"
+            (ngModelChange)="onEndDateChange($event)"
+            [nzFormat]="getDisplayDateFormat()"
+            [nzAllowClear]="false"
+          >
+            <!-- [nzDisabledDate]="disabledEndDate" -->
+          </nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <ng-container *ngIf="isEndDateSelected() && leaveData">
+    <div
+      style="
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        margin-top: 10px;
+        margin-bottom: 10px;
+      "
+    ></div>
+    <div *ngFor="let item of leaveData; index as i" class="row clearfix">
+      <!-- <ng-container *ngIf="!item.isWeekend"> -->
+      <div class="col-md-6 px-0" [class.disabled]="item.isWeekend">
+        <nz-form-item>
+          <nz-form-label
+            ><span>Day {{ getDayCount(item, i) }}</span
+            ><span> - {{ getDay(item) | date: "EEEE" }}</span></nz-form-label
+          >
+          <nz-form-control>
+            <input
+              readonly
+              class="read-only"
+              nz-input
+              [value]="getDate(item)"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="col-md-6 px-0" [class.disabled]="item.isWeekend">
+        <nz-form-item>
+          <nz-form-label><span>Session Type</span></nz-form-label>
+          <nz-form-control style="margin-top: 4px;">
+            <nz-select
+              [(ngModel)]="item.duration"
+              nzPlaceHolder="Choose"
+              [name]="'item' + i"
+            >
+              <nz-option
+                *ngFor="let session of sessions"
+                [nzLabel]="session.label"
+                [nzValue]="session.value"
+              ></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <!-- </ng-container> -->
+    </div>
+    <div
+      style="
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        margin-top: 10px;
+        margin-bottom: 10px;
+      "
+    ></div>
+  </ng-container>
+
+  <nz-form-item>
+    <nz-form-label nzRequired>Reason</nz-form-label>
+    <nz-form-control
+      [nzValidateStatus]="reasonValidateStatus"
+      nzErrorTip="Provide your input."
+    >
+      <textarea
+        id="reason"
+        name="reason"
+        nz-input
+        placeholder="Reason"
+        rows="2"
+        [(ngModel)]="leaveOutCopy.reason"
+        (ngModelChange)="onReasonChange()"
+        required
+      ></textarea>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<!-- [ngModelOptions]="{ standalone: true }" -->
+
+<div *ngIf="isDataReady" class="submit-btn-parent">
+  <button nz-button nzType="primary" (click)="submitHandler()">
+    {{ btnName }}
+  </button>
+</div>
+
+<!-- <pre style="color: greenyellow;">{{ leaveOutCopy | json }}</pre>
+Data Form
+<pre style="color: greenyellow;">{{ dataForm?.value | json }}</pre> -->

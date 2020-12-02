@@ -1,0 +1,152 @@
+:host {
+  display: flex;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.app-layout {
+  height: 100vh;
+}
+
+.btn-more {
+  background-color: transparent;
+  border-color: transparent;
+  padding: 0px;
+}
+
+.menu-sidebar {
+  position: relative;
+  z-index: 10;
+  /* min-height: 100vh; */
+  /* box-shadow: 2px 0 6px rgba(0, 21, 41, .35); */
+}
+
+.header-trigger {
+  height: 100%;
+  width: 55px;
+  /*padding: 20px 24px;*/
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s, padding 0s;
+  float: left;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.trigger {
+  color: #3be582;
+}
+
+.trigger:hover {
+  color: #fff;
+}
+
+nz-header {
+  padding: 0;
+  width: 100%;
+  z-index: 2;
+}
+
+.app-header {
+  position: relative;
+  height: 100%;
+  padding: 0;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+}
+
+nz-content {
+  /* background-color: #0f0f0f; */
+  margin: 0px;
+  background-color: #212121;
+}
+
+.inner-content {
+  /* padding: 24px; */
+  /* background: #fff; */
+  /* background: black; */
+  height: 100%;
+  /* background-color: #212121; */
+}
+
+.heading {
+  color: #3be582;
+  font-size: 16px;
+}
+/* .ant-menu-dark.ant-menu-inline .ant-menu-item {
+    border-left-style: solid;    
+}
+
+.ant-menu-dark.ant-menu-inline .ant-menu-item-selected {	
+    background-color:cornflowerblue;
+    border-left-style: solid;
+    border-left-color: coral;	
+} */
+
+/*--------- Header Design Start ----------*/
+// .app-logo {
+//   width: 200px;
+//   background-color: #3be582;  
+//   height: 100%;
+//   float: left;
+//   background-image: url("assets/images/logo.png");
+//   img {
+//     width: 100%;
+//     height: auto;
+//   }
+// }
+.app-header-right-icons {
+  min-width: 100px;
+  ul {
+    padding-left: 0;
+    li {
+      float: left;
+      margin-right: 10px;
+      list-style: none;
+      padding: 0 8px;
+      color: #fff;
+      cursor: pointer;
+      &:last-child {
+        margin-right: 0;
+        margin-left: 15px;
+      }
+      .anticon {
+        font-size: 18px;
+      }
+    }
+  }
+}
+/*--------- Header Design End ----------*/
+
+/*--------- Sidebar Design Start ----------*/
+.fixed-side-list-margin {
+  height: 115px;
+}
+.fixed-side-list-one,
+.fixed-side-list-two {
+  position: fixed;
+  z-index: 99;
+  background-color: #424242;
+  width: auto;
+  // &:hover {
+  //   background-color: #424242;
+  // }
+}
+.fixed-side-list-one {
+  bottom: 30px;
+  margin-bottom: 0;
+}
+.fixed-side-list-two {
+  bottom: 85px;
+  margin-bottom: 0 !important;
+}
+
+/*--------- Sidebar Design End ----------*/
+
+/*--------- Content Design Start ----------*/
+.ant-layout-content {
+  position: relative;
+  z-index: 999;
+}
+/*--------- Content Design End ----------*/

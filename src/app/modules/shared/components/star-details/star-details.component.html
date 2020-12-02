@@ -1,0 +1,43 @@
+<!-- *ngIf="progressEntities" -->
+<div class="shot-div static-bg">
+    <ng-container *ngIf="progressEntities">
+        <div class="page-title-second-level">
+            <h3 [title]="progressEntities.title" class="text-truncate">
+                {{ progressEntities.title }}
+            </h3>
+        </div>
+        <ng-container *ngIf="isCountsAvailable(progressEntities)">
+            <div class="shot-box">
+                <span class="shot-status">
+                    Active Shows
+                </span>
+                <span class="count-value">{{getActiveShows(progressEntities) | number}}</span>
+            </div>
+            <div class="shot-box">
+                <span class="shot-status">
+                    Handling Artists
+                </span>
+                <span class="count-value">{{getHandlingArtist(progressEntities) | number}}</span>
+
+            </div>
+        </ng-container>
+
+        <div class="shot-box" *ngFor="let item of progressEntities.items">
+            <div class="shot-title">
+                {{ getValue(item) | number }} <span>{{progressEntities.subTitle}}</span>
+            </div>
+            <div class="shot-progress">
+                <app-progress [config]="getProgressConfig(item)" [percentage]="getPercent(item)"></app-progress>
+            </div>
+            <div class="shot-status">
+                {{ getName(item) }}
+                <span [style.color]="getColor(item)">{{ getPercent(item) }}%</span>
+            </div>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="!progressEntities">
+        <div class="page-title-second-level">
+            <h3 class="text-truncate">No data to display</h3>
+        </div>
+    </ng-container>
+</div>

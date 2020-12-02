@@ -1,0 +1,38 @@
+<!-- <div class="page-title-second-level">Task Status Overview</div>
+<div class="graph">123</div> -->
+<div class="d-flex justify-content-between">
+    <div class="report-title">
+        Task Status Overview
+    </div>
+    <div *ngIf="barChartData" class="chart-icons d-flex justify-content-between">
+        <div (click)="isBar=false" [class.active]="!isBar">
+            <i nz-icon nzType="pie-chart" nzTheme="fill"></i>
+        </div>
+        <div (click)="isBar=true" [class.active]="isBar">
+            <i nz-icon nzType="bar-chart" nzTheme="outline"></i>
+        </div>
+    </div>
+</div>
+
+<ng-container *ngIf="isDataReady && this.chartHeight">
+    <ng-container *ngIf="!isBar">
+        <div class="d-flex justify-content-center">
+            <div (window:resize)="onResize($event)">
+                <div echarts [options]="options" [autoResize]="true" [style.width.px]="getChartWidth()"
+                    [style.height.px]="getChartHeight()" (chartInit)="onPieChartInit($event)"
+                    (chartMouseOver)="onChartEvent($event, 'chartMouseOver')">
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="isBar">
+        <div class="d-flex justify-content-center">
+            <div (window:resize)="onResize($event)">
+                <div echarts [options]="barOptions" [autoResize]="true" [style.width.px]="getChartWidth()"
+                    [style.height.px]="getChartHeight()" (chartInit)="onBarChartInit($event)"
+                    (chartMouseOver)="onChartEvent($event, 'chartMouseOver')">
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</ng-container>

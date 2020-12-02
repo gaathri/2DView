@@ -1,0 +1,19 @@
+<div class="row hr-db">
+  <div (window:resize)="getBoxHeight()" class="col px-0 common hr-cal">
+    <app-hr-calendar
+      [viewDate]="viewDate"
+      (dateChange)="onDateChange($event)"
+    ></app-hr-calendar>
+  </div>
+  <div class="col px-0 common hr-kpi" [style.height]="getHeight()">
+    <app-hr-kpi
+      [viewDate]="viewDate"
+      (dateChange)="onDateChange($event)"
+    ></app-hr-kpi>
+  </div>
+</div>
+
+<app-holiday-list
+  [viewDate]="viewDate"
+  (listChange)="onListChange($event)"
+></app-holiday-list>

@@ -1,0 +1,157 @@
+<form
+  *ngIf="isDataReady"
+  class="form-panel"
+  nz-form
+  [formGroup]="dataForm"
+  (ngSubmit)="submitHandler()"
+  autocomplete="off"
+>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="reportName">Report Name</nz-form-label>
+    <nz-form-control [nzErrorTip]="rNameTpl">
+      <input
+        id="reportName"
+        formControlName="reportName"
+        nz-input
+        [maxLength]="nameMaxLength"
+        placeholder="Report Name"
+      />
+      <ng-template #rNameTpl let-control>
+        <ng-container *ngIf="control.hasError('pattern')"
+          >This pattern is not allowed!</ng-container
+        >
+        <ng-container *ngIf="control.hasError('required')"
+          >Name is required!</ng-container
+        >
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="reportFrequency"
+      >Report Frequency</nz-form-label
+    >
+    <nz-form-control [nzErrorTip]="rFreTpl">
+      <input
+        nz-input
+        id="reportFrequency"
+        formControlName="reportFrequency"
+        placeholder="Report Frequency"
+        numeric
+        numericType="number"
+      />
+      <ng-template #rFreTpl let-control>
+        <ng-container *ngIf="control.hasError('required')"
+          >Please provided your input!</ng-container
+        >
+        <ng-container *ngIf="control.hasError('min')"
+          >Minimum value should be 1 or greater</ng-container
+        >
+        <ng-container *ngIf="control.hasError('max')"
+          >Maximum value should not cross 30.</ng-container
+        >
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <div class="row clearfix">
+    <div class="col-md-6 px-0">
+      <nz-form-item>
+        <nz-form-label
+          nzRequired
+          nzFor="reportDeliveryEndDate"
+          nzErrorTip="Please input your Password!"
+          >Report Delivery End Date</nz-form-label
+        >
+        <nz-form-control>
+          <nz-date-picker
+            id="reportDeliveryEndDate"
+            formControlName="reportDeliveryEndDate"
+            [nzClassName]="'tcal'"
+            nzPlaceHolder="Select Date"
+            [nzDisabledDate]="disabledDeliveryEndDate"
+            [nzAllowClear]="false"
+            [nzFormat]="getDisplayDateFormat()"
+          >
+          </nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <div class="col-md-6 px-0">
+      <nz-form-item>
+        <nz-form-label nzFor="sheduledHourMin"
+          >Schedule time to trigger</nz-form-label
+        >
+        <nz-form-control>
+          <!-- <nz-time-picker
+            formControlName="sheduledHourMin"
+            nzFormat="HH:mm"
+          ></nz-time-picker> -->
+
+          <nz-time-picker
+            [(ngModel)]="time"
+            nzFormat="HH:mm"
+            [ngModelOptions]="{ standalone: true }"
+            (ngModelChange)="onTimeChange($event)"
+            [nzAllowEmpty]="false"
+          ></nz-time-picker>
+          <!-- <nz-select
+            size="small"
+            id="sheduledHourMin"
+            formControlName="sheduledHourMin"
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="Select Time"
+          >
+            <nz-option
+              *ngFor="let time of times"
+              [nzLabel]="time.title"
+              [nzValue]="time.id"
+            >
+            </nz-option>
+          </nz-select> -->
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <nz-form-item>
+    <nz-form-label
+      nzFor="distributionEmail"
+      nzErrorTip="Please input your Password!"
+      >Select Recipients
+    </nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="distributionEmail"
+        formControlName="distributionEmail"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Recipients"
+        [nzDisabled]="!isValidArr(recipients)"
+        nzMode="multiple"
+        nzMaxTagCount="3"
+      >
+        <nz-option
+          *ngFor="let recipient of recipients"
+          [nzLabel]="recipient"
+          [nzValue]="recipient"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div *ngIf="isDataReady" class="submit-btn-parent">
+  <button nz-button nzType="primary" (click)="submitHandler()">
+    {{ btnName }}
+  </button>
+</div>
+
+<!-- <pre style="color: greenyellow;">{{ time.getTime() | date: "HH:mm" }}</pre>
+<pre style="color: greenyellow;">{{ dataForm?.value | json }}</pre> -->
+
+<!-- <p>{{reportIn | json}}</p> -->
+<!-- <pre style="color: greenyellow">{{ clientOutCopy | json }}</pre> -->

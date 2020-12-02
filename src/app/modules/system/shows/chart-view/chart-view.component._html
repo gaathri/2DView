@@ -1,0 +1,24 @@
+<div class="right-panel">
+    <div class="progress-monitor">
+        <ng-container *ngIf="isDataReady">
+            <div style="width: 300px;height: 300px;" (window:resize)="onResize($event)">
+
+                <div echarts [options]="options" [autoResize]="autoResize" style="height: 100%;"
+                    (chartInit)="onPieChartInit($event)" (chartMouseOver)="onChartEvent($event, 'chartMouseOver')">
+                </div>
+            </div>
+        </ng-container>
+        <div *ngIf="statusValue" class="label">
+            <span>{{ statusName }} : </span>
+            <span>{{ statusValue }}</span>
+        </div>
+    </div>
+    <div class="progress-metrics">
+        <div class="label">Today's deliverable ></div>
+        <div class="label">{{ progressData.ending }}</div>
+        <div class="label">Shots assigned today></div>
+        <div class="label">{{ progressData.started }}</div>
+        <div class="label">Shots in deadline ></div>
+        <div class="label">{{ progressData.deadline }}</div>
+    </div>
+</div>

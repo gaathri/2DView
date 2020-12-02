@@ -1,0 +1,25 @@
+<ng-container>
+  <!-- <div class="common-header-new">
+    <div class="d-flex justify-content-between db-links">
+      <div class="d-flex justify-content-between">
+        <div class="db-link">Review Screen</div>
+      </div>
+    </div>
+  </div> -->
+  <!-- <app-review-screen
+    [revisionInfo]="revisionInfo"
+    [playlistInfo]="playlistInfo"
+    [playlistId]="playlistId"
+    [rowIndex]="rowIndex"
+    (onReviewComplete)="reviewComplete($event)"
+  >
+  </app-review-screen> -->
+
+  <app-review-screen
+    [playlistId]="playlistId"
+    [rowIndex]="rowIndex"
+    (onReviewClose)="reviewClose($event)"
+    (onReviewComplete)="reviewComplete($event)"
+  >
+  </app-review-screen>
+</ng-container>

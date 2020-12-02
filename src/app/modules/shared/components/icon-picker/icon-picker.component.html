@@ -1,0 +1,696 @@
+<ng-container *ngIf="iconType == 'add'; then add"></ng-container>
+<ng-template *ngIf="iconType == 'review'; then review"></ng-template>
+<ng-container *ngIf="iconType == 'delete'; then delete"></ng-container>
+<ng-container *ngIf="iconType == 'search'; then search"></ng-container>
+<ng-container *ngIf="iconType == 'filter'; then filter"></ng-container>
+<ng-container *ngIf="iconType == 'lock'; then lock"></ng-container>
+<ng-container *ngIf="iconType == 'info'; then info"></ng-container>
+<ng-container *ngIf="iconType == 'share'; then share"></ng-container>
+<ng-container *ngIf="iconType == 'edit'; then edit"></ng-container>
+<ng-container *ngIf="iconType == 'clone'; then clone"></ng-container>
+<ng-container *ngIf="iconType == 'notes'; then notes"></ng-container>
+<ng-container *ngIf="iconType == 'internal'; then internal"></ng-container>
+<ng-container *ngIf="iconType == 'external'; then external"></ng-container>
+<ng-container *ngIf="iconType == 'dailies'; then dailies"></ng-container>
+<ng-container *ngIf="iconType == 'columns'; then columns"></ng-container>
+<ng-container *ngIf="iconType == 'backup'; then backup"></ng-container>
+<ng-container *ngIf="iconType == 'account'; then account"></ng-container>
+<ng-container *ngIf="iconType == 'logout'; then logout"></ng-container>
+<ng-container *ngIf="iconType == 'folder_add'; then folder_add"></ng-container>
+<ng-container *ngIf="iconType == 'folder'; then folder"></ng-container>
+<ng-container
+  *ngIf="iconType == 'folder_open'; then folder_open"
+></ng-container>
+<ng-container *ngIf="iconType == 'feedback'; then feedback"></ng-container>
+<ng-container
+  *ngIf="iconType == 'feedback_new'; then feedback_new"
+></ng-container>
+<ng-container *ngIf="iconType == 'approve'; then approve"></ng-container>
+<ng-container *ngIf="iconType == 'reject'; then reject"></ng-container>
+<ng-container *ngIf="iconType == 'support'; then support"></ng-container>
+<ng-container *ngIf="iconType == 'save'; then save"></ng-container>
+<ng-container *ngIf="iconType == 'preview'; then preview"></ng-container>
+
+<ng-template #add>
+  <i nz-icon>
+    <svg
+      id="Group"
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+    >
+      <g
+        id="spacer"
+        fill="rgba(255,255,255,0)"
+        stroke="rgba(0,0,0,0)"
+        stroke-width="1"
+      >
+        <rect width="18" height="18" stroke="none" />
+        <rect x="0.5" y="0.5" width="17" height="17" fill="none" />
+      </g>
+      <path
+        id="Path_1997"
+        data-name="Path 1997"
+        d="M10.333,2a8.333,8.333,0,1,0,8.333,8.333A8.336,8.336,0,0,0,10.333,2ZM14.5,11.167H11.167V14.5H9.5V11.167H6.167V9.5H9.5V6.167h1.667V9.5H14.5Z"
+        transform="translate(-1.334 -1.333)"
+      />
+    </svg>
+  </i>
+</ng-template>
+<ng-template #review>
+  <i nz-icon>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20.39"
+      height="20"
+      viewBox="0 0 20.39 20"
+    >
+      <path
+        id="prefix__image-search"
+        d="M15.5 2a4.5 4.5 0 0 1 3.81 6.9l3.08 3.1L21 13.39l-3.12-3.07A4.5 4.5 0 1 1 15.5 2m0 2A2.5 2.5 0 1 0 18 6.5 2.5 2.5 0 0 0 15.5 4m-8 10.5L4 19h14l-4.5-6-3.5 4.5-2.5-3M20 20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.5a6.5 6.5 0 0 0 6 9 6.692 6.692 0 0 0 1.96-.3L20 15.24z"
+        transform="translate(-2 -2)"
+      />
+    </svg>
+  </i>
+</ng-template>
+
+<ng-template #delete>
+  <i nz-icon>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      version="1.1"
+      width="24"
+      height="24"
+      viewBox="0 2 24 24"
+    >
+      <path
+        d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
+      />
+    </svg>
+  </i>
+</ng-template>
+<ng-template #filter>
+  <i nz-icon>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16.201"
+      height="12"
+      viewBox="0 0 16.201 12"
+    >
+      <path
+        id="prefix__filter-variant"
+        d="M5.7 13h10.8v-2H5.7M3 6v2h16.2V6M9.3 18h3.6v-2H9.3z"
+        transform="translate(-3 -6)"
+      />
+    </svg>
+  </i>
+</ng-template>
+<ng-template #search>
+  <i nz-icon>
+    <svg
+      id="Group"
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+    >
+      <g
+        id="spacer"
+        fill="rgba(255,255,255,0)"
+        stroke="rgba(0,0,0,0)"
+        stroke-width="1"
+      >
+        <rect width="18" height="17.999" stroke="none" />
+        <rect x="0.5" y="0.5" width="17" height="16.999" fill="none" />
+      </g>
+      <path
+        id="Path_1039"
+        data-name="Path 1039"
+        d="M14.786,13.372h-.745l-.264-.255a6.138,6.138,0,1,0-.66.66l.255.264v.745l4.714,4.7,1.4-1.4Zm-5.657,0a4.243,4.243,0,1,1,4.243-4.243A4.237,4.237,0,0,1,9.129,13.372Z"
+        transform="translate(-2.246 -2.246)"
+      />
+    </svg>
+  </i>
+</ng-template>
+
+<ng-template #lock>
+  <i nz-icon>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="14"
+      height="18"
+      viewBox="0 0 14 18"
+    >
+      <path
+        id="prefix__lock"
+        d="M11 14.714A1.715 1.715 0 1 0 9.25 13 1.732 1.732 0 0 0 11 14.714M16.25 7A1.732 1.732 0 0 1 18 8.714v8.571A1.732 1.732 0 0 1 16.25 19H5.75A1.732 1.732 0 0 1 4 17.286V8.714A1.732 1.732 0 0 1 5.75 7h.875V5.286a4.376 4.376 0 0 1 8.75 0V7h.875M11 2.714a2.6 2.6 0 0 0-2.625 2.572V7h5.25V5.286A2.6 2.6 0 0 0 11 2.714z"
+        transform="translate(-4 -1)"
+      />
+    </svg>
+  </i>
+</ng-template>
+
+<ng-template #info>
+  <i nz-icon>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+    >
+      <path
+        id="prefix__information"
+        d="M11.9 8.3h-1.8V6.5h1.8m0 9h-1.8v-5.4h1.8M11 2a9 9 0 1 0 9 9 9 9 0 0 0-9-9z"
+        transform="translate(-2 -2)"
+      />
+    </svg>
+  </i>
+</ng-template>
+
+<ng-template #share>
+  <i nz-icon>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      version="1.1"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.61 20.92,19A2.92,2.92 0 0,0 18,16.08Z"
+      />
+    </svg>
+  </i>
+</ng-template>
+
+<ng-template #edit>
+  <i nz-icon>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+    >
+      <path
+        id="prefix__pencil-box-multiple_2_"
+        d="M18.4 2H7.2a1.606 1.606 0 0 0-1.6 1.6v11.2a1.606 1.606 0 0 0 1.6 1.6h11.2a1.6 1.6 0 0 0 1.6-1.6V3.6A1.606 1.606 0 0 0 18.4 2m-8.246 11.7H8.3v-1.854l5.454-5.454 1.854 1.854-5.454 5.454m6.876-6.885l-.9.9-1.845-1.845.9-.9a.478.478 0 0 1 .693 0l1.152 1.152a.478.478 0 0 1 0 .693M3.8 5.6H2v12.6A1.8 1.8 0 0 0 3.8 20h12.6v-1.8H3.8z"
+        data-name="pencil-box-multiple (2)"
+        transform="translate(-2 -2)"
+      />
+    </svg>
+  </i>
+</ng-template>
+<ng-template #notes>
+  <i nz-icon>
+    <!-- <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+    >
+      <path
+        id="prefix__note-multiple"
+        d="M13.273 7.727h4.5l-4.5-4.5v4.5M5.909 2h8.182L19 6.909v8.182a1.636 1.636 0 0 1-1.636 1.636H5.909a1.636 1.636 0 0 1-1.636-1.636V3.636A1.636 1.636 0 0 1 5.909 2M2.636 5.273v13.091h14.728V20H2.636A1.636 1.636 0 0 1 1 18.364V5.273z"
+        transform="translate(-1 -2)"
+      />
+    </svg> -->
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+    >
+      <g
+        id="Group_9092"
+        data-name="Group 9092"
+        transform="translate(-21664 16698)"
+      >
+        <rect
+          id="Rectangle_3210"
+          data-name="Rectangle 3210"
+          width="18"
+          height="18"
+          transform="translate(21664 -16698)"
+          fill="#fff"
+          opacity="0"
+        />
+        <path
+          id="clipboard-text"
+          d="M15.6,8.2h-9V6.4h9m0,5.4h-9V10h9m-2.7,5.4H6.6V13.6h6.3M11.1,2.8a.9.9,0,1,1-.9.9.9.9,0,0,1,.9-.9m6.3,0H13.638a2.689,2.689,0,0,0-5.076,0H4.8A1.8,1.8,0,0,0,3,4.6V17.2A1.8,1.8,0,0,0,4.8,19H17.4a1.8,1.8,0,0,0,1.8-1.8V4.6A1.8,1.8,0,0,0,17.4,2.8Z"
+          transform="translate(21662 -16699)"
+        />
+      </g>
+    </svg>
+  </i>
+</ng-template>
+<ng-template #internal>
+  <i nz-icon>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      version="1.1"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M6,2C4.89,2 4,2.9 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M13,3.5L18.5,9H13M10.05,11.22L12.88,14.05L15,11.93V19H7.93L10.05,16.88L7.22,14.05"
+      />
+    </svg>
+  </i>
+</ng-template>
+<ng-template #external>
+  <i nz-icon>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="20"
+      viewBox="0 0 16 20"
+    >
+      <path
+        id="prefix__file-export"
+        d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6m-1 1.5L18.5 9H13m-4.07 3.22H16v7.07l-2.12-2.12L11.05 20l-2.83-2.83 2.83-2.82"
+        transform="translate(-4 -2)"
+      />
+    </svg>
+  </i>
+</ng-template>
+<ng-template #dailies>
+  <i nz-icon>
+    <!-- <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+    >
+      <path
+        id="prefix__pencil-box-multiple_2_"
+        d="M18.4 2H7.2a1.606 1.606 0 0 0-1.6 1.6v11.2a1.606 1.606 0 0 0 1.6 1.6h11.2a1.6 1.6 0 0 0 1.6-1.6V3.6A1.606 1.606 0 0 0 18.4 2m-8.246 11.7H8.3v-1.854l5.454-5.454 1.854 1.854-5.454 5.454m6.876-6.885l-.9.9-1.845-1.845.9-.9a.478.478 0 0 1 .693 0l1.152 1.152a.478.478 0 0 1 0 .693M3.8 5.6H2v12.6A1.8 1.8 0 0 0 3.8 20h12.6v-1.8H3.8z"
+        data-name="pencil-box-multiple (2)"
+        transform="translate(-2 -2)"
+      />
+    </svg>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="18"
+      viewBox="0 0 16 18"
+    >
+      <path
+        id="prefix__file-move"
+        d="M12.421 14.857h3.368v-2.571L20 16.143 15.789 20v-2.571h-3.368v-2.572M11.579 8h4.632l-4.632-4.714V8M5.684 2h6.737l5.053 5.143v3.72a5.008 5.008 0 0 0-1.684-.291 5.1 5.1 0 0 0-5.053 5.143 5.17 5.17 0 0 0 1.288 3.429H5.684A1.7 1.7 0 0 1 4 17.429V3.714A1.7 1.7 0 0 1 5.684 2z"
+        transform="translate(-4 -2)"
+      />
+    </svg> -->
+
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+    >
+      <g
+        id="Group_9084"
+        data-name="Group 9084"
+        transform="translate(-119 -314)"
+      >
+        <rect
+          id="Rectangle_3209"
+          data-name="Rectangle 3209"
+          width="20"
+          height="20"
+          transform="translate(119 314)"
+          fill="#fff"
+          opacity="0"
+        />
+        <path
+          id="file-move"
+          d="M13.474,16.286h3.789V13.429L22,17.714,17.263,22V19.143H13.474V16.286m-.947-7.619h5.211L12.526,3.429V8.667M5.895,2h7.579l5.684,5.714v4.133a5.712,5.712,0,0,0-6.129,9.2H5.895A1.9,1.9,0,0,1,4,19.143V3.9A1.9,1.9,0,0,1,5.895,2Z"
+          transform="translate(116 312)"
+        />
+      </g>
+    </svg>
+  </i>
+</ng-template>
+
+<ng-template #columns>
+  <i nz-icon class="qf-icon">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 -2 18 18"
+    >
+      <path
+        id="prefix__view-column"
+        d="M16.706 5v14H22V5M4 19h5.294V5H4m6.353 14h5.294V5h-5.294z"
+        transform="translate(-4 -5)"
+      />
+    </svg>
+  </i>
+</ng-template>
+<ng-template #backup>
+  <i nz-icon>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+    >
+      <path
+        id="prefix__archive-arrow-down"
+        d="M3 3h18v4H3V3m1 18V8h16v13H4m10-7v-3h-4v3H7l5 5 5-5z"
+        transform="translate(-3 -3)"
+      />
+    </svg>
+  </i>
+</ng-template>
+
+<ng-template #account>
+  <i nz-icon>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+    >
+      <path
+        id="prefix__account-circle_2_"
+        d="M11 17.48a6.509 6.509 0 0 1-5.4-2.88c.027-1.8 3.6-2.79 5.4-2.79s5.373.99 5.4 2.79a6.509 6.509 0 0 1-5.4 2.88M11 4.7a2.7 2.7 0 1 1-2.7 2.7A2.7 2.7 0 0 1 11 4.7M11 2a9 9 0 1 0 9 9 9 9 0 0 0-9-9z"
+        data-name="account-circle (2)"
+        transform="translate(-2 -2)"
+      />
+    </svg>
+  </i>
+</ng-template>
+
+<ng-template #logout>
+  <i nz-icon>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18.003"
+      height="18"
+      viewBox="0 0 18.003 18"
+    >
+      <path
+        id="prefix__power-standby"
+        d="M13 3h-2v9.987h2V3m4.83 2.167l-1.42 1.418A6.986 6.986 0 1 1 5 11.988a7 7 0 0 1 2.58-5.413L6.17 5.167a9 9 0 1 0 11.66 0z"
+        transform="translate(-2.997 -3)"
+      />
+    </svg>
+  </i>
+</ng-template>
+
+<ng-template #folder_add>
+  <i nz-icon>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="14.4"
+      viewBox="0 0 18 14.4"
+    >
+      <path
+        id="prefix__folder-plus"
+        d="M9.2 4L11 5.8h7.2A1.8 1.8 0 0 1 20 7.6v9a1.8 1.8 0 0 1-1.8 1.8H3.8A1.8 1.8 0 0 1 2 16.6V5.8A1.794 1.794 0 0 1 3.8 4h5.4m4.5 4.5v2.7H11V13h2.7v2.7h1.8V13h2.7v-1.8h-2.7V8.5z"
+        transform="translate(-2 -4)"
+      />
+    </svg>
+  </i>
+</ng-template>
+<ng-template #folder_open>
+  <i [ngClass]="getClass()" nz-icon>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="14"
+      viewBox="0 0 18 14"
+    >
+      <path
+        id="prefix__folder-open"
+        d="M16.427 18H3.7A1.724 1.724 0 0 1 2 16.25V5.75A1.718 1.718 0 0 1 3.7 4h5.089l1.7 1.75h5.941a1.724 1.724 0 0 1 1.7 1.75H3.7v8.75l1.816-7H20l-1.935 7.437A1.709 1.709 0 0 1 16.427 18z"
+        transform="translate(-2 -4)"
+      />
+    </svg>
+  </i>
+</ng-template>
+
+<ng-template #folder>
+  <i [ngClass]="getClass()" nz-icon>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="14.4"
+      viewBox="0 0 18 14.4"
+    >
+      <path
+        id="prefix__folder_1_"
+        d="M9.2 4H3.8A1.794 1.794 0 0 0 2 5.8v10.8a1.8 1.8 0 0 0 1.8 1.8h14.4a1.8 1.8 0 0 0 1.8-1.8v-9a1.8 1.8 0 0 0-1.8-1.8H11z"
+        data-name="folder (1)"
+        transform="translate(-2 -4)"
+      />
+    </svg>
+  </i>
+</ng-template>
+<ng-template #clone>
+  <i nz-icon>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+    >
+      <g
+        id="Group_9092"
+        data-name="Group 9092"
+        transform="translate(-21624 16652)"
+      >
+        <rect
+          id="Rectangle_3210"
+          data-name="Rectangle 3210"
+          width="18"
+          height="18"
+          transform="translate(21624 -16652)"
+          fill="#fff"
+          opacity="0"
+        />
+        <path
+          id="file-multiple"
+          d="M11.75,5.25h4.125L11.75,1.125V5.25M6.5,0h6L17,4.5v9A1.5,1.5,0,0,1,15.5,15h-9A1.5,1.5,0,0,1,5,13.5V1.5A1.5,1.5,0,0,1,6.5,0m-3,3V16.5h12V18H3.5A1.5,1.5,0,0,1,2,16.5V3Z"
+          transform="translate(21624 -16652)"
+        />
+      </g>
+    </svg>
+  </i>
+</ng-template>
+
+<ng-template #feedback>
+  <i nz-icon>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+    >
+      <path
+        id="prefix__message-bulleted"
+        d="M18.2 2H3.8A1.8 1.8 0 0 0 2 3.8V20l3.6-3.6h12.6a1.8 1.8 0 0 0 1.8-1.8V3.8A1.8 1.8 0 0 0 18.2 2M7.4 12.8H5.6V11h1.8v1.8m0-2.7H5.6V8.3h1.8v1.8m0-2.7H5.6V5.6h1.8v1.8m6.3 5.4H9.2V11h4.5v1.8m2.7-2.7H9.2V8.3h7.2v1.8m0-2.7H9.2V5.6h7.2z"
+        transform="translate(-2 -2)"
+      />
+    </svg>
+  </i>
+</ng-template>
+
+<ng-template #feedback_new>
+  <i nz-icon
+    ><svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="40"
+      height="30"
+      viewBox="0 0 40 30"
+    >
+      <g
+        id="Group_7435"
+        data-name="Group 7435"
+        transform="translate(-1145 -318)"
+      >
+        <g id="Group_7430" data-name="Group 7430">
+          <rect
+            id="Rectangle_804"
+            data-name="Rectangle 804"
+            width="40"
+            height="30"
+            rx="4"
+            transform="translate(1145 318)"
+            fill="#5cc7ff"
+          />
+          <path
+            id="Icon_material-comment"
+            data-name="Icon material-comment"
+            d="M18.992,4.6A1.6,1.6,0,0,0,17.4,3H4.6A1.6,1.6,0,0,0,3,4.6v9.6a1.6,1.6,0,0,0,1.6,1.6H15.8L19,19Zm-3.192,8H6.2V11h9.6Zm0-2.4H6.2V8.6h9.6Zm0-2.4H6.2V6.2h9.6Z"
+            transform="translate(1154 322)"
+            fill="#fff"
+          />
+        </g>
+      </g>
+    </svg>
+  </i>
+</ng-template>
+
+<ng-template #reject>
+  <i nz-icon>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="40"
+      height="30"
+      viewBox="0 0 40 30"
+    >
+      <g
+        id="Group_6538"
+        data-name="Group 6538"
+        transform="translate(-16523 2251)"
+      >
+        <g id="Group_7431" data-name="Group 7431">
+          <rect
+            id="Rectangle_804"
+            data-name="Rectangle 804"
+            width="40"
+            height="30"
+            rx="4"
+            transform="translate(16523 -2251)"
+            fill="#e8514e"
+          />
+          <g id="Group" transform="translate(-2129 -1649)">
+            <g
+              id="spacer"
+              transform="translate(18664 -595)"
+              fill="rgba(255,255,255,0)"
+              stroke="rgba(0,0,0,0)"
+              stroke-width="1"
+            >
+              <rect width="16" height="16" stroke="none" />
+              <rect x="0.5" y="0.5" width="15" height="15" fill="none" />
+            </g>
+            <path
+              id="close_2_"
+              data-name="close (2)"
+              d="M19.222,6.432,17.79,5l-5.679,5.679L6.432,5,5,6.432l5.679,5.679L5,17.79l1.432,1.432,5.679-5.679,5.679,5.679,1.432-1.432-5.679-5.679Z"
+              transform="translate(18659.889 -599.111)"
+              fill="#fff"
+            />
+          </g>
+        </g>
+      </g>
+    </svg>
+  </i>
+</ng-template>
+<ng-template #approve>
+  <i nz-icon>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="40"
+      height="30"
+      viewBox="0 0 40 30"
+    >
+      <g
+        id="Group_6539"
+        data-name="Group 6539"
+        transform="translate(-1145 -318)"
+      >
+        <g id="Group_7430" data-name="Group 7430">
+          <rect
+            id="Rectangle_804"
+            data-name="Rectangle 804"
+            width="40"
+            height="30"
+            rx="4"
+            transform="translate(1145 318)"
+            fill="#19c293"
+          />
+          <g id="Group" transform="translate(-17469 880)">
+            <g
+              id="spacer"
+              transform="translate(18624 -555)"
+              fill="rgba(255,255,255,0)"
+              stroke="rgba(0,0,0,0)"
+              stroke-width="1"
+            >
+              <rect width="20.196" height="16" stroke="none" />
+              <rect x="0.5" y="0.5" width="19.196" height="15" fill="none" />
+            </g>
+            <path
+              id="check"
+              d="M21.452,7.036,9.142,19.346,3.5,13.7l1.446-1.446,4.2,4.185L20.005,5.59Z"
+              transform="translate(18621.621 -559.468)"
+              fill="#fff"
+            />
+          </g>
+        </g>
+      </g>
+    </svg>
+  </i>
+</ng-template>
+<ng-template #support>
+  <i nz-icon>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+    >
+      <g
+        id="Group_9124"
+        data-name="Group 9124"
+        transform="translate(-21710 16742)"
+      >
+        <rect
+          id="Rectangle_3217"
+          data-name="Rectangle 3217"
+          width="18"
+          height="18"
+          transform="translate(21710 -16742)"
+          fill="#fff"
+          opacity="0"
+        />
+        <path
+          id="lifebuoy"
+          d="M18.011,14.069a7.665,7.665,0,0,0,0-6.138L15.545,9.047a4.949,4.949,0,0,1,.009,3.906l2.457,1.116M14.078,3.989a7.686,7.686,0,0,0-6.147,0L9.047,6.446a4.971,4.971,0,0,1,3.915.009l1.116-2.466M3.989,7.922a7.708,7.708,0,0,0,0,6.156l2.466-1.125a4.933,4.933,0,0,1,0-3.915L3.989,7.922M7.931,18.011A7.649,7.649,0,0,0,14.078,18l-1.116-2.457a4.949,4.949,0,0,1-3.906.009L7.931,18.011M11,2a9,9,0,1,1-9,9,9,9,0,0,1,9-9m0,5.4A3.6,3.6,0,1,0,14.6,11,3.6,3.6,0,0,0,11,7.4Z"
+          transform="translate(21708 -16744)"
+        />
+      </g>
+    </svg>
+  </i>
+</ng-template>
+
+<ng-template #save>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+  >
+    <path
+      id="content-save"
+      d="M13.667,8.333H4.778V4.778h8.889M11,17.222a2.667,2.667,0,1,1,2.667-2.667A2.667,2.667,0,0,1,11,17.222M15.444,3H4.778A1.777,1.777,0,0,0,3,4.778V17.222A1.778,1.778,0,0,0,4.778,19H17.222A1.778,1.778,0,0,0,19,17.222V6.556Z"
+      transform="translate(-3 -3)"
+      fill="#3be582"
+    />
+  </svg>
+</ng-template>
+<ng-template #preview>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+  >
+    <path
+      id="play-box"
+      d="M17.222,3H4.778A1.772,1.772,0,0,0,3,4.778V17.222A1.783,1.783,0,0,0,4.778,19H17.222A1.783,1.783,0,0,0,19,17.222V4.778A1.777,1.777,0,0,0,17.222,3m-8,11.556V7.444L13.667,11"
+      transform="translate(-3 -3)"
+      fill="#3be582"
+    />
+  </svg>
+</ng-template>

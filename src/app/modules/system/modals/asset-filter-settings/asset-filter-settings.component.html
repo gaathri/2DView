@@ -1,0 +1,237 @@
+<form
+  *ngIf="isDataReady"
+  class="form-panel"
+  nz-form
+  [formGroup]="dataForm"
+  (ngSubmit)="submitHandler()"
+  autocomplete="off"
+  [nzLayout]="'horizontal'"
+>
+  <nz-form-item>
+    <nz-form-label>Asset Name</nz-form-label>
+    <nz-form-control>
+      <input nz-input placeholder="Asset Name" formControlName="assetName" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>
+      Asset Type
+    </nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="assetTypeIds"
+        formControlName="assetTypeIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Asset Types"
+        nzMode="multiple"
+        nzMaxTagCount="3"
+      >
+        <nz-option
+          *ngFor="let assetType of assetTypes"
+          [nzLabel]="assetType.assetTypeName"
+          [nzValue]="assetType.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>
+      Status Name
+    </nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="statusName"
+        formControlName="status"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Status Name"
+        [nzDisabled]="!isValidArr(statuses)"
+        nzMode="multiple"
+        nzMaxTagCount="3"
+      >
+        <nz-option
+          *ngFor="let status of statuses"
+          [nzLabel]="status.name"
+          [nzValue]="status.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>
+      Linked Shots
+    </nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="linkedShotIds"
+        formControlName="linkedShotIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Linked Shots"
+        [nzDisabled]="!isValidArr(shots)"
+        nzMode="multiple"
+        nzMaxTagCount="3"
+      >
+        <nz-option
+          *ngFor="let shot of shots"
+          [nzLabel]="shot.shotCode"
+          [nzValue]="shot.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>
+      Parent Assets
+    </nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="parentAssetIds"
+        formControlName="parentAssetIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Parent Assets"
+        [nzDisabled]="!isValidArr(parentAssets)"
+        nzMode="multiple"
+        nzMaxTagCount="3"
+      >
+        <nz-option
+          *ngFor="let asset of parentAssets"
+          [nzLabel]="asset.assetName"
+          [nzValue]="asset.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>
+      Sub Assets
+    </nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="subAssetIds"
+        formControlName="subAssetIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Sub Assets"
+        [nzDisabled]="!isValidArr(subAssets)"
+        nzMode="multiple"
+        nzMaxTagCount="3"
+      >
+        <nz-option
+          *ngFor="let asset of subAssets"
+          [nzLabel]="asset.assetName"
+          [nzValue]="asset.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <div class="row clearfix">
+      <div class="col-md-6 px-0">
+        <nz-form-label>
+          Progress
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            placeholder="Progress"
+            formControlName="completionPercentage"
+            maxValue="100"
+            numeric
+            numericType="decimal"
+          />
+        </nz-form-control>
+      </div>
+
+      <div class="col-md-3 pl-3">
+        <nz-form-label>
+          Operator
+        </nz-form-label>
+        <nz-form-control style="padding-top: 4px;">
+          <nz-select
+            id="percentOperator"
+            formControlName="percentOperator"
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="Operator"
+          >
+            <nz-option
+              *ngFor="let operator of operators"
+              [nzLabel]="operator.name"
+              [nzValue]="operator.id"
+            >
+            </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </div>
+    </div>
+  </nz-form-item>
+
+  <nz-form-item *ngIf="isValidArr(customFields)">
+    <nz-form-label>
+      Select Custom Field
+    </nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="customFieldId"
+        formControlName="customFieldId"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Custom Field"
+        [nzDisabled]="!isValidArr(customFields)"
+        (ngModelChange)="customFieldChangeHandler($event)"
+      >
+        <nz-option
+          *ngFor="let customField of customFields"
+          [nzLabel]="customField.name"
+          [nzValue]="customField.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item *ngIf="isCustomFieldSelected()">
+    <nz-form-label>
+      Custom Field Value
+    </nz-form-label>
+    <nz-form-control>
+      <input
+        nz-input
+        placeholder="Custom Field Value"
+        formControlName="customFieldValue"
+      />
+    </nz-form-control>
+  </nz-form-item>
+</form>
+<div *ngIf="isDataReady" class="row submit-btn-parent">
+  <div class="col px-0">
+    <div>
+      <button
+        nz-button
+        nzType="primary"
+        type="submit"
+        (click)="submitHandler()"
+      >
+        Apply
+      </button>
+      <button class="mr-1" nz-button (click)="resetHandler()">
+        Reset
+      </button>
+    </div>
+  </div>
+</div>
+<!-- <span style="color: greenyellow;">{{ dataForm?.value | json }}</span> -->

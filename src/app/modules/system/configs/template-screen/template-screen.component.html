@@ -1,0 +1,31 @@
+<div class="template-detail-component">
+  <!--Shot Tabview START-->
+  <nz-tabset [nzSelectedIndex]="0">
+    <nz-tab nzTitle="Show">
+      <ng-template nz-tab>
+        <app-template-list type="show"></app-template-list>
+      </ng-template>
+    </nz-tab>
+    <nz-tab nzTitle="Shot">
+      <ng-template nz-tab>
+        <app-template-list type="shot"></app-template-list>
+      </ng-template>
+    </nz-tab>
+    <nz-tab nzTitle="Task">
+      <ng-template nz-tab>
+        <app-template-list type="task"></app-template-list>
+      </ng-template>
+    </nz-tab>
+    <nz-tab nzTitle="Packing">
+      <ng-template nz-tab>
+        <app-template-list type="pack"></app-template-list>
+      </ng-template>
+    </nz-tab>
+    <nz-tab nzTitle="Email">
+      <ng-template nz-tab>
+        <app-email-template-list type="pack"></app-email-template-list>
+      </ng-template>
+    </nz-tab>
+  </nz-tabset>
+  <!--Shot Tabview END-->
+</div>

@@ -1,0 +1,33 @@
+<div *ngIf="isDataReady" class="time-sheet">
+  <!-- <app-calendar-view [allowUserSearch]="true" (userSelect)="onUserSelect($event)" (userClose)="onUserClose($event)"
+        (dateChange)="onDateChange($event)" [events]="events">
+    </app-calendar-view> -->
+
+  <app-calendar
+    #appCalendar
+    [startDate]="startDate"
+    [endDate]="endDate"
+    [isArtistView]="false"
+    [data]="events"
+    [debug]="false"
+    (userSelect)="onUserSelect($event)"
+    (userClose)="onUserClose($event)"
+    (dateChange)="onDateChange($event)"
+  >
+  </app-calendar>
+
+  <ng-container *ngIf="isTableView">
+    <app-artist-table-view
+      [selectedDate]="selectedDate"
+    ></app-artist-table-view>
+  </ng-container>
+  <ng-container *ngIf="!isTableView">
+    <app-task-log-panel
+      (change)="onUpdateLog($event)"
+      [userId]="userId"
+      [selectedDate]="selectedDate"
+      [enableAddLog]="false"
+    >
+    </app-task-log-panel>
+  </ng-container>
+</div>

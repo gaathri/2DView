@@ -1,0 +1,106 @@
+<form
+  *ngIf="isDataReady"
+  class="form-panel"
+  nz-form
+  [formGroup]="mainForm"
+  (ngSubmit)="submitHandler()"
+  autocomplete="off"
+>
+  <nz-form-item>
+    <nz-form-label
+      [nzRequired]="isRequired('userGroupIds')"
+      nzFor="userGroupIds"
+      >Select Groups</nz-form-label
+    >
+    <nz-form-control nzErrorTip="Please select groups or users!">
+      <nz-tree-select
+        id="userGroupIds"
+        formControlName="userGroupIds"
+        style="width: 100%;"
+        [nzNodes]="groups"
+        (ngModelChange)="onUserGroupChange($event)"
+        nzShowSearch
+        nzCheckable
+        nzPlaceHolder="Select groups from list"
+        [nzHideUnMatched]="true"
+        nzSize="large"
+        [nzShowExpand]="true"
+        [nzAllowClear]="true"
+        [nzDropdownStyle]="{ 'max-height': '400px' }"
+      >
+        <!-- [nzMaxTagCount]="3" -->
+      </nz-tree-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <!-- [nzRequired]="isRequired('userIds')" -->
+    <nz-form-label [nzRequired]="isRequired('userIds')" nzFor="userIds"
+      >Select Users</nz-form-label
+    >
+    <nz-form-control nzErrorTip="Please select groups or users!">
+      <nz-select
+        id="userIds"
+        formControlName="userIds"
+        (ngModelChange)="onUserChange($event)"
+        nzShowSearch
+        nzPlaceHolder="Select users from list"
+        nzMode="multiple"
+      >
+        <nz-option
+          *ngFor="let user of users"
+          [nzLabel]="user.title"
+          [nzValue]="user.id"
+          [nzHide]="isSelected(user)"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="inchargeIds"
+      >Select Supervisors</nz-form-label
+    >
+    <nz-form-control nzErrorTip="Please select supervisors!">
+      <nz-select
+        id="inchargeIds"
+        formControlName="inchargeIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select supervisors from list"
+        nzMode="multiple"
+      >
+        <nz-option
+          *ngFor="let supervisor of supervisors"
+          [nzLabel]="supervisor.title"
+          [nzValue]="supervisor.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="producerIds"
+      >Select Producers</nz-form-label
+    >
+    <nz-form-control nzErrorTip="Please select producers!">
+      <nz-select
+        id="producerIds"
+        formControlName="producerIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select producers from list"
+        nzMode="multiple"
+      >
+        <nz-option
+          *ngFor="let producer of producers"
+          [nzLabel]="producer.title"
+          [nzValue]="producer.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+<!-- </div> -->
+<!-- <pre style="color: greenyellow">{{showOutCopy | json}}</pre> -->

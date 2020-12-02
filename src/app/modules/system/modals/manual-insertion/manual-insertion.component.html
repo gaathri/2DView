@@ -1,0 +1,188 @@
+<form
+  *ngIf="isDataReady"
+  class="form-panel"
+  nz-form
+  [formGroup]="mainForm"
+  (ngSubmit)="submitHandler()"
+  autocomplete="off"
+>
+  <div class="d-flex justify-content-start">
+    <div>
+      <nz-form-item>
+        <nz-form-control>
+          <label
+            nz-checkbox
+            formControlName="hasSeparator"
+            (nzCheckedChange)="hasSeparatorChange()"
+          >
+            <span>Separator</span>
+          </label>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div>
+      <!-- *ngIf="showSeparator()" -->
+      <nz-form-item>
+        <!-- <nz-form-label nzRequired nzFor="separator">
+          Select Separator
+        </nz-form-label> -->
+        <nz-form-control nzErrorTip="Please provide your input!">
+          <nz-select
+            style="width: 200px;"
+            id="separator"
+            formControlName="separator"
+            nzAllowClear
+            nzPlaceHolder="Select Separator"
+            [nzDisabled]="!showSeparator() || !isValidArr(separators)"
+          >
+            <nz-option
+              *ngFor="let separator of separators"
+              [nzLabel]="separator.name"
+              [nzValue]="separator.id"
+            >
+            </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-start">
+    <div>
+      <nz-form-item>
+        <nz-form-control>
+          <label
+            nz-checkbox
+            formControlName="hasPadding"
+            (nzCheckedChange)="hasPaddingChange()"
+          >
+            <span>Padding &nbsp;&nbsp;</span>
+          </label>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div>
+      <!-- *ngIf="showPadding()" -->
+      <nz-form-item>
+        <!-- <nz-form-label nzRequired nzFor="padding">
+          Select Padding
+        </nz-form-label> -->
+        <nz-form-control nzErrorTip="Please provide your input!">
+          <nz-select
+            style="width: 200px;"
+            id="padding"
+            formControlName="padding"
+            nzAllowClear
+            nzPlaceHolder="Select Padding"
+            [nzDisabled]="!showPadding() || !isValidArr(paddings)"
+          >
+            <nz-option
+              *ngFor="let padding of paddings"
+              [nzLabel]="padding.name"
+              [nzValue]="padding.id"
+            ></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="start">Start</nz-form-label>
+    <nz-form-control [nzErrorTip]="errStartTpl">
+      <input
+        nz-input
+        id="start"
+        formControlName="start"
+        placeholder="Start"
+        numeric
+        numericType="number"
+        (ngModelChange)="inputOnChange()"
+      />
+    </nz-form-control>
+    <ng-template #errStartTpl let-control>
+      <ng-container *ngIf="control.hasError('max')"
+        >Start value should be lesser than end value!</ng-container
+      >
+      <ng-container *ngIf="control.hasError('required')"
+        >Provide your input!</ng-container
+      >
+    </ng-template>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="end">End</nz-form-label>
+    <nz-form-control [nzErrorTip]="errEndTpl">
+      <input
+        nz-input
+        id="end"
+        formControlName="end"
+        placeholder="End"
+        numeric
+        numericType="number"
+        (ngModelChange)="inputOnChange()"
+      />
+    </nz-form-control>
+    <ng-template #errEndTpl let-control>
+      <ng-container *ngIf="control.hasError('min')"
+        >End value should be greater than start value!</ng-container
+      >
+      <ng-container *ngIf="control.hasError('required')"
+        >Provide your input!</ng-container
+      >
+    </ng-template>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="interval">Interval</nz-form-label>
+    <nz-form-control [nzErrorTip]="errIntervalTpl">
+      <input
+        nz-input
+        id="interval"
+        formControlName="interval"
+        placeholder="Interval"
+        numeric
+        numericType="number"
+      />
+    </nz-form-control>
+    <ng-template #errIntervalTpl let-control>
+      <ng-container *ngIf="control.hasError('min')"
+        >Invalid interval!</ng-container
+      >
+      <ng-container *ngIf="control.hasError('required')"
+        >Provide your input!</ng-container
+      >
+    </ng-template>
+  </nz-form-item>
+</form>
+<div *ngIf="isDataReady" class="submit-btn-parent">
+  <button nz-button nzType="primary" (click)="submitHandler()">
+    Add
+  </button>
+</div>
+
+<!--Modal for manual insertion confirmation START-->
+<nz-modal
+  [(nzVisible)]="isAlertVisible"
+  nzTitle="Manual Insertion"
+  nzOkText="Yes"
+  nzCancelText="No"
+  (nzOnOk)="onConfirm()"
+  (nzOnCancel)="onCancel()"
+  nzNoAnimation="true"
+  nzOkType="primary"
+  nzClosable="false"
+>
+  <b class="modal-content-del-prefix">
+    <span class="modal-content-del-suffix"
+      >{{ noOfItems }} Items are about to be created.</span
+    >
+    <br />
+    <span>
+      Are you sure to proceed ?
+    </span>
+  </b>
+</nz-modal>
+<!--Modal for manual insertion confirmation END-->
+
+<!-- <pre style="color: greenyellow">{{ mainForm?.value | json }}</pre> -->

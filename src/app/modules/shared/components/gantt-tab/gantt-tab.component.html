@@ -1,0 +1,30 @@
+<!-- <div class="common-header-new">
+  <div class="d-flex justify-content-between db-links">
+    <div class="d-flex justify-content-between">
+      <div
+        [class.active]="type == 'show'"
+        class="db-link hand"
+        (click)="showGantt()"
+      >
+        Shows
+      </div>
+      <div class="db-link pipe">|</div>
+      <div
+        [class.active]="type == 'resource'"
+        class="db-link hand"
+        (click)="resourceGantt()"
+      >
+        Resources
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="type == 'show'">
+    <app-gantt-chart [ganttType]="type"></app-gantt-chart>
+  </ng-container>
+  <ng-container *ngIf="type == 'resource'">
+    <app-gantt-resource [ganttType]="type"></app-gantt-resource>
+  </ng-container>
+</div> -->
+
+<app-gantt-chart></app-gantt-chart>

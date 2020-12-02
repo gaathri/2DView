@@ -1,0 +1,289 @@
+<div
+  class="table-wrapper lg-pad item-list px-0"
+  style="margin-top: 20px;"
+  *ngIf="isDataReady"
+>
+  <div class="row">
+    <div class="col-md-12 px-0">
+      <div
+        class="table-header-panel-db d-flex justify-content-between align-items-center"
+      >
+        <div class="quick-filter last">
+          <span>
+            <i
+              nz-icon
+              nzType="calendar"
+              [nzTheme]="'outline'"
+              class="qf-icon"
+            ></i>
+          </span>
+          <span>&nbsp;&nbsp;{{ getDate() | date: "MMM dd, yyyy" }}</span>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="quick-filter hand">
+            <span *ngIf="isSearching">
+              <nz-input-group [nzSuffix]="suffixTemplate">
+                <input
+                  style="height: 20px; width: 600px;"
+                  type="text"
+                  nz-input
+                  [(ngModel)]="searchPattern"
+                  (keyup.enter)="searchDetails()"
+                  placeholder="Type search text"
+                />
+              </nz-input-group>
+
+              <ng-template #suffixTemplate>
+                <i
+                  nz-icon
+                  nz-tooltip
+                  class="ant-input-clear-icon"
+                  nzTheme="fill"
+                  nzType="close-circle"
+                  (click)="clearSearch()"
+                ></i>
+              </ng-template>
+            </span>
+            <span *ngIf="!isSearching" (click)="searchHandler()">
+              <span>
+                <app-icon-picker
+                  class="qf-icon"
+                  iconType="search"
+                ></app-icon-picker>
+              </span>
+              <span class="quick-filter-text">Search</span>
+            </span>
+          </div>
+          <div class="quick-filter hand last" (click)="filterHandler()">
+            <span>
+              <app-icon-picker
+                class="qf-icon"
+                [class.highlight-yellow]="isFilterApplied"
+                iconType="filter"
+              ></app-icon-picker>
+            </span>
+            <span class="quick-filter-text">Filters</span>
+          </div>
+        </div>
+      </div>
+
+      <ngx-datatable
+        #myTable
+        style="
+          min-width: 100%;
+          width: 100%;
+          min-height: 300px !important;
+          height: calc(100vh - 200px);
+        "
+        class="material striped expandable fullscreen"
+        [class.table-group]="isRowGroupEnabled"
+        [rows]="rows"
+        [columnMode]="'force'"
+        [headerHeight]="50"
+        [footerHeight]="50"
+        [rowHeight]="50"
+        [scrollbarV]="true"
+        [scrollbarH]="true"
+        [virtualization]="false"
+        [externalSorting]="true"
+        [externalPaging]="true"
+        [loadingIndicator]="isLoading"
+        [count]="page.totalElements"
+        [offset]="page.pageNumber"
+        [limit]="page.size"
+        [selectAllRowsOnPage]="false"
+        (page)="setPage($event)"
+        (sort)="onSort($event)"
+        [groupExpansionDefault]="isRowGroupEnabled"
+        [groupRowsBy]="'userName'"
+      >
+        <ngx-datatable-group-header
+          *ngIf="isRowGroupEnabled"
+          [rowHeight]="100"
+          #myGroupHeader
+        >
+          <ng-template
+            let-group="group"
+            let-expanded="expanded"
+            ngx-datatable-group-header-template
+          >
+            <div style="padding-left: 5px; width: 300px; margin-top: 5px;">
+              <a
+                style="color: #3be582;"
+                [class.datatable-icon-right]="!expanded"
+                [class.datatable-icon-down]="expanded"
+                title="Expand/Collapse Group"
+                (click)="toggleExpandGroup(group)"
+                >&nbsp;&nbsp;
+                <span style="color: white;">{{ getGroupName(group) }}</span>
+              </a>
+            </div>
+          </ng-template>
+        </ngx-datatable-group-header>
+
+        <ngx-datatable-column
+          *ngFor="let col of selectedTableColumns"
+          [name]="col.displayName"
+          [width]="getColWidth(col.name)"
+          [sortable]="col.sortable"
+        >
+          <ng-template
+            ngx-datatable-cell-template
+            let-rowIndex="rowIndex"
+            let-row="row"
+            let-value="value"
+          >
+            <div [ngSwitch]="col.name">
+              <span *ngSwitchCase="'entityName'">
+                <span [title]="getEntityName(row)">
+                  <div class="edit-wrapper">
+                    <div class="col-10 px-0 text-truncate">
+                      <span>
+                        {{ getEntityName(row) }}
+                      </span>
+                    </div>
+                  </div>
+                </span>
+              </span>
+
+              <span *ngSwitchCase="'taskCode'">
+                <span [title]="getTitle(row, col)">
+                  <div class="edit-wrapper">
+                    <div
+                      *ngIf="row[col.name]"
+                      class="col-10 px-0 text-truncate"
+                      [style.color]="getTaskTypeColorCode(row)"
+                    >
+                      <span>
+                        <b>{{ row[col.name] }}</b>
+                      </span>
+                    </div>
+                    <div
+                      *ngIf="!row[col.name]"
+                      class="col-10 px-0 text-truncate"
+                    >
+                      -
+                    </div>
+                  </div>
+                </span>
+              </span>
+
+              <span *ngSwitchCase="'completionPercentage'">
+                <div
+                  *ngIf="row[col.name]"
+                  class="col-4 px-0 text-truncate text-right"
+                >
+                  {{ row[col.name] | number: "1.0-0" }} %
+                </div>
+                <div
+                  *ngIf="!row[col.name]"
+                  class="col-4 px-0 text-truncate text-right"
+                >
+                  -
+                </div>
+              </span>
+
+              <span *ngSwitchCase="'hoursWorked'">
+                <div
+                  *ngIf="row[col.name]"
+                  class="col-4 px-0 text-truncate text-right"
+                >
+                  {{ row[col.name] }}
+                </div>
+                <div
+                  *ngIf="!row[col.name]"
+                  class="col-4 px-0 text-truncate text-right"
+                >
+                  -
+                </div>
+              </span>
+
+              <span *ngSwitchDefault>
+                <span [title]="getTitle(row, col)">
+                  <div class="edit-wrapper">
+                    <div
+                      *ngIf="row[col.name]"
+                      class="col-10 px-0 text-truncate"
+                    >
+                      {{ row[col.name] }}
+                    </div>
+                    <div
+                      *ngIf="!row[col.name]"
+                      class="col-10 px-0 text-truncate"
+                    >
+                      -
+                    </div>
+                  </div>
+                </span>
+              </span>
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-footer>
+          <ng-template
+            ngx-datatable-footer-template
+            let-rowCount="rowCount"
+            let-pageSize="pageSize"
+            let-selectedCount="selectedCount"
+            let-curPage="curPage"
+            let-offset="offset"
+            let-isVisible="isVisible"
+          >
+            <div class="page-count">
+              <nz-form-item>
+                <nz-form-control>
+                  <nz-select
+                    style="width: 75px;"
+                    nzPlaceHolder="Select Page Size"
+                    [(ngModel)]="selectedPageSize"
+                    (ngModelChange)="setPageSize()"
+                  >
+                    <nz-option
+                      *ngFor="let option of pageSizeOptions"
+                      [nzLabel]="option"
+                      [nzValue]="option"
+                    ></nz-option>
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+
+            <datatable-pager
+              [pagerLeftArrowIcon]="'datatable-icon-left'"
+              [pagerRightArrowIcon]="'datatable-icon-right'"
+              [pagerPreviousIcon]="'datatable-icon-prev'"
+              [pagerNextIcon]="'datatable-icon-skip'"
+              [page]="curPage"
+              [size]="pageSize"
+              [count]="rowCount"
+              [hidden]="!(rowCount / pageSize > 1)"
+              (change)="table.onFooterPage($event)"
+            >
+            </datatable-pager>
+          </ng-template>
+        </ngx-datatable-footer>
+      </ngx-datatable>
+    </div>
+  </div>
+</div>
+<!--Template content for tabel columns drawer header START-->
+<ng-template #drawerHeader let-drawerRef="drawerRef">
+  <div class="title-row">
+    <div class="left-icon" [ngSwitch]="drawerTitle">
+      <ng-container *ngSwitchCase="'Task Notes'">
+        <app-icon-picker iconType="notes"></app-icon-picker>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="'Filter Settings'">
+        <app-icon-picker iconType="filter"></app-icon-picker>
+      </ng-container>
+    </div>
+    <div class="title-text">{{ drawerTitle }}</div>
+    <div class="right-icon">
+      <i (click)="closeForm()" nz-icon nzType="right" nzTheme="outline"></i>
+    </div>
+  </div>
+</ng-template>
+<!--Template content for tabel columns drawer header END-->

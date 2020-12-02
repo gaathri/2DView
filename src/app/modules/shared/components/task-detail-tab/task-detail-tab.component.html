@@ -1,0 +1,383 @@
+<div *ngIf="isDataReady" class="details-tab">
+  <div class="row clearfix">
+    <div class="col-md-4 px-0" *ngIf="shotIn">
+      <nz-form-item>
+        <nz-form-label>
+          Shot Code
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="shotIn.shotCode ? shotIn.shotCode : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <div class="col-md-4 px-0" *ngIf="assetIn">
+      <nz-form-item>
+        <nz-form-label>
+          Asset Name
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="assetIn.assetName ? assetIn.assetName : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Task Name
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="taskInfo.taskName"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Task Type
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="taskInfo.taskTypeName ? taskInfo.taskTypeName : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div class="row clearfix">
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Work Status
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="taskInfo.workStatus ? taskInfo.workStatus : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Priority
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="taskInfo.priority ? taskInfo.priority : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Complexity
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="taskInfo.complexity ? taskInfo.complexity : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div class="row clearfix">
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Accountable
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="taskInfo.accountableName ? taskInfo.accountableName : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Artist
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="taskInfo.artistName ? taskInfo.artistName : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <div class="col-md-4 px-0" *ngIf="hasViewPermission('artistBid')">
+      <nz-form-item>
+        <nz-form-label>
+          Artist Bid
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="taskInfo.artistBid ? taskInfo.artistBid : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div class="row clearfix">
+    <div class="col-md-4 px-0" *ngIf="hasViewPermission('clientBid')">
+      <nz-form-item>
+        <nz-form-label>
+          Client Bid
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="taskInfo.clientBid ? taskInfo.clientBid : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <div class="col-md-4 px-0" *ngIf="hasViewPermission('clientEta')">
+      <nz-form-item>
+        <nz-form-label>
+          Client ETA
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="getDisplayDate(taskInfo.clientEta)"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <div class="col-md-4 px-0" *ngIf="hasViewPermission('deltaEta')">
+      <nz-form-item>
+        <nz-form-label>
+          Delta
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="taskInfo.deltaEta ? taskInfo.deltaEta : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div class="row clearfix">
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Start Date
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="getDisplayDate(taskInfo.startDate)"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          End Date
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="getDisplayDate(taskInfo.endDate)"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <div class="col-md-4 px-0" *ngIf="hasViewPermission('deliveryDate')">
+      <nz-form-item>
+        <nz-form-label>
+          Delivery Date
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="getDisplayDate(taskInfo.deliveryDate)"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div class="row clearfix">
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Progress
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="getProgress(taskInfo)"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Location
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="taskInfo.locationName ? taskInfo.locationName : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Is Sub Task?
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="isSubTask(taskInfo)"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div class="row clearfix">
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Packing Template
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="
+              taskInfo.packingTemplateName ? taskInfo.packingTemplateName : ''
+            "
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Reference Path
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="taskInfo.referencePath ? taskInfo.referencePath : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Annotation Path
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="taskInfo.annotationPath ? taskInfo.annotationPath : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div class="row clearfix">
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Description
+        </nz-form-label>
+        <nz-form-control>
+          <textarea
+            nz-input
+            [value]="taskInfo.description ? taskInfo.description : ''"
+            [nzAutosize]="{ minRows: 2, maxRows: 3 }"
+            readonly
+            class="read-only"
+          ></textarea>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,74 @@
+<div *ngIf="isDataReady" class="dashboard-component">
+  <div class="content-section artist">
+    <div class="dashboard-left col-8 pl-0">
+      <div class="col-12 px-0 app-progress">
+        <app-progress-panel [progressEntities]="progressEntities"></app-progress-panel>
+      </div>
+
+      <div class="storage-div static-bg">
+        <div class="page-title-second-level">
+          <h3>
+            Storage Space
+          </h3>
+        </div>
+        <div *ngIf="storageSpace" class="storage-progress">
+          <app-progress [percentage]="getUsedPercentage()"></app-progress>
+        </div>
+        <div *ngIf="storageSpace" class="storage-details">
+          <span class="unit-highlight">{{
+            storageSpace.allocatedDiskSpace
+          }}</span>
+          <span> {{ storageSpace.storageUnit }}</span>
+          <span class="float-right">Used -
+            <span class="unit-highlight">{{ getUsedPercentage() }}%</span></span>
+        </div>
+      </div>
+      <div class="row col-12 px-0 app-star-panel-details">
+        <div class="col-9 pl-0">
+          <app-star-panel [starEntities]="starEntities" (add)="starShotAdd()" (select)="starShotSelect($event)"
+            (close)="starShotClose($event)"></app-star-panel>
+        </div>
+        <div class="col-3 px-0">
+          <app-star-details [progressEntities]="taskProgressEntities">
+          </app-star-details>
+        </div>
+      </div>
+    </div>
+    <div class="dashboard-right col-4 pl-0 py-0 pr-0">
+      <!-- <app-activity-log-panel [activityEntities]="activityEntities" (refresh)="refreshActivityLogs()">
+      </app-activity-log-panel> -->
+      <ng-container *ngIf="panelHeight > 0">
+        <app-activity-log-panel [parent]="'artist'" [panelHeight]="panelHeight"></app-activity-log-panel>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<!--Modal START-->
+<nz-modal nzWrapClassName="vertical-center-modal" [(nzVisible)]="isVisible" [nzTitle]="'Add to star shot list'"
+  nzKeyboard="false" nzClosable="false" nzNoAnimation="true">
+  <div class="d-flex justify-content-start align-items-center">
+    <div class="col-8 px-0">
+      <nz-form-item>
+        <nz-form-control>
+          <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select Shot" [(ngModel)]="starShotId"
+            [nzDisabled]="!isValidArr(favoriteShots)">
+            <nz-option *ngFor="let favoriteShot of favoriteShots" [nzLabel]="favoriteShot.shotCode"
+              [nzValue]="favoriteShot.id">
+            </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div *nzModalFooter>
+    <button nz-button nzType="default" (click)="onCancel()">
+      Cancel
+    </button>
+    <button nz-button nzType="primary" (click)="onConfirm()">
+      Save
+    </button>
+  </div>
+</nz-modal>
+<!--Modal END-->

@@ -1,0 +1,150 @@
+<div *ngIf="isDataReady">
+  <form
+    *ngIf="isDataReady"
+    class="form-panel"
+    nz-form
+    [formGroup]="mainForm"
+    (ngSubmit)="submitHandler()"
+    autocomplete="off"
+  >
+    <!-- <div
+    class="alert alert-danger row d-flex justify-content-center"
+    role="alert"
+    *ngIf="mandatoryErrorInfo"
+  >
+    <div class="row">
+      <span>{{ mandatoryErrorInfo.title }}</span>
+    </div>
+    <div class="row">
+      <span><b>{{ mandatoryErrorInfo.subTitle }}</b></span>
+    </div>
+  </div> -->
+    <nz-form-item>
+      <nz-form-label nzRequired nzFor="showName"> Show Name </nz-form-label>
+      <nz-form-control [nzErrorTip]="iNameTpl">
+        <input
+          id="showName"
+          formControlName="showName"
+          nz-input
+          [maxLength]="showNameMaxLength"
+          placeholder="Show Name"
+          (ngModelChange)="onChange($event)"
+          [readonly]="mode == 'update'"
+          [class.read-only]="mode == 'update'"
+      /></nz-form-control>
+      <ng-template #iNameTpl let-control>
+        <ng-container *ngIf="control.hasError('pattern')"
+          >This pattern is not allowed!</ng-container
+        >
+        <ng-container *ngIf="control.hasError('required')"
+          >Name is required!</ng-container
+        >
+      </ng-template>
+    </nz-form-item>
+
+    <!-- Thumbnail Image Section Start -->
+    <!-- <nz-form-item>
+      <div class="row">
+        <div class="col-md-6 px-0">
+          <app-image-upload
+            [imageUrl]="showOutCopy.thumbnail"
+            (onChange)="onUploadChange($event)"
+          ></app-image-upload>
+        </div>
+        <div class="col-md-6 pr-0">
+          <nz-form-label>
+            <label>Show Thumbnail</label>
+          </nz-form-label>
+          <nz-form-control>
+            <p class="notes-text">
+              Drag and drop image or click on + button to add project thumbnail.
+            </p>
+          </nz-form-control>
+        </div>
+      </div>
+    </nz-form-item>     -->
+    <nz-form-item>
+      <div class="row">
+        <nz-form-label>
+          <label>Show Thumbnail</label>
+        </nz-form-label>
+      </div>
+      <div class="row mt-2">
+        <app-image-upload
+          [imageUrl]="showOutCopy.thumbnail"
+          (onChange)="onUploadChange($event)"
+        ></app-image-upload>
+      </div>
+    </nz-form-item>
+    <!-- Thumbnail Image Section End -->
+    <nz-form-item>
+      <nz-form-label>Show Description</nz-form-label>
+      <nz-form-control>
+        <input
+          id="description"
+          formControlName="description"
+          nz-input
+          [maxLength]="showDescMaxLength"
+          placeholder="Show Description"
+          (ngModelChange)="onChange($event)"
+        />
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+
+  <div *ngFor="let link of linkInfo">
+    <div (click)="linkClickHandler(link)" class="full-width-button-bg">
+      <a>
+        <span class="icon-div"
+          ><i nz-icon nz-size="small" nzType="arrow-right" nzTheme="outline"></i
+        ></span>
+        <span *ngIf="link.isMandatoryFieldPresent">* </span
+        ><span>{{ link.title }}</span>
+      </a>
+    </div>
+    <div *ngIf="!link.isValid" class="link-error">
+      All fields marked with an asterisk (*) are mandatory
+    </div>
+  </div>
+  <div class="submit-btn-parent">
+    <button nz-button nzType="primary" (click)="submitHandler()">
+      {{ btnName }}
+    </button>
+  </div>
+</div>
+<ng-template #linkDrawerHeader let-drawerRef="drawerRef">
+  <div class="title-row">
+    <div class="left-icon" [ngSwitch]="mode">
+      <ng-container *ngSwitchCase="'create'">
+        <app-icon-picker iconType="add"></app-icon-picker>
+      </ng-container>
+      <ng-container *ngSwitchCase="'update'">
+        <app-icon-picker iconType="edit"></app-icon-picker>
+      </ng-container>
+    </div>
+    <div class="title-text">{{ this.title }}</div>
+    <div class="right-icon">
+      <i (click)="closeForm()" nz-icon nzType="right" nzTheme="outline"></i>
+    </div>
+  </div>
+</ng-template>
+<!-- <pre style="color: greenyellow">{{showOutCopy | json}}</pre> -->
+
+<!--Modal for delete work log confirmation START-->
+<!-- <nz-modal
+  [(nzVisible)]="isAlertVisible"
+  nzTitle="Are you sure want to exit?"
+  nzOkText="Yes"
+  nzCancelText="No"
+  (nzOnOk)="onConfirm()"
+  (nzOnCancel)="onCancel()"
+  nzNoAnimation="true"
+  nzOkType="primary"
+  nzClosable="false"
+>
+  <b class="modal-content-del-prefix"
+    >Create :
+    <span class="modal-content-del-suffix">{{ this.titleSuffix }}</span></b
+  >
+</nz-modal> -->
+<!--Modal for delete work log confirmation END-->

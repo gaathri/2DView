@@ -1,0 +1,44 @@
+<!-- <div class="star-panel">
+
+</div> -->
+<div *ngIf="starEntities" class="star-div static-bg">
+  <div class="page-title-second-level">
+    <h3>{{ starEntities.title }}</h3>
+  </div>
+  <div class="row star-box-parent">
+    <!-- [ngStyle]="{'background-image': getImageUrl()}" style="background-image: url(bg-img.jpeg);"  -->
+    <div
+      [title]="item[starEntities.titleKey]"
+      *ngFor="let item of getStarItems()"
+      [class.active]="isActive(item)"
+      class="star-box"
+      [ngStyle]="{ 'background-image': getImageUrl(item) }"
+      (click)="selectHandler($event, item)"
+    >
+      <button
+        class="cbtn float-right d-flex justify-content-center"
+        nz-button
+        nzType="primary"
+        nzSize="small"
+        (click)="closeHandler($event, item); $event.stopPropagation()"
+      >
+        <i nz-icon nzType="close-circle"></i>
+      </button>
+      <!-- <app-image [url]="getImageUrl()"></app-image> -->
+    </div>
+    <!-- <div class="star-box" style="background-image: url(bg-img.jpeg);"></div>
+    <div class="star-box" style="background-image: url(bg-img.jpeg);"></div>
+    <div class="star-box" style="background-image: url(bg-img.jpeg);"></div>
+    <div class="star-box" style="background-image: url(bg-img.jpeg);"></div> -->
+    <div
+      *ngIf="starItemsLength < maxStarItems"
+      class="star-box last-item"
+      (click)="addHandler('dsds')"
+    >
+      <div class="add-star">
+        <i nz-icon nzType="plus-circle" nzTheme="outline"></i>
+      </div>
+    </div>
+  </div>
+  <div class="row"></div>
+</div>

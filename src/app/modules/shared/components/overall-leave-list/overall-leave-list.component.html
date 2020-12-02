@@ -1,0 +1,203 @@
+<div class="table-wrapper lg-pad item-list" *ngIf="!isEmptyData && isDataReady">
+  <div class="row">
+    <div class="col-md-12 px-0">
+      <div
+        class="table-header-panel-db d-flex justify-content-between align-items-center"
+      >
+        <div class="quick-filter last">
+          <span>Leave List</span>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="quick-filter hand">
+            <nz-select
+              [nzDisabled]="!isValidArr(statusArr)"
+              (ngModelChange)="statusChangeHandler($event)"
+              [(ngModel)]="status"
+              style="width: 130px;"
+              [nzSize]="'small'"
+              class="date-type1111"
+            >
+              <nz-option
+                *ngFor="let status of statusArr"
+                [nzValue]="status.id"
+                [nzLabel]="status.name"
+              >
+              </nz-option>
+            </nz-select>
+          </div>
+          <div class="quick-filter hand last">
+            <span *ngIf="isSearching">
+              <nz-input-group [nzSuffix]="suffixTemplate">
+                <input
+                  style="height: 20px; width: 600px;"
+                  type="text"
+                  nz-input
+                  [(ngModel)]="searchPattern"
+                  (keyup.enter)="searchDetails()"
+                  placeholder="Type search text"
+                />
+              </nz-input-group>
+
+              <ng-template #suffixTemplate>
+                <i
+                  nz-icon
+                  nz-tooltip
+                  class="ant-input-clear-icon"
+                  nzTheme="fill"
+                  nzType="close-circle"
+                  (click)="clearSearch()"
+                ></i>
+              </ng-template>
+            </span>
+            <span *ngIf="!isSearching" (click)="searchHandler()">
+              <span>
+                <app-icon-picker
+                  class="qf-icon"
+                  iconType="search"
+                ></app-icon-picker>
+              </span>
+              <span class="quick-filter-text">Search</span>
+            </span>
+          </div>
+        </div>
+      </div>
+      <ngx-datatable
+        #myTable
+        style="min-width: 100%; width: 100%; min-height: 200px !important;"
+        [style.height]="getTableHeight()"
+        class="material striped expandable fullscreen"
+        [rows]="rows"
+        [columnMode]="'force'"
+        [headerHeight]="50"
+        [footerHeight]="50"
+        [rowHeight]="50"
+        [scrollbarV]="true"
+        [scrollbarH]="true"
+        [virtualization]="false"
+        [externalSorting]="true"
+        [externalPaging]="true"
+        [loadingIndicator]="isLoading"
+        [count]="page.totalElements"
+        [offset]="page.pageNumber"
+        [limit]="page.size"
+        [selectAllRowsOnPage]="false"
+        (page)="setPage($event)"
+        (select)="onSelect($event)"
+        (sort)="onSort($event)"
+      >
+        <ngx-datatable-column
+          *ngFor="let col of selectedTableColumns"
+          [name]="col.displayName"
+          [width]="getColWidth(col.name)"
+          [sortable]="col.sortable"
+        >
+          <ng-template
+            ngx-datatable-cell-template
+            let-rowIndex="rowIndex"
+            let-row="row"
+            let-value="value"
+          >
+            <div [ngSwitch]="col.name">
+              <span *ngSwitchCase="'userName'">
+                <div class="user-info">
+                  <div>
+                    <app-avatar [info]="getAvatarInfo(row)"> </app-avatar>
+                    <span
+                      *ngIf="row[col.name]"
+                      [title]="row[col.name]"
+                      class="px-2 text-truncate user-name"
+                      >{{ row[col.name] }}</span
+                    >
+                  </div>
+                </div>
+              </span>
+
+              <span *ngSwitchCase="'status'">
+                <span [title]="row[col.name] ? row[col.name] : ''">
+                  <div class="edit-wrapper">
+                    <div
+                      *ngIf="row[col.name]"
+                      class="col-10 px-0 text-truncate d-flex align-items-center justify-content-center status-bubble"
+                      [style.background-color]="getStatusColorCode(row)"
+                      [style.color]="getTextColorCode(row)"
+                    >
+                      <span>{{ row[col.name] }}</span>
+                    </div>
+                    <div
+                      *ngIf="!row[col.name]"
+                      class="col-10 px-0 text-truncate"
+                    >
+                      -
+                    </div>
+                  </div>
+                </span>
+              </span>
+
+              <span *ngSwitchDefault>
+                <span [title]="row[col.name] ? row[col.name] : ''">
+                  <div class="edit-wrapper">
+                    <div
+                      *ngIf="row[col.name]"
+                      class="col-10 px-0 text-truncate"
+                    >
+                      {{ row[col.name] }}
+                    </div>
+                    <div
+                      *ngIf="!row[col.name]"
+                      class="col-10 px-0 text-truncate"
+                    >
+                      -
+                    </div>
+                  </div>
+                </span>
+              </span>
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-footer>
+          <ng-template
+            ngx-datatable-footer-template
+            let-rowCount="rowCount"
+            let-pageSize="pageSize"
+            let-selectedCount="selectedCount"
+            let-curPage="curPage"
+            let-offset="offset"
+            let-isVisible="isVisible"
+          >
+            <div class="page-count">
+              <nz-form-item>
+                <nz-form-control>
+                  <nz-select
+                    style="width: 75px;"
+                    nzPlaceHolder="Select Page Size"
+                    [(ngModel)]="selectedPageSize"
+                    (ngModelChange)="setPageSize()"
+                  >
+                    <nz-option
+                      *ngFor="let option of pageSizeOptions"
+                      [nzLabel]="option"
+                      [nzValue]="option"
+                    ></nz-option>
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <datatable-pager
+              [pagerLeftArrowIcon]="'datatable-icon-left'"
+              [pagerRightArrowIcon]="'datatable-icon-right'"
+              [pagerPreviousIcon]="'datatable-icon-prev'"
+              [pagerNextIcon]="'datatable-icon-skip'"
+              [page]="curPage"
+              [size]="pageSize"
+              [count]="rowCount"
+              [hidden]="!(rowCount / pageSize > 1)"
+              (change)="table.onFooterPage($event)"
+            >
+            </datatable-pager>
+          </ng-template>
+        </ngx-datatable-footer>
+      </ngx-datatable>
+    </div>
+  </div>
+</div>

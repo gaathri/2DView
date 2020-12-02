@@ -1,0 +1,136 @@
+<div>
+  <ng-container *ngIf="isDataReady && mode != 'view_users'">
+    <!-- <div
+      class="alert alert-danger row d-flex justify-content-center"
+      role="alert"
+      *ngIf="mandatoryErrorInfo"
+    >
+      <div class="row">
+        <span>{{ mandatoryErrorInfo.title }}</span>
+      </div>
+    </div> -->
+    <form #myForm="ngForm" class="form-panel">
+      <nz-form-item>
+        <nz-form-label>
+          * Group Name
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="nameCombineTpl">
+          <input
+            nz-input
+            [maxLength]="nameMaxLength"
+            placeholder="Group Name"
+            [(ngModel)]="groupOutCopy.groupName"
+            name="groupName"
+            (ngModelChange)="onChange($event)"
+            required
+            [pattern]="itemName"
+          />
+          <ng-template #nameCombineTpl let-control>
+            <ng-container *ngIf="control.hasError('pattern')"
+              >This pattern is not allowed!</ng-container
+            >
+            <ng-container *ngIf="control.hasError('required')"
+              >Name is required!</ng-container
+            >
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <div class="row">
+          <nz-form-label>
+            <label>Group Thumbnail</label>
+          </nz-form-label>
+        </div>
+        <div class="row mt-2">
+          <app-image-upload
+            [imageUrl]="groupOutCopy.thumbnail"
+            (onChange)="onUploadChange($event)"
+          >
+          </app-image-upload>
+        </div>
+      </nz-form-item>
+      <!-- Thumbnail Image Section End -->
+      <nz-form-item>
+        <nz-form-label>Group Description</nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [maxLength]="descMaxLength"
+            placeholder="Group Description"
+            [(ngModel)]="groupOutCopy.groupDesc"
+            name="groupDesc"
+            (ngModelChange)="onChange($event)"
+          />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label>* Select Role</nz-form-label>
+        <nz-form-control nzErrorTip="Provide your input!">
+          <nz-select
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="Select Role"
+            [(ngModel)]="role"
+            name="role"
+            (ngModelChange)="roleChangeHandler($event)"
+            [nzDisabled]="!isValidArr(roles)"
+            required
+          >
+            <nz-option
+              *ngFor="let role of roles"
+              [nzLabel]="role.roleName"
+              [nzValue]="role"
+            >
+            </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>* Select Users</nz-form-label>
+        <nz-form-control nzErrorTip="Provide your input!">
+          <nz-select
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="Select Users"
+            [(ngModel)]="userIds"
+            name="userIds"
+            (ngModelChange)="userChangeHandler($event)"
+            nzMode="multiple"
+            [nzDisabled]="!isValidArr(users)"
+            required
+          >
+            <nz-option
+              *ngFor="let user of users"
+              [nzLabel]="getUserName(user)"
+              [nzValue]="user.id"
+            >
+            </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <app-user-list-by-role
+        [isReadOnly]="false"
+        [userDetails]="userDetails"
+        [userInfo]="groupOutCopy.userVOs"
+        (event)="removeUser($event)"
+      >
+      </app-user-list-by-role>
+      <div class="submit-btn-parent">
+        <button (click)="submitHandler(myForm)" nz-button nzType="primary">
+          {{ btnName }}
+        </button>
+      </div>
+    </form>
+  </ng-container>
+  <ng-container *ngIf="mode == 'view_users'">
+    <app-user-list-by-role
+      [isReadOnly]="true"
+      [userDetails]="userDetails"
+      [userInfo]="groupOutCopy.userVOs"
+      (event)="removeUser($event)"
+    >
+    </app-user-list-by-role>
+  </ng-container>
+</div>

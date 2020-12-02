@@ -1,0 +1,466 @@
+<div *ngIf="isUploadVisible" class="import-csv-drawer">
+  <nz-upload
+    nzType="drag"
+    [nzMultiple]="true"
+    [nzLimit]="2"
+    [nzAction]="uploadAPI()"
+    [nzAccept]="'.csv'"
+    (nzChange)="handleChange($event)"
+  >
+    <i nz-icon nzType="plus-circle" nzTheme="outline"></i>
+    <p class="ant-upload-text">Click or drop CSV file</p>
+  </nz-upload>
+  <div style="float: right; margin-top: 16px;">
+    <a href="assets/SampleTaskUpload.csv">
+      <i nz-icon nzType="download"></i> Download Template
+    </a>
+  </div>
+</div>
+
+<div
+  *ngIf="isHeaderMapVisible"
+  class="header-mapper table-container import-csv-drawer"
+>
+  <div class="label mb-2">Map Column Headers</div>
+  <ngx-datatable
+    class="material striped"
+    style="min-width: 100%; width: 100%; height: 280px;"
+    [columnMode]="'force'"
+    headerHeight="50"
+    footerHeight="0"
+    [rowHeight]="50"
+    [rows]="rows"
+    [scrollbarV]="true"
+    [scrollbarH]="true"
+  >
+    <ngx-datatable-column
+      *ngFor="let col of tableColumns"
+      [name]="col.displayName"
+      [sortable]="col.sortable"
+    >
+      <ng-template
+        ngx-datatable-cell-template
+        let-rowIndex="rowIndex"
+        let-row="row"
+        let-value="value"
+      >
+        <span *ngIf="rowIndex == 0">
+          <div class="edit-wrapper" *ngIf="!isEditing(col.name)">
+            <div>
+              <span [title]="row[col.name] ? row[col.name] : ''">{{
+                row[col.name]
+              }}</span>
+            </div>
+            <div class="edit px-2" style="margin-top: -5px;">
+              <a href="javascript:void(0)" (click)="enableEdit(col.name)">
+                <i class="fa fa-pencil fa-lg"></i>
+              </a>
+            </div>
+          </div>
+          <nz-form-item style="margin-top: -5px;" *ngIf="isEditing(col.name)">
+            <nz-form-control>
+              <nz-select
+                nzShowSearch
+                nzAllowClear
+                nzPlaceHolder="Select Header"
+                [ngModel]="headerId"
+                (ngModelChange)="onChange($event, row, col)"
+              >
+                <nz-option
+                  *ngFor="let myHeader of dbCSVHeaders"
+                  [nzLabel]="myHeader"
+                  [nzValue]="myHeader"
+                >
+                </nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </span>
+        <span *ngIf="rowIndex != 0">{{ row[col.name] }}</span>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+  <div class="submit-btn-parent">
+    <button
+      [disabled]="!canValidate()"
+      nz-button
+      nzType="primary"
+      (click)="validateHandler()"
+    >
+      Next
+    </button>
+  </div>
+</div>
+
+<div
+  *ngIf="isReportVisible"
+  class="error-mapper table-container import-csv-drawer"
+>
+  <div class="label mb-2">
+    Fix errors in
+    <span class="has-error">&nbsp;&nbsp;RED Cells&nbsp;&nbsp;</span>
+  </div>
+  <div *ngIf="this.errorRows && this.errorRows.length > 0">
+    <ngx-datatable
+      class="material striped fullscreen"
+      style="min-width: 100%; width: 100%;"
+      [columnMode]="'force'"
+      [headerHeight]="50"
+      [footerHeight]="50"
+      [rowHeight]="50"
+      [rows]="errorRows"
+      [scrollbarH]="true"
+      [scrollbarV]="false"
+      [limit]="10"
+    >
+      <ngx-datatable-column
+        *ngFor="let col of errorTableColumns"
+        [name]="col.displayName"
+        [sortable]="col.sortable"
+      >
+        <ng-template
+          ngx-datatable-cell-template
+          let-rowIndex="rowIndex"
+          let-row="row"
+          let-value="value"
+        >
+          <div [ngSwitch]="col.name">
+            <!-- <span *ngSwitchCase="col.name == 'artistName' || col.name == 'accountable'"> -->
+            <span
+              *ngSwitchCase="
+                [
+                  'artistName',
+                  'accountable',
+                  'taskType',
+                  'priority',
+                  'complexity'
+                ].includes(col.name)
+                  ? col.name
+                  : ''
+              "
+            >
+              <span *ngIf="!errEditing[rowIndex + '-' + col.name]">
+                <div class="edit-wrapper">
+                  <div
+                    *ngIf="row[col.name]"
+                    class="col-10 px-0 text-truncate"
+                    [title]="getTitle(row, col, rowIndex)"
+                    [ngClass]="{
+                      'has-error': hasError(row, col, rowIndex),
+                      'is-updated': isUpdated(row, col, rowIndex)
+                    }"
+                  >
+                    {{ row[col.name] }}
+                  </div>
+                  <div
+                    *ngIf="!row[col.name]"
+                    class="col-10 px-0 text-truncate"
+                    [title]="getTitle(row, col, rowIndex)"
+                    [ngClass]="{ 'has-error': hasError(row, col, rowIndex) }"
+                  >
+                    -
+                  </div>
+                  <div class="col-2 px-0 edit">
+                    <a
+                      href="javascript:void(0)"
+                      *ngIf="
+                        hasError(row, col, rowIndex) ||
+                        isUpdated(row, col, rowIndex)
+                      "
+                      (click)="inlineEditHandler(row, col, rowIndex)"
+                      ><i class="fa fa-pencil fa-lg"></i
+                    ></a>
+                  </div>
+                </div>
+              </span>
+              <div *ngIf="errEditing[rowIndex + '-' + col.name]">
+                <nz-form-item>
+                  <nz-form-control *ngIf="col.name == 'artistName'">
+                    <nz-select
+                      nzShowSearch
+                      nzPlaceHolder="Select Artist"
+                      (ngModelChange)="
+                        onModelChange(row, col, rowIndex, $event)
+                      "
+                      [(ngModel)]="row[col.name]"
+                      [nzDisabled]="!isValidArr(artists)"
+                    >
+                      <nz-option
+                        *ngFor="let artist of artists"
+                        [nzLabel]="artist.title"
+                        [nzValue]="artist.title"
+                      >
+                      </nz-option>
+                    </nz-select>
+                  </nz-form-control>
+
+                  <nz-form-control *ngIf="col.name == 'accountable'">
+                    <nz-select
+                      nzShowSearch
+                      nzPlaceHolder="Select Accountable"
+                      (ngModelChange)="
+                        onModelChange(row, col, rowIndex, $event)
+                      "
+                      [(ngModel)]="row[col.name]"
+                      [nzDisabled]="!isValidArr(supervisors)"
+                    >
+                      <nz-option
+                        *ngFor="let supervisor of supervisors"
+                        [nzLabel]="supervisor.title"
+                        [nzValue]="supervisor.title"
+                      >
+                      </nz-option>
+                    </nz-select>
+                  </nz-form-control>
+
+                  <nz-form-control *ngIf="col.name == 'taskType'">
+                    <nz-select
+                      nzShowSearch
+                      nzPlaceHolder="Select Task Type"
+                      (ngModelChange)="
+                        onModelChange(row, col, rowIndex, $event)
+                      "
+                      [(ngModel)]="row[col.name]"
+                      [nzDisabled]="!isValidArr(taskTypes)"
+                    >
+                      <nz-option
+                        *ngFor="let taskType of taskTypes"
+                        [nzLabel]="taskType.taskTypeName"
+                        [nzValue]="taskType.taskTypeName"
+                      >
+                      </nz-option>
+                    </nz-select>
+                  </nz-form-control>
+
+                  <nz-form-control *ngIf="col.name == 'priority'">
+                    <nz-select
+                      nzShowSearch
+                      nzPlaceHolder="Select Priority"
+                      (ngModelChange)="
+                        onModelChange(row, col, rowIndex, $event)
+                      "
+                      [(ngModel)]="row[col.name]"
+                      [nzDisabled]="!isValidArr(taskPriorities)"
+                    >
+                      <nz-option
+                        *ngFor="let priority of taskPriorities"
+                        [nzLabel]="priority.taskPriorityLevel"
+                        [nzValue]="priority.taskPriorityLevel"
+                      >
+                      </nz-option>
+                    </nz-select>
+                  </nz-form-control>
+
+                  <nz-form-control *ngIf="col.name == 'complexity'">
+                    <nz-select
+                      nzShowSearch
+                      nzPlaceHolder="Select Complexity"
+                      (ngModelChange)="
+                        onModelChange(row, col, rowIndex, $event)
+                      "
+                      [(ngModel)]="row[col.name]"
+                    >
+                      <nz-option
+                        *ngFor="let complexity of taskcomplexities"
+                        [nzLabel]="complexity.title"
+                        [nzValue]="complexity.id"
+                      >
+                      </nz-option>
+                    </nz-select>
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+            </span>
+            <span
+              *ngSwitchCase="
+                ['clientEta', 'startDate', 'endDate', 'deliveryDate'].includes(
+                  col.name
+                )
+                  ? col.name
+                  : ''
+              "
+            >
+              <span *ngIf="!errEditing[rowIndex + '-' + col.name]">
+                <div class="edit-wrapper">
+                  <div
+                    *ngIf="row[col.name]"
+                    class="col-10 px-0 text-truncate"
+                    [title]="getTitle(row, col, rowIndex)"
+                    [ngClass]="{
+                      'has-error': hasError(row, col, rowIndex),
+                      'is-updated': isUpdated(row, col, rowIndex)
+                    }"
+                  >
+                    {{ row[col.name] }}
+                  </div>
+                  <div
+                    *ngIf="!row[col.name]"
+                    class="col-10 px-0 text-truncate"
+                    [title]="getTitle(row, col, rowIndex)"
+                    [ngClass]="{ 'has-error': hasError(row, col, rowIndex) }"
+                  >
+                    -
+                  </div>
+                  <div class="col-2 px-0 edit">
+                    <a
+                      href="javascript:void(0)"
+                      *ngIf="
+                        hasError(row, col, rowIndex) ||
+                        isUpdated(row, col, rowIndex)
+                      "
+                      (click)="inlineEditHandler(row, col, rowIndex)"
+                      ><i class="fa fa-pencil fa-lg"></i
+                    ></a>
+                  </div>
+                </div>
+              </span>
+
+              <nz-date-picker
+                [nzAllowClear]="false"
+                [nzOpen]="true"
+                [nzAutoFocus]="true"
+                *ngIf="errEditing[rowIndex + '-' + col.name]"
+                nzPlaceHolder="Select end date"
+                [ngModel]="date"
+                (ngModelChange)="updateDateValue(row, col, rowIndex, $event)"
+                (nzOnOpenChange)="dateOpenChange(row, col, rowIndex, $event)"
+                [nzDisabledDate]="disabledOldDates"
+                [nzFormat]="getDisplayDateFormat()"
+              >
+              </nz-date-picker>
+            </span>
+            <span
+              *ngSwitchCase="
+                [
+                  'headIn',
+                  'tailOut',
+                  'cutIn',
+                  'cutOut',
+                  'clientBid',
+                  'artistBid'
+                ].includes(col.name)
+                  ? col.name
+                  : ''
+              "
+            >
+              <span *ngIf="!errEditing[rowIndex + '-' + col.name]">
+                <div class="edit-wrapper">
+                  <div
+                    *ngIf="row[col.name]"
+                    class="col-10 px-0 text-truncate"
+                    [title]="getTitle(row, col, rowIndex)"
+                    [ngClass]="{
+                      'has-error': hasError(row, col, rowIndex),
+                      'is-updated': isUpdated(row, col, rowIndex)
+                    }"
+                  >
+                    {{ row[col.name] }}
+                  </div>
+                  <div
+                    *ngIf="!row[col.name]"
+                    class="col-10 px-0 text-truncate"
+                    [title]="getTitle(row, col, rowIndex)"
+                    [ngClass]="{ 'has-error': hasError(row, col, rowIndex) }"
+                  >
+                    -
+                  </div>
+                  <div class="col-2 px-0 edit">
+                    <a
+                      href="javascript:void(0)"
+                      *ngIf="
+                        hasError(row, col, rowIndex) ||
+                        isUpdated(row, col, rowIndex)
+                      "
+                      (click)="inlineEditHandler(row, col, rowIndex)"
+                      ><i class="fa fa-pencil fa-lg"></i
+                    ></a>
+                  </div>
+                </div>
+              </span>
+
+              <nz-form-item *ngIf="errEditing[rowIndex + '-' + col.name]">
+                <nz-form-control>
+                  <input
+                    nz-input
+                    autofocus
+                    (blur)="updateValue(row, col, rowIndex, $event)"
+                    [value]="''"
+                    numeric
+                    numericType="number"
+                    [placeholder]="col.displayName"
+                  />
+                </nz-form-control>
+              </nz-form-item>
+            </span>
+
+            <span *ngSwitchDefault>
+              <span
+                *ngIf="row[col.name]"
+                [title]="getTitle(row, col, rowIndex)"
+                [ngClass]="{
+                  'has-error': hasError(row, col, rowIndex),
+                  'is-updated': isUpdated(row, col, rowIndex)
+                }"
+              >
+                {{ row[col.name] }}
+              </span>
+              <span
+                *ngIf="!row[col.name]"
+                [title]="getTitle(row, col, rowIndex)"
+                [ngClass]="{ 'has-error': hasError(row, col, rowIndex) }"
+                >-</span
+              >
+            </span>
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+    <div class="submit-btn-parent">
+      <button
+        [disabled]="!canValidateData()"
+        nz-button
+        nzType="primary"
+        (click)="validateDataHandler()"
+      >
+        Next
+      </button>
+    </div>
+  </div>
+</div>
+
+<!--Modal for submit confirmation START-->
+<nz-modal
+  [(nzVisible)]="isFinalSubmitVisible"
+  nzTitle="CSV Import"
+  nzOkText="Submit"
+  nzCancelText="Cancel"
+  (nzOnOk)="submitDataHandler()"
+  (nzOnCancel)="cancelDataHandler()"
+  nzNoAnimation="true"
+  nzOkType="primary"
+  nzClosable="false"
+>
+  <div class="label mb-2 modal-content-del-prefix">
+    <b
+      >Records to be created -
+      <span class="modal-content-del-suffix">{{ createCount }}</span></b
+    >
+  </div>
+  <div class="label mb-2 modal-content-del-prefix">
+    <b
+      >Records to be updated -
+      <span class="modal-content-del-suffix">{{ updateCount }}</span></b
+    >
+  </div>
+</nz-modal>
+<!--Modal for submit confirmation END-->
+
+<!-- <div *ngIf="isFinalSubmitVisible" class="p-2">
+  <div class="label mb-2">Records to be created - {{createCount}} </div>
+  <div class="label mb-2">Records to be updated - {{updateCount}} </div>
+  <div class="submit-btn-parent">
+    <button nz-button nzType="primary" (click)="submitDataHandler()">
+      Submit
+    </button>
+  </div>
+</div> -->

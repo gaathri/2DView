@@ -1,0 +1,251 @@
+<form
+  *ngIf="isDataReady"
+  class="form-panel"
+  nz-form
+  [formGroup]="dataForm"
+  (ngSubmit)="submitHandler()"
+  autocomplete="off"
+>
+  <nz-form-item *ngIf="!isArtist">
+    <nz-form-label nzFor="showId">Client Name</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="clientIds"
+        formControlName="clientIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Client"
+        [nzDisabled]="!isValidArr(clients)"
+        (ngModelChange)="clientChangeHandler($event)"
+        nzMode="multiple"
+        nzMaxTagCount="3"
+      >
+        <nz-option
+          *ngFor="let client of clients"
+          [nzLabel]="client.title"
+          [nzValue]="client.id"
+        ></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzFor="showId">Show Name</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="showId"
+        formControlName="showId"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Show"
+        [nzDisabled]="!isValidArr(shows)"
+        (ngModelChange)="showChangeHandler($event)"
+      >
+        <nz-option
+          *ngFor="let show of shows"
+          [nzLabel]="show.showName"
+          [nzValue]="show.id"
+        ></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Accountable</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="accountableId"
+        formControlName="accountableIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select accountable"
+        [nzDisabled]="!isValidArr(supervisors)"
+        nzMode="multiple"
+        nzMaxTagCount="3"
+      >
+        <nz-option
+          *ngFor="let supervisor of supervisors"
+          [nzLabel]="supervisor.title"
+          [nzValue]="supervisor.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item *ngIf="!isArtist">
+    <nz-form-label>Artist</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="artistId"
+        formControlName="artistIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select artist"
+        [nzDisabled]="!isValidArr(artists)"
+        nzMode="multiple"
+        nzMaxTagCount="3"
+      >
+        <nz-option
+          *ngFor="let artist of artists"
+          [nzLabel]="artist.title"
+          [nzValue]="artist.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item *ngIf="type == 'shot'">
+    <nz-form-label nzFor="shotIds">Shot Code</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="shotIds"
+        formControlName="shotIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Shot"
+        [nzDisabled]="!isValidArr(shots)"
+        nzMode="multiple"
+        nzMaxTagCount="3"
+      >
+        <nz-option
+          *ngFor="let shot of shots"
+          [nzLabel]="shot.shotCode"
+          [nzValue]="shot.id"
+        ></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item *ngIf="type == 'asset'">
+    <nz-form-label nzFor="shotIds">Asset Name</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="assetIds"
+        formControlName="assetIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Asset"
+        [nzDisabled]="!isValidArr(assets)"
+        nzMode="multiple"
+        nzMaxTagCount="3"
+      >
+        <nz-option
+          *ngFor="let asset of assets"
+          [nzLabel]="asset.assetName"
+          [nzValue]="asset.id"
+        ></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Task Type</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="taskTypeId"
+        formControlName="taskTypeIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Task Type"
+        [nzDisabled]="!isValidArr(taskTypes)"
+        nzMode="multiple"
+      >
+        <nz-option
+          *ngFor="let taskType of taskTypes"
+          [nzLabel]="taskType.taskTypeName"
+          [nzValue]="taskType.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>
+      Work Status Name
+    </nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="statusName"
+        formControlName="workStatusIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select work status"
+        [nzDisabled]="!isValidArr(workStatuses)"
+        nzMode="multiple"
+        nzMaxTagCount="3"
+      >
+        <nz-option
+          *ngFor="let workStatus of workStatuses"
+          [nzLabel]="workStatus.name"
+          [nzValue]="workStatus.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Priority</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="taskPriorityId"
+        formControlName="taskPriorityIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select task priority"
+        [nzDisabled]="!isValidArr(taskPriorities)"
+        nzMode="multiple"
+        nzMaxTagCount="3"
+      >
+        <nz-option
+          *ngFor="let priority of taskPriorities"
+          [nzLabel]="priority.taskPriorityLevel"
+          [nzValue]="priority.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- <nz-form-item>
+        <nz-form-label>Complexity</nz-form-label>
+        <nz-form-control>
+            <nz-select id="complexity" formControlName="complexityIds" nzShowSearch nzAllowClear
+                nzPlaceHolder="Select task complexity" [nzDisabled]="!isValidArr(taskcomplexities)" nzMode="multiple"
+                nzMaxTagCount="3">
+                <nz-option *ngFor="let complexity of taskcomplexities" [nzLabel]="complexity.title"
+                    [nzValue]="complexity.id">
+                </nz-option>
+            </nz-select>
+        </nz-form-control>
+    </nz-form-item> -->
+</form>
+<!-- <div *ngIf="isDataReady" class="row">
+    <div class="col">
+        <div class="mb-2 float-right">
+            <button class="mr-1" nz-button (click)="resetHandler()">Reset</button>
+            <button nz-button nzType="primary" type="submit" (click)="submitHandler()">Apply</button>
+        </div>
+    </div>
+</div> -->
+<div *ngIf="isDataReady" class="row submit-btn-parent">
+  <div class="col px-0">
+    <div>
+      <button
+        nz-button
+        nzType="primary"
+        type="submit"
+        (click)="submitHandler()"
+      >
+        Apply
+      </button>
+      <button class="mr-1" nz-button (click)="resetHandler()">
+        Reset
+      </button>
+    </div>
+  </div>
+</div>
+<!-- <span style="color: greenyellow">{{ type | json }}</span> -->

@@ -1,0 +1,17 @@
+<ng-container *ngIf="isDataReady">
+  <!-- [style.visibility]="isDataFramed ? 'visible': 'hidden'" -->
+  <div
+    class="kanban-wrapper"
+    [style.visibility]="isDataFramed ? 'visible' : 'hidden'"
+  >
+    <nz-card class="cardHolder" id="demo1"> </nz-card>
+  </div>
+</ng-container>
+
+<!-- <div [class.active]="!isDataReady" class="logs-loader">
+  <div class="d-flex justify-content-center align-self-center">
+    <div class="spinner-border text-warning" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div> -->

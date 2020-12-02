@@ -1,0 +1,101 @@
+<form
+  *ngIf="isDataReady"
+  class="form-panel"
+  nz-form
+  [formGroup]="mainForm"
+  (ngSubmit)="submitHandler()"
+  autocomplete="off"
+>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="showTemplateId"
+      >Select Show Template</nz-form-label
+    >
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <nz-select
+        id="showTemplateId"
+        formControlName="showTemplateId"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select show template"
+        [nzDisabled]="mode === 'update'"
+      >
+        <nz-option
+          *ngFor="let template of showTemplates"
+          [nzLabel]="template.title"
+          [nzValue]="template.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="shotTemplateId"
+      >Select Shot Template</nz-form-label
+    >
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <nz-select
+        id="shotTemplateId"
+        formControlName="shotTemplateId"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select shot template"
+        [nzDisabled]="mode === 'update'"
+      >
+        <nz-option
+          *ngFor="let template of shotTemplates"
+          [nzLabel]="template.title"
+          [nzValue]="template.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzFor="packTemplateIds"
+      >Select Packing Template</nz-form-label
+    >
+    <nz-form-control>
+      <nz-select
+        id="packTemplateIds"
+        formControlName="packTemplateIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select packing template"
+        nzMode="multiple"
+        [nzDisabled]="mode === 'update'"
+      >
+        <nz-option
+          *ngFor="let template of packingTemplates"
+          [nzLabel]="template.title"
+          [nzValue]="template.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- <nz-form-item>
+    <nz-form-label nzFor="taskTemplateId">Select Task Template</nz-form-label>
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <nz-select
+        id="taskTemplateId"
+        formControlName="taskTemplateId"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select task template"
+        [nzDisabled]="mode === 'update'"
+      >
+        <nz-option
+          *ngFor="let template of taskTemplates"
+          [nzLabel]="template.title"
+          [nzValue]="template.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item> -->
+</form>
+<!-- </div> -->
+<!-- <pre style="color: greenyellow">{{showOutCopy | json}}</pre> -->

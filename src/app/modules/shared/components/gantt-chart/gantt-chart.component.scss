@@ -1,0 +1,74 @@
+.showTextColor {
+  color: #00b15f;
+  font-weight: 600;
+  cursor: pointer;
+  &.resource {
+    cursor: default;
+  }
+}
+
+.shotTextColor,
+.assetTextColor {
+  color: #ffd538;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.showCursor {
+  cursor: pointer;
+}
+.gantt-schedule-timeline-calendar__list-column-row-content {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 300;
+}
+
+.gantt-schedule-timeline-calendar,
+.gantt-schedule-timeline-calendar__list-column-header,
+.gantt-schedule-timeline-calendar__chart-calendar {
+  background-color: #323232 !important;
+  font-size: 14px !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.gantt-schedule-timeline-calendar__chart-calendar-dates {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.weekendHighlighter {
+  background-color: #383838 !important;
+}
+
+.gantt-schedule-timeline-calendar__list-column-row,
+.gantt-schedule-timeline-calendar__chart-timeline-grid-row-block {
+  border-bottom: 1px solid rgba(67, 67, 67, 0.5) !important;
+  border-right: 1px solid rgba(67, 67, 67, 0.5) !important;
+}
+
+.gantt-schedule-timeline-calendar__list-column-header-resizer-dots-dot {
+  background: rgba(17, 175, 175, 0.8) !important;
+  width: 3px !important;
+  height: 3px;
+  border-radius: 100%;
+  margin-bottom: 6px;
+  box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.05);
+}
+
+.gantt-schedule-timeline-calendar__list-toggle {
+  padding: 6px !important;
+  background-color: #00b15f !important;
+}
+
+.gantt-schedule-timeline-calendar__chart-calendar-date-content {
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  border-right: 1px solid rgba(67, 67, 67, 0.5) !important;
+  .gstc-date-top {
+    color: #ffd538 !important;
+  }
+  .gstc-date-small {
+    color: #ea9645 !important;
+  }
+}

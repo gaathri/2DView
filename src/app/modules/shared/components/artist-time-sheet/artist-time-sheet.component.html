@@ -1,0 +1,26 @@
+<div *ngIf="isDataReady" class="time-sheet">
+  <!-- <app-calendar-view
+    [allowUserSearch]="false"
+    (dateChange)="onDateChange($event)"
+    [events]="events"
+  >
+  </app-calendar-view> -->
+
+  <app-calendar
+    #appCalendar
+    [startDate]="startDate"
+    [endDate]="endDate"
+    [isArtistView]="true"
+    [data]="events"
+    [debug]="false"
+    (dateChange)="onDateChange($event)"
+  >
+  </app-calendar>
+
+  <app-task-log-panel
+    (change)="onUpdateLog($event)"
+    [selectedDate]="selectedDate"
+    [enableAddLog]="true"
+  >
+  </app-task-log-panel>
+</div>

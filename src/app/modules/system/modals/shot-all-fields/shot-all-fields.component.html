@@ -1,0 +1,361 @@
+<div *ngIf="isDataReady">
+  <form
+    class="form-panel"
+    nz-form
+    [formGroup]="mainForm"
+    (ngSubmit)="submitHandler()"
+    autocomplete="off"
+  >
+    <div class="row clearfix">
+      <div class="col-md-6 px-0">
+        <nz-form-item>
+          <nz-form-label>
+            Information
+          </nz-form-label>
+          <nz-form-control>
+            <input
+              id="info"
+              formControlName="info"
+              nz-input
+              placeholder="Info"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-6 px-0">
+        <nz-form-item>
+          <nz-form-label>
+            Plate Path
+          </nz-form-label>
+          <nz-form-control>
+            <input
+              id="platePath"
+              formControlName="platePath"
+              nz-input
+              placeholder="Plate Path"
+              maxlength="1200"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <div class="row clearfix">
+      <div class="col-md-6 px-0">
+        <nz-form-item>
+          <nz-form-label>
+            Cut In
+          </nz-form-label>
+          <nz-form-control>
+            <input
+              id="cutIn"
+              formControlName="cutIn"
+              type="number"
+              nz-input
+              placeholder="Cut In"
+              numeric
+              numericType="number"
+              maxValue="999999999"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-6 px-0">
+        <nz-form-item>
+          <nz-form-label>
+            Cut Out
+          </nz-form-label>
+          <nz-form-control>
+            <input
+              id="cutOut"
+              formControlName="cutOut"
+              type="number"
+              nz-input
+              placeholder="Cut Out"
+              numeric
+              numericType="number"
+              maxValue="999999999"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <div class="row clearfix">
+      <div class="col-md-6 px-0">
+        <nz-form-item>
+          <nz-form-label>
+            Head In
+          </nz-form-label>
+          <nz-form-control>
+            <input
+              id="headIn"
+              formControlName="headIn"
+              type="number"
+              nz-input
+              placeholder="Head In"
+              numeric
+              numericType="number"
+              maxValue="999999999"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-6 px-0">
+        <nz-form-item>
+          <nz-form-label>
+            Tail Out
+          </nz-form-label>
+          <nz-form-control>
+            <input
+              id="tailOut"
+              formControlName="tailOut"
+              type="number"
+              nz-input
+              placeholder="Tail Out"
+              numeric
+              numericType="number"
+              maxValue="999999999"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <div class="row clearfix">
+      <div class="col-md-6 px-0">
+        <nz-form-item>
+          <nz-form-label>
+            Frame Range
+          </nz-form-label>
+          <nz-form-control>
+            <input
+              id="frameRange"
+              formControlName="frameRange"
+              type="number"
+              nz-input
+              placeholder="Frame Range"
+              numeric
+              numericType="number"
+              maxValue="999999999"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-6 px-0">
+        <nz-form-item>
+          <nz-form-label>
+            Handles
+          </nz-form-label>
+          <nz-form-control>
+            <input
+              id="handles"
+              formControlName="handles"
+              type="number"
+              nz-input
+              placeholder="Handles"
+              numeric
+              numericType="number"
+              maxValue="999999999"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div class="row clearfix">
+      <div class="col-md-6 px-0">
+        <nz-form-item>
+          <nz-form-label>
+            Frames Per Second (FPS)
+          </nz-form-label>
+          <nz-form-control>
+            <input
+              id="framesPerSec"
+              formControlName="framesPerSec"
+              type="number"
+              nz-input
+              placeholder="Frames Per Second"
+              numeric
+              numericType="number"
+              maxValue="999999999"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-6 px-0">
+        <nz-form-item>
+          <nz-form-label>
+            Focal Length
+          </nz-form-label>
+          <nz-form-control>
+            <input
+              id="focalLength"
+              formControlName="focalLength"
+              type="number"
+              nz-input
+              placeholder="Focal Length"
+              numeric
+              numericType="number"
+              maxValue="999999999"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <div class="row clearfix">
+      <div class="col-md-6 px-0">
+        <nz-form-item>
+          <nz-form-label>
+            Working Range
+          </nz-form-label>
+          <nz-form-control>
+            <input
+              id="workingRange"
+              formControlName="workingRange"
+              type="number"
+              nz-input
+              placeholder="Working Range"
+              numeric
+              numericType="number"
+              maxValue="999999999"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="col-md-6 px-0">
+        <nz-form-item>
+          <nz-form-label>
+            Shooting Date
+          </nz-form-label>
+          <nz-form-control>
+            <nz-date-picker
+              [nzAllowClear]="false"
+              id="shootingDate"
+              formControlName="shootingDate"
+              [nzClassName]="'tcal'"
+              nzPlaceHolder="Shooting Date"
+              (ngModelChange)="onChange($event)"
+              [nzFormat]="getDisplayDateFormat()"
+            >
+              <!-- [nzDisabledDate]="disabledShootingDate" -->
+            </nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <nz-form-item>
+      <nz-form-label>
+        Shooting Supervisor
+      </nz-form-label>
+      <nz-form-control>
+        <nz-select
+          id="shootingSupervisorId"
+          formControlName="shootingSupervisorId"
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Select Shooting Supervisor"
+        >
+          <nz-option
+            *ngFor="let supervisor of supervisors"
+            [nzLabel]="supervisor.title"
+            [nzValue]="supervisor.id"
+          >
+          </nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label>
+        Assets Linked
+      </nz-form-label>
+      <nz-form-control>
+        <nz-select
+          id="assetIds"
+          formControlName="assetIds"
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Select Assets"
+          nzMode="multiple"
+        >
+          <nz-option
+            *ngFor="let asset of assets"
+            [nzLabel]="asset.assetName"
+            [nzValue]="asset.id"
+          >
+          </nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label>
+        Parent Shot
+      </nz-form-label>
+      <nz-form-control>
+        <nz-select
+          id="parentShotIds"
+          formControlName="parentShotIds"
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Select Parent Shots"
+          nzMode="multiple"
+        >
+          <nz-option
+            *ngFor="let parentShot of getParentShots()"
+            [nzLabel]="parentShot.shotCode"
+            [nzValue]="parentShot.id"
+          >
+          </nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label>
+        Sub Shot
+      </nz-form-label>
+      <nz-form-control>
+        <nz-select
+          id="subShotIds"
+          formControlName="subShotIds"
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Select Sub Shots"
+          nzMode="multiple"
+        >
+          <nz-option
+            *ngFor="let subShot of getSubShots()"
+            [nzLabel]="subShot.shotCode"
+            [nzValue]="subShot.id"
+          >
+          </nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzFor="taskTemplateId">Select Task Template</nz-form-label>
+      <nz-form-control nzErrorTip="Please provide your input!">
+        <nz-select
+          id="taskTemplateId"
+          formControlName="taskTemplateId"
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Select task template"
+          [nzDisabled]="mode === 'update'"
+        >
+          <nz-option
+            *ngFor="let template of taskTemplates"
+            [nzLabel]="template.title"
+            [nzValue]="template.id"
+          >
+          </nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+  <!-- <div class="submit-btn-parent">
+    <button nz-button nzType="primary" (click)="submitHandler()">Done</button>
+  </div> -->
+</div>

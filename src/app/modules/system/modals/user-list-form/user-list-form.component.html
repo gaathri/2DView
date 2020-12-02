@@ -1,0 +1,9 @@
+<ng-container *ngIf="isDataReady">
+    <div style="padding: 16px;color: #fff;">
+        <nz-list [nzDataSource]="data" nzSize="small" [nzRenderItem]="smallItem">
+            <ng-template #smallItem let-item>
+                <nz-list-item [nzContent]="item"></nz-list-item>
+            </ng-template>
+        </nz-list>
+    </div>
+</ng-container>

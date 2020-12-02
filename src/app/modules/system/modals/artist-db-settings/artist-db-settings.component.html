@@ -1,0 +1,130 @@
+<div class="select-table-cols form-panel">
+  <!-- <div [style.visibility]="isDashboardVisible ? 'visible' : 'hidden'"> -->
+  <ng-container *ngIf="isDashboardVisible">
+    <nz-form-item>
+      <nz-form-label>
+        Overall Progress - (Max 5)
+      </nz-form-label>
+      <div class="row mt-2">
+        <nz-form-control>
+          <nz-checkbox-wrapper
+            style="width: 100%;"
+            (nzOnChange)="changeHandler($event, 'overall')"
+          >
+            <div nz-row>
+              <div *ngFor="let status of workStatuses" nz-col nzSpan="8">
+                <label
+                  [nzDisabled]="isDisabled(status, 'overall')"
+                  nz-checkbox
+                  [nzValue]="status"
+                  [ngModel]="isChecked(status, 'overall')"
+                  >{{ status.name }}</label
+                >
+              </div>
+            </div>
+          </nz-checkbox-wrapper>
+        </nz-form-control>
+      </div>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label>
+        Star Progress - (Max 4)
+      </nz-form-label>
+      <div class="row mt-2">
+        <nz-form-control>
+          <nz-checkbox-wrapper
+            style="width: 100%;"
+            (nzOnChange)="changeHandler($event, 'star')"
+          >
+            <div nz-row>
+              <div *ngFor="let status of workStatuses" nz-col nzSpan="8">
+                <label
+                  [nzDisabled]="isDisabled(status, 'star')"
+                  nz-checkbox
+                  [nzValue]="status"
+                  [ngModel]="isChecked(status, 'star')"
+                  >{{ status.name }}</label
+                >
+              </div>
+            </div>
+          </nz-checkbox-wrapper>
+        </nz-form-control>
+      </div>
+    </nz-form-item>
+  </ng-container>
+  <!-- </div>
+  <div [style.visibility]="!isDashboardVisible ? 'visible' : 'hidden'"> -->
+  <ng-container *ngIf="!isDashboardVisible">
+    <nz-form-item>
+      <nz-form-label>
+        Kanban Status - (Max 5)
+      </nz-form-label>
+      <div class="row mt-2">
+        <nz-form-control>
+          <nz-checkbox-wrapper
+            style="width: 100%;"
+            (nzOnChange)="changeHandler($event, 'kanban')"
+          >
+            <div nz-row>
+              <div *ngFor="let status of workStatusesKanban" nz-col nzSpan="8">
+                <label
+                  [nzDisabled]="isDisabled(status, 'kanban')"
+                  nz-checkbox
+                  [nzValue]="status"
+                  [ngModel]="isChecked(status, 'kanban')"
+                  >{{ status.name }}</label
+                >
+              </div>
+            </div>
+          </nz-checkbox-wrapper>
+        </nz-form-control>
+      </div>
+    </nz-form-item>
+
+    <div class="row clearfix">
+      <div class="col-md-6 px-0">
+        <nz-form-item>
+          <nz-form-label>Start Date</nz-form-label>
+          <nz-form-control>
+            <nz-date-picker
+              id="startDate"
+              [(ngModel)]="startDate"
+              [nzClassName]="'tcal'"
+              nzPlaceHolder="Select Start Date"
+              (ngModelChange)="onStartDateChange($event)"
+              [nzFormat]="getDisplayDateFormat()"
+            >
+              <!-- [nzDisabledDate]="disabledStartDate" -->
+            </nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-6 px-0">
+        <nz-form-item>
+          <nz-form-label>End Date</nz-form-label>
+          <nz-form-control>
+            <nz-date-picker
+              [nzDisabled]="isEndDateDisabled()"
+              id="endDate"
+              [(ngModel)]="endDate"
+              [nzClassName]="'tcal'"
+              nzPlaceHolder="Select End Date"
+              [nzDisabledDate]="disabledEndDate"
+              [nzFormat]="getDisplayDateFormat()"
+            >
+              <!-- [nzDisabledDate]="disabledEndDate" -->
+            </nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+  </ng-container>
+  <!-- </div> -->
+
+  <div class="submit-btn-parent">
+    <button nz-button nzType="primary" (click)="submitHandler()">
+      Apply
+    </button>
+  </div>
+</div>

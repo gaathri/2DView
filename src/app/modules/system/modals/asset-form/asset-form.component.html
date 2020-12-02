@@ -1,0 +1,311 @@
+<form
+  *ngIf="isDataReady"
+  class="form-panel"
+  nz-form
+  [formGroup]="dataForm"
+  (ngSubmit)="submitHandler()"
+  autocomplete="off"
+>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="showId"> Show Name </nz-form-label>
+    <nz-form-control
+      *ngIf="!disableShowSelect"
+      nzErrorTip="Please provide your input!"
+    >
+      <nz-select
+        id="showId"
+        formControlName="showId"
+        [nzDisabled]="disableShowSelect"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Show"
+        (ngModelChange)="showChangeHandler()"
+      >
+        <!-- [nzDisabled]="!isValidArr(shows) || disableShowSelect" -->
+        <nz-option
+          *ngFor="let show of shows"
+          [nzLabel]="show.showName"
+          [nzValue]="show.id"
+        ></nz-option>
+      </nz-select>
+    </nz-form-control>
+    <nz-form-control *ngIf="disableShowSelect">
+      <input readonly class="read-only" nz-input [value]="showName" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="assetName"> Asset Name </nz-form-label>
+    <nz-form-control [nzErrorTip]="iNameTpl">
+      <input
+        id="assetName"
+        formControlName="assetName"
+        nz-input
+        [maxLength]="assetNameMaxLength"
+        placeholder="Asset Name"
+        [readonly]="isReadOnly()"
+        [class.read-only]="isReadOnly()"
+      />
+      <ng-template #iNameTpl let-control>
+        <ng-container *ngIf="control.hasError('pattern')"
+          >This pattern is not allowed!</ng-container
+        >
+        <ng-container *ngIf="control.hasError('required')"
+          >Name is required!</ng-container
+        >
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- <nz-form-item>
+    <nz-form-label>Asset Category</nz-form-label>
+    <nz-form-control>
+      <nz-radio-group
+        formControlName="assetCategory"
+        (ngModelChange)="requiredChange()"
+      >
+        <label nz-radio nzValue="sequence">Sequence</label>
+        <label nz-radio nzValue="spot">Spot</label>
+      </nz-radio-group>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item *ngIf="assetCategory == 'sequence'">
+    <nz-form-label nzRequired nzFor="sequenceId">Sequence Name</nz-form-label>
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <nz-select
+        id="sequenceId"
+        formControlName="sequenceId"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Sequence"
+      >
+        <nz-option
+          *ngFor="let sequence of sequences"
+          [nzLabel]="sequence.sequenceName"
+          [nzValue]="sequence.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item *ngIf="assetCategory == 'spot'">
+    <nz-form-label nzRequired nzFor="spotId">Spot Name</nz-form-label>
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <nz-select
+        id="spotId"
+        formControlName="spotId"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Spot"
+      >
+        <nz-option
+          *ngFor="let spot of spots"
+          [nzLabel]="spot.spotName"
+          [nzValue]="spot.id"
+        ></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item> -->
+
+  <nz-form-item>
+    <div class="row">
+      <nz-form-label>
+        <label>Asset Thumbnail</label>
+      </nz-form-label>
+    </div>
+
+    <div class="row mt-2">
+      <app-image-upload
+        [imageUrl]="assetOutCopy.thumbnail"
+        (onChange)="onUploadChange($event)"
+      >
+      </app-image-upload>
+    </div>
+  </nz-form-item>
+  <!-- Thumbnail Image Section End -->
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="description"
+      >Asset Description</nz-form-label
+    >
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <input
+        id="description"
+        formControlName="description"
+        nz-input
+        [maxLength]="assetDescMaxLength"
+        placeholder="Asset Description"
+      />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzFor="creativeBrief"> Creative Brief </nz-form-label>
+    <nz-form-control>
+      <input
+        id="creativeBrief"
+        formControlName="creativeBrief"
+        nz-input
+        [maxLength]="assetDescMaxLength"
+        placeholder="Creative Brief"
+      />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label  nzFor="taskTemplateId">
+      Select Task Template
+    </nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="taskTemplateId"
+        formControlName="taskTemplateId"
+        [nzDisabled]="this.mode == 'update'"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Task Template"
+      >
+        <nz-option
+          *ngFor="let template of taskTemplates"
+          [nzLabel]="template.title"
+          [nzValue]="template.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="assetTypeId">
+      Select Asset Type
+    </nz-form-label>
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <nz-select
+        id="assetTypeId"
+        formControlName="assetTypeId"
+        [nzDisabled]="this.mode == 'update'"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Asset Type"
+      >
+        <nz-option
+          *ngFor="let assetType of assetTypes"
+          [nzLabel]="assetType.assetTypeName"
+          [nzValue]="assetType.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label> Shots Linked </nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="shotIds"
+        formControlName="shotIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Shots"
+        nzMode="multiple"
+      >
+        <nz-option
+          *ngFor="let shot of shots"
+          [nzLabel]="shot.shotCode"
+          [nzValue]="shot.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label> Parent Asset </nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="parentAssetIds"
+        formControlName="parentAssetIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Parent Assets"
+      >
+        <nz-option
+          *ngFor="let parentAsset of getParentAssets()"
+          [nzLabel]="parentAsset.assetName"
+          [nzValue]="parentAsset.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label> Sub Asset </nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="subAssetIds"
+        formControlName="subAssetIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Sub Assets"
+      >
+        <nz-option
+          *ngFor="let subAsset of getSubAssets()"
+          [nzLabel]="subAsset.assetName"
+          [nzValue]="subAsset.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Reference Path</nz-form-label>
+    <nz-form-control>
+      <input
+        id="referencePath"
+        formControlName="referencePath"
+        nz-input
+        placeholder="Reference Path"
+        maxlength="1200"
+      />
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div *ngFor="let link of linkInfo">
+  <div (click)="linkClickHandler(link)" class="full-width-button-bg">
+    <a>
+      <span class="icon-div"
+        ><i nz-icon nz-size="small" nzType="arrow-right" nzTheme="outline"></i
+      ></span>
+      <span *ngIf="link.isMandatoryFieldPresent">* </span
+      ><span>{{ link.title }}</span>
+    </a>
+  </div>
+  <div *ngIf="!link.isValid" class="link-error">Please provide your input!</div>
+</div>
+
+<div *ngIf="isDataReady" class="submit-btn-parent">
+  <button nz-button nzType="primary" (click)="submitHandler()">
+    {{ btnName }}
+  </button>
+</div>
+
+<ng-template #linkDrawerHeader let-drawerRef="drawerRef">
+  <div class="title-row">
+    <div class="left-icon" [ngSwitch]="mode">
+      <ng-container *ngSwitchCase="'create'">
+        <app-icon-picker iconType="add"></app-icon-picker>
+      </ng-container>
+      <ng-container *ngSwitchCase="'update'">
+        <app-icon-picker iconType="edit"></app-icon-picker>
+      </ng-container>
+    </div>
+    <div class="title-text">{{ this.title }}</div>
+    <div class="right-icon">
+      <i (click)="closeForm()" nz-icon nzType="right" nzTheme="outline"></i>
+    </div>
+  </div>
+</ng-template>
+<!-- <pre style="color: greenyellow">{{ dataForm?.value | json }}</pre> -->

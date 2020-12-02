@@ -1,0 +1,28 @@
+<div class="common-header-new">
+  <div class="d-flex justify-content-between db-links">
+    <div class="d-flex justify-content-between">
+      <div
+        [class.active]="isDashboardVisible"
+        class="db-link hand"
+        (click)="isDashboardVisible = true"
+      >
+        Dashboard
+      </div>
+      <div class="db-link pipe">|</div>
+      <div
+        [class.active]="!isDashboardVisible"
+        class="db-link hand"
+        (click)="isDashboardVisible = false"
+      >
+        Attendance
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="isDashboardVisible">
+    <app-hr-dashboard></app-hr-dashboard>
+  </ng-container>
+  <ng-container *ngIf="!isDashboardVisible">
+    <app-hr-attendance></app-hr-attendance>
+  </ng-container>
+</div>

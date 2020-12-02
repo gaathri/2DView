@@ -1,0 +1,250 @@
+<div class="table-wrapper lg-pad item-list gantt-wrapper">
+  <!-- <div *ngIf="false" class="row mb-2">
+    <div class="col-md-12 px-0">
+      <div
+        class="table-header-panel-db d-flex justify-content-between align-items-center"
+      >
+        <div class="d-flex justify-content-between">
+          <div class="quick-filter-left label d-flex align-items-center first">
+            <span>
+              Show Name
+            </span>
+          </div>
+          <div class="quick-filter-left d-flex align-items-center">
+            <nz-select
+              style="width: 400px;"
+              id="showId"
+              [(ngModel)]="showId"
+              nzShowSearch
+              nzAllowClear
+              nzPlaceHolder="Select Show"
+              [nzDisabled]="!isValidArr(shows)"
+              (ngModelChange)="showChangeHandler($event)"
+            >
+              <nz-option
+                *ngFor="let show of shows"
+                [nzLabel]="show.showName"
+                [nzValue]="show.id"
+              ></nz-option>
+            </nz-select>
+          </div>
+
+          <ng-container *ngIf="type == 'shot'">
+            <div class="quick-filter-left label d-flex align-items-center">
+              <span>
+                Shot Code
+              </span>
+            </div>
+            <div class="quick-filter-left d-flex align-items-center">
+              <nz-select
+                style="width: 400px;"
+                id="shotIds"
+                [(ngModel)]="shotIds"
+                nzShowSearch
+                nzAllowClear
+                nzPlaceHolder="Select Shot"
+                [nzDisabled]="!isValidArr(shots)"
+                nzMode="multiple"
+                nzMaxTagCount="0"
+              >
+                <nz-option
+                  *ngFor="let shot of shots"
+                  [nzLabel]="shot.shotCode"
+                  [nzValue]="shot.id"
+                ></nz-option>
+              </nz-select>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="type == 'asset'">
+            <div class="quick-filter-left label d-flex align-items-center">
+              <span>
+                Asset Name
+              </span>
+            </div>
+
+            <div class="quick-filter-left label d-flex align-items-center">
+              <nz-select
+                style="width: 400px;"
+                id="assetIds"
+                [(ngModel)]="assetIds"
+                nzShowSearch
+                nzAllowClear
+                nzPlaceHolder="Select Asset"
+                [nzDisabled]="!isValidArr(assets)"
+                nzMode="multiple"
+                nzMaxTagCount="0"
+              >
+                <nz-option
+                  *ngFor="let asset of assets"
+                  [nzLabel]="asset.assetName"
+                  [nzValue]="asset.id"
+                ></nz-option>
+              </nz-select>
+            </div>
+          </ng-container>
+
+          <div
+            [title]="'Apply'"
+            class="quick-filter hand last d-flex align-items-center"
+            (click)="submitHandler()"
+          >
+            <span>
+              <i
+                nz-icon
+                nzType="play-circle"
+                nzTheme="fill"
+                style="font-size: 20px;"
+              ></i>
+            </span>
+          </div>
+        </div>        
+      </div>
+    </div>
+  </div> -->
+
+  <div class="row">
+    <div class="col-md-12 px-0">
+      <div
+        class="table-header-panel-db d-flex justify-content-between align-items-center"
+      >
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="quick-filter">
+            <span>Gantt Chart</span>
+          </div>
+          <div class="quick-filter last" style="width: 100px;">
+            <nz-slider
+              [(ngModel)]="value1"
+              [nzDisabled]="disabled"
+              [nzTooltipVisible]="'never'"
+              (ngModelChange)="onSlider($event)"
+            ></nz-slider>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+          <!-- <div
+            class="quick-filter hand"
+            [class.active]="period == 'today'"
+            (click)="reCenter()"
+          >
+            <span class="quick-filter-text">Today</span>
+          </div> -->
+
+          <div class="quick-filter" *ngIf="gtype == 'show'">
+            <div>
+              <nz-radio-group
+                [(ngModel)]="type"
+                [nzSize]="'small'"
+                (ngModelChange)="radioChangeHandler($event)"
+                [nzButtonStyle]="'solid'"
+              >
+                <label nz-radio-button nzValue="shot">Shot</label>
+                <label nz-radio-button nzValue="asset">Asset</label>
+              </nz-radio-group>
+            </div>
+          </div>
+
+          <div
+            class="quick-filter hand"
+            (click)="filterHandler()"
+            *ngIf="gtype == 'show'"
+          >
+            <span>
+              <app-icon-picker
+                class="qf-icon"
+                [class.highlight-yellow]="isFilterApplied"
+                iconType="filter"
+              ></app-icon-picker>
+            </span>
+            <span class="quick-filter-text">Filters</span>
+          </div>
+
+          <div class="quick-filter" style="width: 105px;">
+            <nz-select
+              [(ngModel)]="period"
+              (ngModelChange)="onPeriodChange($event)"
+            >
+              <nz-option nzLabel="Day" nzValue="day"> </nz-option>
+              <nz-option nzLabel="Week" nzValue="week"> </nz-option>
+              <nz-option nzLabel="Month" nzValue="month"> </nz-option>
+              <nz-option nzLabel="Year" nzValue="year"> </nz-option>
+            </nz-select>
+          </div>
+
+          <!-- <div class="quick-filter" style="width: 100px;">
+            <nz-slider
+              [(ngModel)]="value2"
+              [nzDisabled]="disabled"
+              [nzTooltipVisible]="'never'"
+              (ngModelChange)="onZoomSlider($event)"
+              [nzMin]="14"
+              [nzMax]="28"
+            ></nz-slider>
+          </div> -->
+
+          <!-- <div
+            class="quick-filter hand"
+            [class.active]="period == 'day'"
+            (click)="dayView()"
+          >
+            <span class="quick-filter-text">Day</span>
+          </div>
+          <div
+            class="quick-filter hand"
+            [class.active]="period == 'week'"
+            (click)="weekView()"
+          >
+            <span class="quick-filter-text">Week</span>
+          </div>
+          <div
+            class="quick-filter hand"
+            [class.active]="period == 'month'"
+            (click)="monthView()"
+          >
+            <span class="quick-filter-text">Month</span>
+          </div>
+          <div
+            class="quick-filter hand"
+            [class.active]="period == 'year'"
+            (click)="yearView()"
+          >
+            <span class="quick-filter-text">Year</span>
+          </div> -->
+
+          <div class="quick-filter last">
+            <div>
+              <nz-radio-group
+                [(ngModel)]="gtype"
+                [nzSize]="'small'"
+                [nzButtonStyle]="'solid'"
+                (ngModelChange)="radioChangeHandler2($event)"
+              >
+                <label nz-radio-button nzValue="show">Task Axis</label>
+                <label nz-radio-button nzValue="people">People Axis</label>
+              </nz-radio-group>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- <ng-container *ngIf="isEmptyData">
+        <div class="nodata d-flex justify-content-center">
+          No records found
+        </div>
+      </ng-container> -->
+      <!-- <ng-container *ngIf="!isEmptyData && isDataReady">
+        <gstc #scheduler [config]="config" (onState)="onState($event)"></gstc>
+      </ng-container> -->
+
+      <ng-container *ngIf="gtype == 'show'">
+        <app-show-gantt
+          class="task-axis"
+          [type]="type"
+          [filterParams]="getFilterParams()"
+        ></app-show-gantt>
+      </ng-container>
+      <ng-container *ngIf="gtype == 'people'">
+        <app-people-gantt class="people-axis"></app-people-gantt>
+      </ng-container>
+    </div>
+  </div>
+</div>

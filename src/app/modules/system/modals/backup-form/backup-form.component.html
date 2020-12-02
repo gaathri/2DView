@@ -1,0 +1,160 @@
+<form
+  *ngIf="isDataReady"
+  class="form-panel"
+  nz-form
+  [formGroup]="dataForm"
+  (ngSubmit)="submitHandler()"
+  autocomplete="off"
+>
+  <nz-form-item>
+    <nz-form-label nzFor="showId">Show Name</nz-form-label>
+    <nz-form-control>
+      <input readonly class="read-only" nz-input [value]="showName" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="name">Backup Name</nz-form-label>
+    <nz-form-control [nzErrorTip]="iNameTpl">
+      <input
+        id="name"
+        formControlName="name"
+        nz-input
+        [maxLength]="nameMaxLength"
+        placeholder="Backup Name"
+      />
+      <ng-template #iNameTpl let-control>
+        <ng-container *ngIf="control.hasError('pattern')"
+          >This pattern is not allowed!</ng-container
+        >
+        <ng-container *ngIf="control.hasError('required')"
+          >Name is required!</ng-container
+        >
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="server">Select Server Path</nz-form-label>
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <nz-select
+        id="server"
+        formControlName="server"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select server from list"
+      >
+        <!-- [(ngModel)]="showOutCopy.server" -->
+        <nz-option
+          *ngFor="let server of servers"
+          [nzLabel]="server.server"
+          [nzValue]="server.server"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Backup Mode</nz-form-label>
+    <nz-form-control>
+      <nz-radio-group
+        formControlName="backupType"
+        (ngModelChange)="requiredChange()"
+      >
+        <label nz-radio nzValue="show">Show</label>
+        <label nz-radio nzValue="selective">Selective</label>
+      </nz-radio-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item *ngIf="backupType == 'selective'">
+    <nz-form-label nzRequired nzFor="shotId">Shot Code</nz-form-label>
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <nz-select
+        id="shotIds"
+        formControlName="shotIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Shots"
+        nzMode="multiple"
+      >
+        <nz-option
+          *ngFor="let shot of shots"
+          [nzLabel]="shot.shotCode"
+          [nzValue]="shot.id"
+        ></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="taskTypeIds">Task Type</nz-form-label>
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <nz-select
+        id="taskTypeIds"
+        formControlName="taskTypeIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Task Type"
+        nzMode="multiple"
+      >
+        <nz-option
+          *ngFor="let taskType of taskTypes"
+          [nzLabel]="taskType.title"
+          [nzValue]="taskType.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="fileTypes"
+      >Select File Types</nz-form-label
+    >
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <nz-select
+        id="fileTypes"
+        formControlName="fileTypes"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select File Types"
+        nzMode="multiple"
+      >
+        <nz-option
+          *ngFor="let fileType of fileTypes"
+          [nzLabel]="fileType.fileTypeName"
+          [nzValue]="fileType.fileTypeName"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Select Version</nz-form-label>
+    <nz-form-control>
+      <nz-radio-group formControlName="isLatest">
+        <label nz-radio nzValue="true">Latest Version</label>
+        <label nz-radio nzValue="false">All Version</label>
+      </nz-radio-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-control>
+      <label nz-checkbox formControlName="includeWorkspace">
+        Backup Associated Workspace
+      </label>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div *ngIf="isDataReady" class="submit-btn-parent">
+  <button nz-button nzType="primary" (click)="submitHandler()">
+    {{ btnName }}
+  </button>
+</div>
+
+<!-- <pre style="color: greenyellow;">{{ dataForm?.value | json }}</pre> -->

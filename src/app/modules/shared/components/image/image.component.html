@@ -1,0 +1,19 @@
+<div *ngIf="loading" class="cont">
+  <!-- <nz-spin nzSimple></nz-spin> -->
+  <ng-template #indicatorTemplate><i nz-icon nzType="loading" style="font-size: 24px;color: #3be582;"></i>
+  </ng-template>
+  <nz-spin nzSimple [nzIndicator]="indicatorTemplate"> </nz-spin>
+</div>
+<div *ngIf="isEditable" class="profile-pic">
+  <img #myImage (load)="onLoad()" [src]="url" [default]="" style="max-width: 100%;max-height: 100%;margin:auto;" />
+  <div class="edit">
+    <a href="javascript:void(0)" (click)="editHandler()"><i class="fa fa-pencil fa-lg"></i></a>
+  </div>
+</div>
+
+<!-- <div style="max-width: 100%;max-height: 100%;margin:auto;" *ngIf="!isEditable"
+  [ngStyle]="{ 'background-image': getImageUrl(item) }">
+</div> -->
+<div style="display: flex;align-items: center;justify-content: center;height: 100%;">
+  <img class="t-img" *ngIf="!isEditable" #myImage (load)="onLoad()" [src]="url" [default]="" />
+</div>

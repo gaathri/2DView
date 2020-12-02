@@ -1,0 +1,118 @@
+import { Observable } from "rxjs";
+import { AuthenticationService } from "./authentication.service";
+import {
+  CanActivate,
+  Router,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot,
+} from "@angular/router";
+import { Injectable } from "@angular/core";
+import { HelperService } from "../services/helper.service";
+import { KeycloakService, KeycloakAuthGuard } from "keycloak-angular";
+
+@Injectable()
+export class AuthGuard extends KeycloakAuthGuard {
+  constructor(
+    protected router: Router,
+    protected keycloakAngular: KeycloakService,
+    private authService: AuthenticationService,
+    private helperService: HelperService
+  ) {
+    super(router, keycloakAngular);
+  }
+
+  isAccessAllowed(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Promise<boolean> {
+    return new Promise(async (resolve, reject) => {      
+      if (!this.authenticated) {
+        this.keycloakAngular.login();
+        return;
+      }
+      const login_info = localStorage.getItem("login_info");
+      if (login_info !== null && login_info !== "null") {
+        this.helperService.loginInfo = JSON.parse(login_info);
+      }      
+      /*try {
+        const userDetails = this.keycloakAngular.getKeycloakInstance()
+          .tokenParsed;        
+      } catch (e) {        
+      }      
+      const requiredRoles = route.data.roles;
+      let granted = false;
+      if (!requiredRoles || requiredRoles.length === 0) {
+        granted = true;
+      } else {
+        for (const requiredRole of requiredRoles) {
+          if (this.roles.indexOf(requiredRole) > -1) {
+            granted = true;
+            break;
+          }
+        }
+      }*/
+      //if (this.authService.isLoggedIn()) {
+      let granted = false;
+      if (route.data.permission) {
+        if (this.helperService.hasViewPermission(route.data.permission)) {
+          granted = true;
+        } else {
+          //this.router.navigate(["/"]);
+          granted = false;
+        }
+      } else {
+        granted = true;
+      }
+
+      let currentUserRole = this.helperService.getRole();
+      if (
+        route.data.roles &&
+        route.data.roles.indexOf(currentUserRole) === -1
+      ) {
+        this.router.navigate(["/"]);
+        granted = false;
+      }
+      if (granted === false) {
+        this.router.navigate(["/"]);
+      }
+      resolve(granted);
+      return;
+      //}
+      /*this.router.navigate(["/login"], {
+        queryParams: { returnUrl: state.url },
+      });*/
+    });
+  }
+
+  /*constructor(protected router: Router, protected keycloakAngular: KeycloakService) {
+    super(router, keycloakAngular);
+  }*/
+
+  /*canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<boolean> | Promise<boolean> | boolean {
+    if (this.authService.isLoggedIn()) {
+      let currentUserRole = this.helperService.getRole();
+      if (route.data.permission) {
+        if (this.helperService.hasViewPermission(route.data.permission)) {
+          return true;
+        } else {
+          this.router.navigate(["/"]);
+          return false;
+        }
+      }
+
+      if (
+        route.data.roles &&
+        route.data.roles.indexOf(currentUserRole) === -1
+      ) {
+        this.router.navigate(["/"]);
+        return false;
+      }
+      return true;
+    }
+    this.router.navigate(["/login"], { queryParams: { returnUrl: state.url } });
+    return false;
+  }*/
+}

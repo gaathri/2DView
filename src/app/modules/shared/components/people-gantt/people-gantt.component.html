@@ -1,0 +1,3 @@
+<ng-container *ngIf="!isEmptyData && isDataReady">
+  <gstc #scheduler [config]="config" (onState)="onState($event)"></gstc>
+</ng-container>

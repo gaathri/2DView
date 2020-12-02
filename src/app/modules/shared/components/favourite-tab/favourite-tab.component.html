@@ -1,0 +1,44 @@
+<div class="templates-list row">
+  <div *ngIf="isDataReady" class="col-md-3">
+    <div class="label mb-2">Type</div>
+    <div class="row template-list">
+      <div
+        class="row template hand"
+        *ngFor="let t of templateList; let odd = odd"
+        [ngClass]="odd ? 'odd-item' : 'even-item'"
+        [class.selected]="isSelected(t)"
+        (click)="clickHandler(t)"
+      >
+        <span [title]="t.label" class="text-truncate template-name">{{
+          t.label
+        }}</span>
+      </div>
+    </div>
+    <!-- <div *ngIf="!isReadOnly" class="row template add-list">
+            <span (click)="addTemplateHandler()" class="text-truncate template-name">+ Add New Template</span>
+        </div> -->
+  </div>
+  <div class="col-md-9 tasklist-tab">
+    <div class="edit-wrapper">
+      <div class="label mb-2">Favourites</div>
+      <!-- <div *ngIf="!isDisabled(selectedTemplate)" style="margin-top: -5px;" class="edit px-2">
+                <a href="javascript:void(0)" (click)="enableNameEdit()">
+                    <i class="fa fa-pencil fa-lg"></i>
+                </a>
+            </div> -->
+    </div>
+
+    <ng-container *ngIf="selectedFavorite == 'Shows'">
+      <app-favorite-shows [isReadOnly]="isReadOnly"></app-favorite-shows>
+    </ng-container>
+    <ng-container *ngIf="selectedFavorite == 'Shots'">
+      <app-favorite-shots [isReadOnly]="isReadOnly"></app-favorite-shots>
+    </ng-container>
+    <ng-container *ngIf="selectedFavorite == 'Assets'">
+      <app-favorite-assets [isReadOnly]="isReadOnly"></app-favorite-assets>
+    </ng-container>
+    <ng-container *ngIf="selectedFavorite == 'Users'">
+      <app-favorite-users [isReadOnly]="isReadOnly"></app-favorite-users>
+    </ng-container>
+  </div>
+</div>

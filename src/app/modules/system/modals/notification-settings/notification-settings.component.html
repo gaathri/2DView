@@ -1,0 +1,79 @@
+<div
+  *ngIf="isDataReady"
+  class="select-table-cols form-panel"
+  style="margin-top: 20px;"
+>
+  <div
+    *ngFor="let category of notificationTypes; let i = index"
+    [class.cat-border]="i != 0"
+  >
+    <div class="cat-padding" [class.pt-0]="i == 0">
+      <div style="display: inline; color: #ffd538;">
+        {{ category.categoryName }}
+      </div>
+    </div>
+
+    <nz-form-item>
+      <nz-checkbox-wrapper
+        style="width: 100%;"
+        (nzOnChange)="changeHandler($event, i)"
+      >
+        <div nz-row>
+          <div
+            *ngFor="let column of category.notifications; let j = index"
+            nz-col
+            nzSpan="12"
+          >
+            <label
+              [nzDisabled]="column.disabled"
+              nz-checkbox
+              [nzValue]="column"
+              [ngModel]="isChecked(column, i, j)"
+              >{{ column.name }}</label
+            >
+          </div>
+        </div>
+      </nz-checkbox-wrapper>
+    </nz-form-item>
+  </div>
+  <!-- <nz-form-item>
+    <div class="row mt-2">
+      <nz-form-control>
+        <nz-checkbox-wrapper
+          style="width: 100%;"
+          (nzOnChange)="changeHandler($event)"
+        >
+          <div nz-row>
+            <div
+              *ngFor="let notificationType of notificationTypes"
+              nz-col
+              style="margin-bottom: 12px;"
+            >
+              <label
+                nz-checkbox
+                [nzValue]="notificationType.id"
+                [ngModel]="isChecked(notificationType)"
+                >{{ notificationType.notificationType }}</label
+              >
+            </div>
+          </div>
+        </nz-checkbox-wrapper>
+      </nz-form-control>
+    </div>
+  </nz-form-item> -->
+
+  <div class="cat-padding cat-border">
+    <label
+      nz-checkbox
+      [ngModel]="isAllChecked()"
+      (ngModelChange)="updateAllChecked($event)"
+    >
+      Select all
+    </label>
+  </div>
+  <div class="submit-btn-parent">
+    <button nz-button nzType="primary" (click)="submitHandler()">
+      Save
+    </button>
+  </div>
+</div>

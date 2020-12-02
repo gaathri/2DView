@@ -1,0 +1,341 @@
+<div class="common-header-new">
+  <div class="d-flex justify-content-between db-links">
+    <div class="d-flex justify-content-between">
+      <div class="db-link">Custom Field Listing</div>
+    </div>
+  </div>
+</div>
+
+<div class="table-wrapper sm-pad item-list" *ngIf="isDataReady">
+  <div class="row">
+    <div class="col-md-12 px-0">
+      <div
+        class="table-header-panel-db d-flex justify-content-between align-items-center"
+      >
+        <div class="quick-filter last">
+          <span>Custom Fields</span>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="quick-filter hand">
+            <span *ngIf="isSearching">
+              <nz-input-group [nzSuffix]="suffixTemplate">
+                <input
+                  style="height: 20px; width: 600px;"
+                  type="text"
+                  nz-input
+                  [(ngModel)]="searchPattern"
+                  (keyup.enter)="searchDetails()"
+                  placeholder="Type search text"
+                />
+                <!-- (blur)="searchBlur()" -->
+              </nz-input-group>
+
+              <ng-template #suffixTemplate>
+                <i
+                  nz-icon
+                  nz-tooltip
+                  class="ant-input-clear-icon"
+                  nzTheme="fill"
+                  nzType="close-circle"
+                  (click)="clearSearch()"
+                ></i>
+              </ng-template>
+              <!-- *ngIf="searchPattern" -->
+              <!-- <input
+                style="height: 20px;"
+                type="text"
+                nz-input
+                placeholder="Type search text"
+                autofocus
+                (blur)="searchBlur()"
+                [(ngModel)]="searchPattern"
+                (keyup.enter)="searchDetails()"
+              /> -->
+            </span>
+
+            <span *ngIf="!isSearching" (click)="searchHandler()">
+              <span>
+                <app-icon-picker
+                  class="qf-icon"
+                  iconType="search"
+                ></app-icon-picker>
+              </span>
+              <span class="quick-filter-text">Search</span>
+            </span>
+          </div>
+          <div
+            class="quick-filter hand last"
+            [class.disabled]="!isEditable()"
+            (click)="createCustomField()"
+          >
+            <span>
+              <app-icon-picker class="qf-icon" iconType="add"></app-icon-picker>
+            </span>
+            <span class="quick-filter-text">Add</span>
+          </div>
+        </div>
+      </div>
+
+      <ngx-datatable
+        #myTable
+        style="
+          min-width: 100%;
+          width: 100%;
+          min-height: 300px !important;
+          height: calc(100vh - 300px);
+        "
+        class="material striped expandable fullscreen"
+        [rows]="rows"
+        [columnMode]="'force'"
+        [headerHeight]="40"
+        [footerHeight]="40"
+        [rowHeight]="40"
+        [scrollbarV]="true"
+        [scrollbarH]="true"
+        [virtualization]="false"
+        [externalSorting]="true"
+        [externalPaging]="true"
+        [loadingIndicator]="isLoading"
+        [count]="page.totalElements"
+        [offset]="page.pageNumber"
+        [limit]="page.size"
+        [selectAllRowsOnPage]="false"
+        (page)="setPage($event)"
+        (select)="onSelect($event)"
+        (sort)="onSort($event)"
+      >
+        <!-- <ngx-datatable-column [width]="50" [sortable]="false" [canAutoResize]="false" [draggable]="false"
+                      [resizeable]="false" [headerCheckboxable]="true" [checkboxable]="true" [frozenLeft]="true">
+                  </ngx-datatable-column> -->
+
+        <ngx-datatable-column
+          *ngFor="let col of selectedTableColumns"
+          [name]="col.displayName"
+          [width]="getColWidth(col.name)"
+          [sortable]="col.sortable"
+        >
+          <ng-template
+            ngx-datatable-cell-template
+            let-rowIndex="rowIndex"
+            let-row="row"
+            let-value="value"
+          >
+            <div [ngSwitch]="col.name">
+              <span class="toggle-checkbox-control" *ngSwitchCase="'isActive'">
+                <input
+                  class="toggle-checkbox"
+                  [id]="row.id"
+                  type="checkbox"
+                  [checked]="this.getActiveStatus(row, col) == 'ACTIVE'"
+                />
+                <label
+                  class="toggle-checkbox-label"
+                  [ngClass]="{
+                    inactive: !isEditable(row),
+                    active: isEditable(row)
+                  }"
+                  (click)="onToggleIconClick(row)"
+                  ><i></i
+                ></label>
+
+                <label
+                  [ngClass]="{
+                    pipe: this.getActiveStatus(row, col) == 'ACTIVE',
+                    'pipe-inactive':
+                      this.getActiveStatus(row, col) == 'INACTIVE'
+                  }"
+                  >{{ this.getActiveStatus(row, col) }}</label
+                >
+              </span>
+
+              <span class="toggle-checkbox-control" *ngSwitchCase="'isGolbal'">
+                <span>{{ getFlagValue(row[col.name]) }}</span>
+              </span>
+
+              <span
+                class="toggle-checkbox-control"
+                *ngSwitchCase="'isMandatory'"
+              >
+                <span>{{ getFlagValue(row[col.name]) }}</span>
+              </span>
+
+              <span *ngSwitchDefault>
+                <span
+                  [title]="row[col.name] ? row[col.name] : ''"
+                  *ngIf="!editing[row.id + '-' + col.name]"
+                >
+                  <div class="edit-wrapper">
+                    <div
+                      *ngIf="row[col.name]"
+                      class="col-10 px-0 text-truncate"
+                    >
+                      {{ row[col.name] }}
+                    </div>
+                    <div
+                      *ngIf="!row[col.name]"
+                      class="col-10 px-0 text-truncate"
+                    >
+                      -
+                    </div>
+                    <div class="col-2 px-0 edit" *ngIf="col.isEditable">
+                      <a
+                        href="javascript:void(0)"
+                        (click)="enableEdit(row, col)"
+                      >
+                        <i class="fa fa-pencil fa-lg"></i>
+                      </a>
+                    </div>
+                  </div>
+                </span>
+              </span>
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column
+          [headerClass]="'qa-header'"
+          [cellClass]="'dummy-class'"
+          name="Quick Actions"
+          [sortable]="false"
+          [frozenRight]="false"
+          [width]="100"
+        >
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <div *ngIf="showDummy" class="dummy-div config"></div>
+            <div class="d-flex flex-row justify-content-end">
+              <button
+                title="Edit"
+                class="mr-2 d-flex justify-content-center"
+                nz-button
+                nzType="primary"
+                nzSize="small"
+                (click)="editHandler(row)"
+                [disabled]="!isEditable(row)"
+              >
+                <app-icon-picker nz-icon iconType="edit"></app-icon-picker>
+              </button>
+              <button
+                title="Delete"
+                class="mr-2 d-flex justify-content-center"
+                nz-button
+                nzType="primary"
+                nzSize="small"
+                (click)="deleteHandler(row)"
+                [disabled]="!isEditable(row)"
+              >
+                <app-icon-picker nz-icon iconType="delete"></app-icon-picker>
+              </button>
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-footer>
+          <ng-template
+            ngx-datatable-footer-template
+            let-rowCount="rowCount"
+            let-pageSize="pageSize"
+            let-selectedCount="selectedCount"
+            let-curPage="curPage"
+            let-offset="offset"
+            let-isVisible="isVisible"
+          >
+            <div class="page-count">
+              <nz-form-item>
+                <nz-form-control>
+                  <nz-select
+                    style="width: 75px;"
+                    nzPlaceHolder="Select Page Size"
+                    [(ngModel)]="selectedPageSize"
+                    (ngModelChange)="setPageSize()"
+                  >
+                    <nz-option
+                      *ngFor="let option of pageSizeOptions"
+                      [nzLabel]="option"
+                      [nzValue]="option"
+                    ></nz-option>
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <datatable-pager
+              [pagerLeftArrowIcon]="'datatable-icon-left'"
+              [pagerRightArrowIcon]="'datatable-icon-right'"
+              [pagerPreviousIcon]="'datatable-icon-prev'"
+              [pagerNextIcon]="'datatable-icon-skip'"
+              [page]="curPage"
+              [size]="pageSize"
+              [count]="rowCount"
+              [hidden]="!(rowCount / pageSize > 1)"
+              (change)="table.onFooterPage($event)"
+            >
+            </datatable-pager>
+          </ng-template>
+        </ngx-datatable-footer>
+      </ngx-datatable>
+    </div>
+  </div>
+</div>
+
+<!--Modal for delete custom field confirmation START-->
+<nz-modal
+  [(nzVisible)]="isAlertVisible"
+  nzTitle="Are you sure to delete this custom field?"
+  nzOkText="Yes"
+  nzCancelText="No"
+  (nzOnOk)="deleteCustomFieldConfirm()"
+  (nzOnCancel)="deleteCustomFieldCancel()"
+  nzOkType="primary"
+  nzClosable="false"
+  nzWrapClassName="confirm-modal"
+  nzNoAnimation="true"
+>
+  <b class="modal-content-del-prefix" *ngIf="customFieldToDelete != null"
+    >Custom Field Name :
+    <span class="modal-content-del-suffix">{{
+      customFieldToDelete.name
+    }}</span></b
+  >
+</nz-modal>
+<!--Modal for delete custom field confirmation END-->
+
+<!--Modal for toggle custom field confirmation START-->
+<nz-modal
+  [(nzVisible)]="isToggleAlertVisible"
+  [nzTitle]="getToggleTitle()"
+  nzOkText="Yes"
+  nzCancelText="No"
+  (nzOnOk)="toggleCustomFieldConfirm()"
+  (nzOnCancel)="toggleCustomFieldCancel()"
+  nzOkType="primary"
+  nzClosable="false"
+  nzWrapClassName="confirm-modal"
+  nzNoAnimation="true"
+>
+  <b class="modal-content-del-prefix" *ngIf="customFieldToToggle != null"
+    >Custom Field Name :
+    <span class="modal-content-del-suffix">{{
+      customFieldToToggle.name
+    }}</span></b
+  >
+</nz-modal>
+<!--Modal for toggle custom field confirmation END-->
+
+<!--Template content for add new drawer header START-->
+<ng-template #drawerHeader let-drawerRef="drawerRef">
+  <div class="title-row">
+    <div class="left-icon" [ngSwitch]="drawerTitle">
+      <ng-container *ngSwitchCase="'Add Custom Field'">
+        <app-icon-picker iconType="add"></app-icon-picker>
+      </ng-container>
+      <ng-container *ngSwitchCase="'Edit Custom Field'">
+        <app-icon-picker iconType="edit"></app-icon-picker>
+      </ng-container>
+    </div>
+    <div class="title-text cap">
+      {{ drawerTitle }}
+    </div>
+    <div class="right-icon">
+      <i (click)="closeForm()" nz-icon nzType="right" nzTheme="outline"></i>
+    </div>
+  </div>
+</ng-template>
+<!--Template content for add new drawer header END-->

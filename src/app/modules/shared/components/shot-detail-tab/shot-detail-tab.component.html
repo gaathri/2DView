@@ -1,0 +1,378 @@
+<div class="details-tab">
+  <div class="row clearfix">
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Show Name
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="shotIn.showName ? shotIn.showName : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Shot Code
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="shotIn.shotCode ? shotIn.shotCode : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Shooting Date
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="getDisplayDate(shotIn.shootingDate)"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div class="row clearfix">
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Cut In
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="shotIn.cutIn ? shotIn.cutIn : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Cut Out
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="shotIn.cutOut ? shotIn.cutOut : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Handles
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="shotIn.handles ? shotIn.handles : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div class="row clearfix">
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Head In
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="shotIn.headIn ? shotIn.headIn : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Tail Out
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="shotIn.tailOut ? shotIn.tailOut : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Plate Path
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="shotIn.platePath ? shotIn.platePath : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div class="row clearfix">
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Frame Range
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="shotIn.frameRange ? shotIn.frameRange : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Frames Per Second
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="shotIn.framesPerSec ? shotIn.framesPerSec : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Focal Length
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="shotIn.focalLength ? shotIn.focalLength : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div class="row clearfix">
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Season Name
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="shotIn.seasonName ? shotIn.seasonName : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Episode Name
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="shotIn.episodeName ? shotIn.episodeName : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Sequence Name
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="shotIn.sequenceName ? shotIn.sequenceName : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div class="row clearfix">
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Spot Name
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="shotIn.spotName ? shotIn.spotName : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Shooting Supervisor
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="
+              shotIn.shootingSupervisorName ? shotIn.shootingSupervisorName : ''
+            "
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Working Range
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="shotIn.workingRange ? shotIn.workingRange : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div class="row clearfix">
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Task Template Name
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="shotIn.taskTemplateName ? shotIn.taskTemplateName : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Status
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="shotIn.status ? shotIn.status : ''"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Progress
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            [value]="getProgress(shotIn)"
+            readonly
+            class="read-only"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div class="row clearfix">
+    <div class="col-md-4 px-0">
+      <nz-form-item>
+        <nz-form-label>
+          Description
+        </nz-form-label>
+        <nz-form-control>
+          <textarea
+            nz-input
+            [value]="shotIn.description ? shotIn.description : ''"
+            [nzAutosize]="{ minRows: 2, maxRows: 3 }"
+            readonly
+            class="read-only"
+          ></textarea>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-4 px-0">
+      <!-- <nz-form-item>
+        <nz-form-label>
+          Shot Info
+        </nz-form-label>
+        <nz-form-control>
+          <textarea
+            nz-input
+            [value]="shotIn.info ? shotIn.info : ''"
+            [nzAutosize]="{ minRows: 2, maxRows: 3 }"
+            readonly
+            class="read-only"
+          ></textarea>
+        </nz-form-control>
+      </nz-form-item> -->
+    </div>
+    <div class="col-md-4 px-0"></div>
+  </div>
+</div>

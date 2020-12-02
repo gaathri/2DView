@@ -1,0 +1,118 @@
+:host ::ng-deep {
+  .ql-snow {
+    .ql-picker.ql-size {
+      width: 65px;
+    }
+
+    .ql-picker {
+      color: #fff;
+    }
+
+    .ql-picker-options {
+      background-color: gray !important;
+    }
+
+    .ql-formats > span {
+      background-color: gray !important;
+      border: black !important;
+      margin-right: 2px !important;
+      border-radius: 3px;
+    }
+
+    .ql-formats > button {
+      background-color: gray !important;
+      border: black !important;
+      margin-right: 2px !important;
+      border-radius: 3px;
+    }
+
+    .ql-stroke {
+      stroke: white !important;
+    }
+
+    .ql-picker.ql-size {
+      .ql-picker-label::before,
+      .ql-picker-item::before {
+        content: "10px";
+      }
+
+      .ql-picker-item[data-value="10px"]::before,
+      .ql-picker-label.ql-active[data-value="10px"]::before {
+        content: "10px";
+      }
+
+      .ql-picker-item[data-value="12px"]::before,
+      .ql-picker-label.ql-active[data-value="12px"]::before {
+        content: "12px";
+      }
+
+      .ql-picker-item[data-value="16px"]::before,
+      .ql-picker-label.ql-active[data-value="16px"]::before {
+        content: "16px";
+      }
+
+      .ql-picker-item[data-value="18px"]::before,
+      .ql-picker-label.ql-active[data-value="18px"]::before {
+        content: "18px";
+      }
+
+      .ql-picker-item[data-value="20px"]::before,
+      .ql-picker-label.ql-active[data-value="20px"]::before {
+        content: "20px";
+      }
+
+      .ql-picker-item[data-value="24px"]::before,
+      .ql-picker-label.ql-active[data-value="24px"]::before {
+        content: "24px";
+      }
+
+      .ql-picker-item[data-value="28px"]::before,
+      .ql-picker-label.ql-active[data-value="28px"]::before {
+        content: "28px";
+      }
+
+      .ql-picker-item[data-value="32px"]::before,
+      .ql-picker-label.ql-active[data-value="32px"]::before {
+        content: "32px";
+      }
+
+      .ql-picker-item[data-value="46px"]::before,
+      .ql-picker-label.ql-active[data-value="46px"]::before {
+        content: "46px";
+      }
+    }
+  }
+
+  .ql-toolbar.ql-snow {
+    border: 1px solid rgba(211, 211, 211, 0.25);
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+
+    .ql-formats {
+      margin-right: 8px;
+    }
+  }
+
+  .ql-container.ql-snow {
+    border: 1px solid rgba(211, 211, 211, 0.25);
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+  }
+
+  .ql-container.ql-snow.ql-disabled {
+    margin-top: 5px;
+    margin-right: 5px !important;
+  }
+
+  .ql-editor {
+    //background-color: rgba(255, 255, 255, 0.93) !important;
+  }
+
+  quill-editor .ql-editor {
+    height: 150px;
+    //background-color: rgba(255, 255, 255, 0.93) !important;
+    background-color: rgba(255, 255, 255, 1) !important;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+  }
+}

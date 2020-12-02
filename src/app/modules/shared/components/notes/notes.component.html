@@ -1,0 +1,382 @@
+<div *ngIf="isDataReady" class="notesHolder">
+  <nz-list
+    *ngIf="comments.length"
+    [nzDataSource]="comments"
+    [nzRenderItem]="item"
+    [nzItemLayout]="'horizontal'"
+  >
+    <ng-template #item let-item let-i="index">
+      <nz-comment
+        [nzAuthor]="item.userName"
+        [ngClass]="
+          showMoreComments && i !== 0 && i !== comments.length - 1
+            ? 'hide'
+            : 'show'
+        "
+        [class.commentBottomBorder]="mode != 'feedback'"
+      >
+        <nz-avatar
+          nz-comment-avatar
+          nzIcon="user"
+          [nzSrc]="item.thumbnail"
+          class="avtr outerAvtrPadding"
+        >
+        </nz-avatar>
+        <nz-comment-content>
+          <div>
+            <span class="annotateText" *ngIf="mode == 'feedback'"
+              >Annotation &nbsp;&nbsp;</span
+            >
+            <span class="timeDiff">{{ getDisplayTime(item) }}</span>
+          </div>
+
+          <quill-view
+            [content]="item.comment"
+            format="text"
+            theme="snow"
+          ></quill-view>
+
+          <!-- <p class="commentContent">{{ item.comment }}</p> -->
+          <nz-list
+            style="margin-top: 10px;"
+            *ngIf="item && item.attachments && item.attachments.length"
+            [nzDataSource]="item.attachments"
+            [nzRenderItem]="attachments"
+            [nzItemLayout]="'horizontal'"
+          >
+            <ng-template #attachments let-attachments>
+              <div class="ant-upload-list ant-upload-list-picture-card">
+                <div class="ant-upload-list-item ant-upload-list-item-done">
+                  <div class="ant-upload-list-item-info">
+                    <span>
+                      <a
+                        class="ant-upload-list-item-thumbnail"
+                        href="javascript:void(0)"
+                        (click)="handlePreview(attachments.attachment)"
+                      >
+                        <!-- target="_blank" href="{{ attachments.attachment }}"  -->
+                        <img
+                          src="{{ attachments.attachment }}"
+                          alt="{{ attachments.attachment }}"
+                      /></a>
+
+                      <a
+                        class="ant-upload-list-item-name"
+                        href="{{ attachments.name }}"
+                        target="_blank"
+                        title="{{ attachments.name }}"
+                        >{{ attachments.name }}</a
+                      >
+                    </span>
+                  </div>
+                  <span class="ant-upload-list-item-actions">
+                    <a
+                      href="javascript:void(0);"
+                      (click)="handlePreview(attachments.attachment)"
+                      title="Preview file"
+                    >
+                      <i nz-icon nzType="eye-o" title="View file"> </i
+                    ></a>
+                  </span>
+                </div>
+              </div>
+            </ng-template>
+          </nz-list>
+        </nz-comment-content>
+        <ul class="replyAction">
+          <li>
+            <span>
+              <span
+                class="replyTo"
+                (click)="showCommentInlineReply(i)"
+                style="float: left;"
+                >Reply to</span
+              >
+              -
+              <span
+                class="replyTo"
+                (click)="hideCommentInline(i)"
+                style="float: right;"
+              >
+                {{
+                  visibilityState && visibilityState[i]
+                    ? (visibilityState[i] | titlecase) +
+                      " " +
+                      (item && item.replies ? item.replies.length : "0") +
+                      " replies"
+                    : ""
+                }}</span
+              >
+            </span>
+          </li>
+        </ul>
+        <nz-list
+          class="replyList"
+          *ngIf="item && item.replies && item.replies.length"
+          [nzDataSource]="item.replies"
+          [nzRenderItem]="replies"
+          [nzItemLayout]="'horizontal'"
+        >
+          <ng-template #replies let-replies let-j="index">
+            <nz-comment
+              [nzAuthor]="replies.userName"
+              [ngClass]="visibilityState[i] === 'show' ? 'hide' : 'show'"
+              [class.commentBottomBorder]="mode != 'feedback'"
+            >
+              <nz-avatar
+                nz-comment-avatar
+                nzIcon="user"
+                [nzSrc]="replies.thumbnail"
+                class="avtr innerAvtrPadding"
+              >
+              </nz-avatar>
+              <nz-comment-content>
+                <div>
+                  <span class="annotateText" *ngIf="mode == 'feedback'"
+                    >Annotation &nbsp;&nbsp;</span
+                  >
+                  <span class="timeDiff">{{ getDisplayTime(replies) }}</span>
+
+                  <!-- <span class="annotateText">Annotation</span> <span class="timeDiff"> -
+                                            {{ replies.displayTime }}
+                                            {{ getDisplayTime(replies) }}
+                                        </span> -->
+                </div>
+                <quill-view
+                  [content]="replies.comment"
+                  format="text"
+                  theme="snow"
+                ></quill-view>
+
+                <!-- <p class="commentContent">{{ children.comment }}</p> -->
+
+                <nz-list
+                  style="margin-top: 10px;"
+                  *ngIf="replies.attachments && replies.attachments.length"
+                  [nzDataSource]="replies.attachments"
+                  [nzRenderItem]="childrenAttachments"
+                  [nzItemLayout]="'horizontal'"
+                >
+                  <ng-template #childrenAttachments let-childrenAttachments>
+                    <div class="ant-upload-list ant-upload-list-picture-card">
+                      <div
+                        class="ant-upload-list-item ant-upload-list-item-done"
+                      >
+                        <div class="ant-upload-list-item-info">
+                          <span>
+                            <a
+                              class="ant-upload-list-item-thumbnail"
+                              href="javascript:void(0)"
+                              (click)="
+                                handlePreview(childrenAttachments.attachment)
+                              "
+                            >
+                              <img
+                                src="{{ childrenAttachments.attachment }}"
+                                alt="{{ childrenAttachments.attachment }}"
+                            /></a>
+
+                            <a
+                              class="ant-upload-list-item-name"
+                              href="{{ childrenAttachments.name }}"
+                              target="_blank"
+                              title="{{ childrenAttachments.name }}"
+                              >{{ childrenAttachments.name }}</a
+                            >
+                          </span>
+                        </div>
+                        <span class="ant-upload-list-item-actions">
+                          <a
+                            href="javascript:void(0);"
+                            (click)="
+                              handlePreview(childrenAttachments.attachment)
+                            "
+                            title="Preview file"
+                          >
+                            <i nz-icon nzType="eye-o" title="View file"> </i
+                          ></a>
+                          <!-- <i nz-icon nzType="delete" title="Remove file">
+                                                    </i> -->
+                        </span>
+                      </div>
+                    </div>
+                  </ng-template>
+                </nz-list>
+              </nz-comment-content>
+              <ul class="replyAction">
+                <li>
+                  <span>
+                    <span
+                      class="replyTo"
+                      (click)="showCommentInlineReply(i)"
+                      style="float: left;"
+                      >Reply to
+                    </span>
+                  </span>
+                </li>
+              </ul>
+            </nz-comment>
+          </ng-template>
+        </nz-list>
+        <div
+          class="inlineCommentEditor"
+          [ngClass]="i === showInlineCommentEditor ? 'show' : 'hide'"
+        >
+          <nz-comment
+            [ngClass]="visibilityState[i] === 'show' ? 'hide' : 'show'"
+          >
+            <nz-avatar
+              nz-comment-avatar
+              nzIcon="user"
+              [nzSrc]="user.thumbnail"
+              class="avtr"
+            >
+            </nz-avatar>
+            <nz-comment-content>
+              <nz-form-item>
+                <quill-editor
+                  [(ngModel)]="replyInputValue"
+                  [modules]="toolbarOptions"
+                  [customOptions]="customOptions"
+                >
+                </quill-editor>
+              </nz-form-item>
+              <nz-form-item *ngIf="mode == 'notes'">
+                <nz-upload
+                  [nzAccept]="imageFileAcceptList()"
+                  class="upload-list-inline"
+                  nzListType="text"
+                  [(nzFileList)]="fileList"
+                  [nzShowUploadList]="showUploadList"
+                  (nzChange)="uploadMonitor($event)"
+                  [nzAction]="uploadAPI()"
+                >
+                  <a
+                    ><span class="attachmentSpan"
+                      ><i nz-icon nzType="paper-clip"></i> Add Attachment</span
+                    ></a
+                  >
+                </nz-upload>
+              </nz-form-item>
+              <nz-form-item [class.add-comment]="mode == 'feedback'">
+                <button
+                  nz-button
+                  nzType="primary"
+                  [nzLoading]="submitting"
+                  [disabled]="!replyInputValue"
+                  (click)="handleSubmitAndUpload('replies', i, item)"
+                >
+                  Reply
+                </button>
+              </nz-form-item>
+            </nz-comment-content>
+          </nz-comment>
+        </div>
+      </nz-comment>
+      <div
+        [ngClass]="{ hide: !showMoreComments }"
+        *ngIf="i === 1"
+        class="showMoreComments"
+        [class.commentBottomBorder]="mode != 'feedback'"
+      >
+        <a (click)="showHideComments()"
+          >Show {{ comments.length - 2 }} more comments</a
+        >
+      </div>
+      <div
+        [ngClass]="{ hide: showMoreComments }"
+        *ngIf="comments.length > 2 && i === comments.length - 1"
+        class="showMoreComments"
+        [class.commentBottomBorder]="mode != 'feedback'"
+      >
+        <a (click)="showHideComments()">Hide previous comments</a>
+      </div>
+    </ng-template>
+  </nz-list>
+  <div class="empty-data" *ngIf="mode == 'feedback' && isDataEmpty">
+    No records found.
+  </div>
+  <nz-comment *ngIf="mode != 'feedback'" class="outerCommentEditor">
+    <!-- -->
+    <nz-avatar
+      nz-comment-avatar
+      nzIcon="user"
+      [nzSrc]="user.thumbnail"
+      class="avtr outerAvtrPadding"
+    ></nz-avatar>
+    <nz-comment-content>
+      <nz-form-item>
+        <quill-editor
+          [(ngModel)]="inputValue"
+          [modules]="toolbarOptions"
+          [customOptions]="customOptions"
+        >
+        </quill-editor>
+      </nz-form-item>
+      <nz-form-item *ngIf="mode == 'notes'">
+        <nz-upload
+          [nzAccept]="imageFileAcceptList()"
+          class="upload-list-inline"
+          nzListType="text"
+          [(nzFileList)]="fileListOuter"
+          [nzShowUploadList]="showUploadList"
+          (nzChange)="uploadMonitor($event)"
+          [nzAction]="uploadAPI()"
+        >
+          <a
+            ><span class="attachmentSpan"
+              ><i nz-icon nzType="paper-clip"></i> Add Attachment</span
+            ></a
+          >
+        </nz-upload>
+      </nz-form-item>
+      <!-- <nz-form-item *ngIf="mode == 'feedback'">
+        <a href="javascript:void(0)" (click)="getScreenShot()"><span class="attachmentSpan"><i nz-icon
+              nzType="paper-clip"></i> Add
+            Screenshot</span></a>
+        <ng-container *ngIf="isScreenShotAdded">
+          &nbsp;&nbsp;
+          <a href="javascript:void(0)" (click)="previewScreenShot('parent')"><span class="attachmentSpan"><i nz-icon
+                nzType="eye"></i>View
+              Screenshot</span></a>
+        </ng-container>
+      </nz-form-item> -->
+
+      <nz-form-item [class.add-comment]="mode == 'feedback'">
+        <button
+          nz-button
+          nzType="primary"
+          [nzLoading]="submitting"
+          [disabled]="!inputValue"
+          (click)="handleSubmitAndUpload('parent', -1, null)"
+        >
+          Add Comment
+        </button>
+      </nz-form-item>
+    </nz-comment-content>
+  </nz-comment>
+</div>
+<div [style.display]="showModal ? 'block' : 'none'" class="modal" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel"></h4>
+         <button type="button" class="btn btn-default" data-dismiss="modal" (click) = "hide()"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <img [src]="previewImage" [ngStyle]="{ width: '100%' }" id="imagepreview" />
+      </div>
+     
+    </div>
+  </div>
+  
+<!--<nz-modal class="previewmodal"
+  [nzVisible]="previewVisible"
+  [nzContent]="modalContent"
+  [nzFooter]="null"
+  (nzOnCancel)="previewVisible = false"
+>
+  <ng-template #modalContent>
+    <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
+  </ng-template>
+</nz-modal>-->

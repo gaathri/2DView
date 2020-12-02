@@ -1,0 +1,63 @@
+<form
+  *ngIf="isDataReady"
+  class="form-panel"
+  nz-form
+  [formGroup]="dataForm"
+  (ngSubmit)="submitHandler()"
+  autocomplete="off"
+>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="reason">Holiday Reason</nz-form-label>
+    <nz-form-control [nzErrorTip]="iNameTpl">
+      <input
+        id="reason"
+        formControlName="reason"
+        nz-input
+        [maxLength]="nameMaxLength"
+        placeholder="Holiday Name"
+      />
+      <ng-template #iNameTpl let-control>
+        <ng-container *ngIf="control.hasError('pattern')"
+          >This pattern is not allowed!</ng-container
+        >
+        <ng-container *ngIf="control.hasError('required')"
+          >Name is required!</ng-container
+        >
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Holiday Description</nz-form-label>
+    <nz-form-control>
+      <input
+        id="description"
+        formControlName="description"
+        nz-input
+        [maxLength]="descMaxLength"
+        placeholder="Holiday Description"
+      />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="leaveDate">Leave Date</nz-form-label>
+    <nz-form-control nzErrorTip="Date is required!">
+      <nz-date-picker
+        id="leaveDate"
+        formControlName="leaveDate"
+        [nzClassName]="'tcal'"
+        nzPlaceHolder="Leave Date"
+        [nzFormat]="getDisplayDateFormat()"
+      >
+      </nz-date-picker>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+<div *ngIf="isDataReady" class="submit-btn-parent">
+  <button nz-button nzType="primary" (click)="submitHandler()">
+    {{ btnName }}
+  </button>
+</div>
+
+<!-- <pre style="color: greenyellow;">{{ dataForm!.value | json }}</pre> -->

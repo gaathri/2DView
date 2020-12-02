@@ -1,0 +1,184 @@
+<div *ngIf="isDataReady">
+  <form
+    *ngIf="isDataReady"
+    class="form-panel"
+    nz-form
+    [formGroup]="mainForm"
+    (ngSubmit)="submitHandler()"
+    autocomplete="off"
+  >
+    <nz-form-item>
+      <nz-form-label nzRequired nzFor="showId"> Show Name </nz-form-label>
+      <nz-form-control
+        *ngIf="!disableShowSelect"
+        nzErrorTip="Please provide your input!"
+      >
+        <nz-select
+          id="showId"
+          formControlName="showId"
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Select Show"
+          [nzDisabled]="disableShowSelect"
+          (ngModelChange)="showChangeHandler()"
+        >
+          <!-- [nzDisabled]="!isValidArr(shows) || disableShowSelect" -->
+          <nz-option
+            *ngFor="let show of shows"
+            [nzLabel]="show.showName"
+            [nzValue]="show.id"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+      <nz-form-control *ngIf="disableShowSelect">
+        <input readonly class="read-only" nz-input [value]="showName" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label>Shot Category</nz-form-label>
+      <nz-form-control>
+        <nz-radio-group
+          formControlName="shotCategory"
+          (ngModelChange)="requiredChange()"
+        >
+          <label nz-radio nzValue="sequence">Sequence</label>
+          <label nz-radio nzValue="spot">Spot</label>
+        </nz-radio-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="shotCategory == 'sequence'">
+      <nz-form-label nzRequired nzFor="sequenceId">Sequence Name</nz-form-label>
+      <nz-form-control nzErrorTip="Please provide your input!">
+        <nz-select
+          id="sequenceId"
+          formControlName="sequenceId"
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Select Sequence"
+        >
+          <!-- [nzDisabled]="!isValidArr(sequences)" -->
+          <nz-option
+            *ngFor="let sequence of sequences"
+            [nzLabel]="sequence.sequenceName"
+            [nzValue]="sequence.id"
+          >
+          </nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="shotCategory == 'spot'">
+      <nz-form-label nzRequired nzFor="spotId">Spot Name</nz-form-label>
+      <nz-form-control nzErrorTip="Please provide your input!">
+        <nz-select
+          id="spotId"
+          formControlName="spotId"
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Select Spot"
+        >
+          <!-- [nzDisabled]="!isValidArr(spots)" -->
+          <nz-option
+            *ngFor="let spot of spots"
+            [nzLabel]="spot.spotName"
+            [nzValue]="spot.id"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzRequired nzFor="shotCode"> Shot Code </nz-form-label>
+      <nz-form-control [nzErrorTip]="iNameTpl">
+        <input
+          id="shotCode"
+          formControlName="shotCode"
+          nz-input
+          [maxLength]="shotCodeMaxLength"
+          placeholder="Shot Code"
+          (ngModelChange)="onChange($event)"
+          [readonly]="isReadOnly()"
+          [class.read-only]="isReadOnly()"
+      /></nz-form-control>
+      <ng-template #iNameTpl let-control>
+        <ng-container *ngIf="control.hasError('pattern')"
+          >This pattern is not allowed!</ng-container
+        >
+        <ng-container *ngIf="control.hasError('required')"
+          >Shot Code is required!</ng-container
+        >
+      </ng-template>
+    </nz-form-item>
+
+    <nz-form-item>
+      <div class="row">
+        <nz-form-label>
+          <label>Shot Thumbnail</label>
+        </nz-form-label>
+      </div>
+      <div class="row mt-2">
+        <app-image-upload
+          [imageUrl]="shotOutCopy.thumbnail"
+          (onChange)="onUploadChange($event)"
+        ></app-image-upload>
+      </div>
+    </nz-form-item>
+
+    <!-- Thumbnail Image Section End -->
+
+    <nz-form-item>
+      <nz-form-label>Shot Description</nz-form-label>
+      <nz-form-control>
+        <input
+          id="description"
+          formControlName="description"
+          nz-input
+          [maxLength]="shotDescMaxLength"
+          placeholder="Shot Description"
+          (ngModelChange)="onChange($event)"
+        />
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+  <div *ngFor="let link of getLinks()">
+    <div (click)="linkClickHandler(link)" class="full-width-button-bg">
+      <a>
+        <span class="icon-div"
+          ><i nz-icon nz-size="small" nzType="arrow-right" nzTheme="outline"></i
+        ></span>
+
+        <span *ngIf="link.isMandatoryFieldPresent">* </span>
+        <span>
+          {{ link.title }}
+        </span>
+      </a>
+    </div>
+    <div *ngIf="!link.isValid" class="link-error">
+      Please provide your input!
+    </div>
+  </div>
+  <div class="submit-btn-parent">
+    <button nz-button nzType="primary" (click)="submitHandler()">
+      {{ btnName }}
+    </button>
+  </div>
+</div>
+
+<ng-template #linkDrawerHeader let-drawerRef="drawerRef">
+  <div class="title-row">
+    <div class="left-icon" [ngSwitch]="mode">
+      <ng-container *ngSwitchCase="'create'">
+        <app-icon-picker iconType="add"></app-icon-picker>
+      </ng-container>
+      <ng-container *ngSwitchCase="'update'">
+        <app-icon-picker iconType="edit"></app-icon-picker>
+      </ng-container>
+    </div>
+    <div class="title-text">{{ this.title }}</div>
+    <div class="d-flex align-items-center right-icon">
+      <i (click)="closeForm()" nz-icon nzType="right" nzTheme="outline"></i>
+    </div>
+  </div>
+</ng-template>
+
+<!-- <span style="color: greenyellow">{{ mainForm?.value | json }}</span> -->

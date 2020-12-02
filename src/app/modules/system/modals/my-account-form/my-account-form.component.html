@@ -1,0 +1,109 @@
+<form
+  *ngIf="isDataReady"
+  class="form-panel"
+  nz-form
+  [formGroup]="dataForm"
+  (ngSubmit)="submitHandler()"
+  autocomplete="off"
+>
+  <nz-form-item>
+    <nz-form-label>First Name</nz-form-label>
+    <nz-form-control>
+      <input
+        class="read-only"
+        id="firstName"
+        nz-input
+        placeholder="First Name"
+        formControlName="firstName"
+        readonly
+      />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Last Name</nz-form-label>
+    <nz-form-control>
+      <input
+        class="read-only"
+        nz-input
+        placeholder="Last Name"
+        formControlName="lastName"
+        readonly
+      />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Login Id</nz-form-label>
+    <nz-form-control>
+      <input
+        class="read-only"
+        nz-input
+        placeholder="Login Id"
+        formControlName="loginId"
+        readonly
+      />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <div class="row">
+      <nz-form-label>
+        <label>User Thumbnail</label>
+      </nz-form-label>
+    </div>
+    <div class="row mt-2">
+      <app-image-upload
+        [imageUrl]="userOutCopy.thumbnail"
+        (onChange)="onUploadChange($event)"
+      >
+      </app-image-upload>
+    </div>
+  </nz-form-item>
+
+  <nz-form-item>
+    <!-- <nz-form-label nzRequired nzFor="isEmailNotification">Enable Email Notification</nz-form-label> -->
+    <nz-form-control>
+      <label nz-checkbox formControlName="isEmailNotification"
+        >Enable Email Notification</label
+      >
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div *ngFor="let link of getLinks()">
+  <div (click)="linkClickHandler(link)" class="full-width-button-bg">
+    <a>
+      <span class="icon-div"
+        ><i nz-icon nz-size="small" nzType="arrow-right" nzTheme="outline"></i
+      ></span>
+
+      <span *ngIf="link.isMandatoryFieldPresent">* </span>
+      <span>
+        {{ link.title }}
+      </span>
+    </a>
+  </div>
+  <div *ngIf="!link.isValid" class="link-error">
+    Please provide your input!
+  </div>
+</div>
+
+<div *ngIf="isDataReady" class="submit-btn-parent">
+  <button nz-button nzType="primary" (click)="submitHandler()">
+    Save
+  </button>
+</div>
+
+<!-- <span style="color: greenyellow">{{ dataForm?.value | json }}</span> -->
+<ng-template #linkDrawerHeader let-drawerRef="drawerRef">
+  <div class="title-row">
+    <div class="left-icon">
+      <i nz-icon nzType="setting" nzTheme="fill"> </i>
+    </div>
+    <div class="title-text">{{ this.title }}</div>
+    <div class="d-flex align-items-center right-icon">
+      <i (click)="closeForm()" nz-icon nzType="right" nzTheme="outline"></i>
+    </div>
+  </div>
+</ng-template>

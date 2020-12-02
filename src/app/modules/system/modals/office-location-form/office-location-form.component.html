@@ -1,0 +1,47 @@
+<form
+  *ngIf="isDataReady"
+  class="form-panel"
+  nz-form
+  [formGroup]="dataForm"
+  (ngSubmit)="submitHandler()"
+  autocomplete="off"
+>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="name">Location</nz-form-label>
+    <nz-form-control [nzErrorTip]="iNameTpl">
+      <input
+        id="name"
+        formControlName="name"
+        nz-input
+        [maxLength]="nameMaxLength"
+        placeholder="Location"
+      />
+      <ng-template #iNameTpl let-control>
+        <ng-container *ngIf="control.hasError('required')"
+          >Location is required!</ng-container
+        >
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Description</nz-form-label>
+    <nz-form-control>
+      <input
+        id="description"
+        formControlName="description"
+        nz-input
+        [maxLength]="descMaxLength"
+        placeholder="Description"
+      />
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div *ngIf="isDataReady" class="submit-btn-parent">
+  <button nz-button nzType="primary" (click)="submitHandler()">
+    {{ btnName }}
+  </button>
+</div>
+
+<!-- <pre style="color: greenyellow">{{ clientOutCopy | json }}</pre> -->

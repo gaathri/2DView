@@ -1,0 +1,99 @@
+<form
+  *ngIf="isDataReady"
+  class="form-panel"
+  nz-form
+  [formGroup]="dataForm"
+  (ngSubmit)="submitHandler()"
+  autocomplete="off"
+>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="departmentId">
+      Department Name
+    </nz-form-label>
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <nz-select
+        id="departmentId"
+        formControlName="departmentId"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Department"
+        [nzDisabled]="!isValidArr(departments) || this.mode == 'update'"
+      >
+        <nz-option
+          *ngFor="let department of departments"
+          [nzLabel]="department.departmentName"
+          [nzValue]="department.id"
+        ></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="taskTypeName"
+      >Task Type Name</nz-form-label
+    >
+    <nz-form-control [nzErrorTip]="iNameTpl">
+      <input
+        id="taskTypeName"
+        formControlName="taskTypeName"
+        nz-input
+        [maxLength]="nameMaxLength"
+        placeholder="Task Type Name"
+      />
+      <ng-template #iNameTpl let-control>
+        <ng-container *ngIf="control.hasError('pattern')"
+          >This pattern is not allowed!</ng-container
+        >
+        <ng-container *ngIf="control.hasError('required')"
+          >Name is required!</ng-container
+        >
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="taskCode">Task Code</nz-form-label>
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <input
+        id="taskCode"
+        formControlName="taskCode"
+        nz-input
+        [maxLength]="codeMaxLength"
+        placeholder="Task Code"
+      />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item style="margin-top: 12px;">
+    <nz-form-label nzRequired nzFor="colorCode"
+      >Select Color Code</nz-form-label
+    >
+    <span class="color-picker-label">{{ this.tasktypeOutCopy.colorCode }}</span>
+    <!-- style="color: white; position: absolute; top: -2px;" -->
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <app-color-picker
+        [options]="colorPaletteCodes"
+        [color]="tasktypeOutCopy.colorCode"
+        [heading]="''"
+        (event)="setColor($event)"
+      >
+      </app-color-picker>
+      <input
+        style="visibility: hidden;"
+        readonly
+        id="colorCode"
+        nz-input
+        placeholder="Color Code"
+        formControlName="colorCode"
+      />
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div *ngIf="isDataReady" class="submit-btn-parent">
+  <button nz-button nzType="primary" (click)="submitHandler()">
+    {{ btnName }}
+  </button>
+</div>
+
+<!-- <pre style="color: greenyellow">{{ tasktypeOutCopy | json }}</pre> -->

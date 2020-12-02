@@ -1,0 +1,41 @@
+<div class="playlist-tab">
+  <nz-tabset [nzSelectedIndex]="0">
+    <nz-tab *ngFor="let tab of myTabs" [nzTitle]="titleTemplate">
+      <ng-template #titleTemplate>
+        <div>
+          {{ tab.title }}
+        </div>
+      </ng-template>
+      <ng-container *ngIf="tab.id == 'dailies'">
+        <ng-template nz-tab>
+          <app-playlist-internal
+            [playlistType]="tab.playlistType"
+          ></app-playlist-internal>
+        </ng-template>
+      </ng-container>
+      <ng-container *ngIf="tab.id == 'internal'">
+        <ng-template nz-tab>
+          <app-playlist-internal
+            [playlistType]="tab.playlistType"
+          ></app-playlist-internal>
+        </ng-template>
+      </ng-container>
+
+      <ng-container *ngIf="tab.id == 'external'">
+        <ng-template nz-tab>
+          <app-playlist-internal
+            [playlistType]="tab.playlistType"
+          ></app-playlist-internal>
+        </ng-template>
+      </ng-container>
+
+      <ng-container *ngIf="tab.id == 'archive'">
+        <ng-template nz-tab>
+          <app-playlist-internal
+            [playlistType]="tab.playlistType"
+          ></app-playlist-internal>
+        </ng-template>
+      </ng-container>
+    </nz-tab>
+  </nz-tabset>
+</div>

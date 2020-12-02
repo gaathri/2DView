@@ -1,0 +1,74 @@
+<form
+  *ngIf="isDataReady"
+  class="form-panel"
+  nz-form
+  [formGroup]="dataForm"
+  (ngSubmit)="submitHandler()"
+  autocomplete="off"
+>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="taskPriorityLevel"
+      >Task Priority Name</nz-form-label
+    >
+    <nz-form-control [nzErrorTip]="iNameTpl">
+      <input
+        id="taskPriorityLevel"
+        formControlName="taskPriorityLevel"
+        nz-input
+        [maxLength]="nameMaxLength"
+        placeholder="Task Priority Name"
+      />
+      <ng-template #iNameTpl let-control>
+        <ng-container *ngIf="control.hasError('pattern')"
+          >This pattern is not allowed!</ng-container
+        >
+        <ng-container *ngIf="control.hasError('required')"
+          >Name is required!</ng-container
+        >
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Description</nz-form-label>
+    <nz-form-control>
+      <input
+        nz-input
+        placeholder="Description"
+        [maxLength]="descMaxLength"
+        formControlName="description"
+      />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item style="margin-top: 12px;">
+    <nz-form-label nzRequired nzFor="colourCode"
+      >Select Color Code</nz-form-label
+    >
+    <!-- style="color: white; position: absolute; top: 8px;" -->
+    <span class="color-picker-label">{{ priorityOutCopy.colourCode }}</span>
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <app-color-picker
+        [options]="colorPaletteCodes"
+        [color]="priorityOutCopy.colourCode"
+        [heading]="''"
+        (event)="setColor($event)"
+      >
+      </app-color-picker>
+      <input
+        style="visibility: hidden;"
+        id="colourCode"
+        readonly
+        nz-input
+        placeholder="Color Code"
+        formControlName="colourCode"
+      />
+    </nz-form-control>
+  </nz-form-item>
+</form>
+<div *ngIf="isDataReady" class="submit-btn-parent">
+  <button nz-button nzType="primary" (click)="submitHandler()">
+    {{ btnName }}
+  </button>
+</div>
+<!-- <pre style="color: greenyellow">{{ priorityOutCopy | json }}</pre> -->

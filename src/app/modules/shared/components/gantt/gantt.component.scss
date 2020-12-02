@@ -1,0 +1,314 @@
+.gantt-wrapper {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.ant-form-vertical .ant-form-item-label,
+.ant-col-24.ant-form-item-label,
+.ant-col-xl-24.ant-form-item-label {
+  padding: 8px 0 8px;
+  line-height: 0 !important;
+}
+.ggroupCommon {
+  height: 7px;
+  background: rgba(255, 255, 255, 0.3);
+  margin-top: 2px;
+}
+
+.ggroupCommoncomplete {
+  float: left;
+  overflow: hidden;
+  height: 3px;
+  filter: alpha(opacity=80);
+  opacity: 0.8;
+  background-color: rgba(255, 255, 255, 0.3);
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+.ggroupCommonendpointleft {
+  overflow: hidden;
+  width: 0px;
+  height: 0px;
+  top: 2px;
+  border-top: 4px solid rgba(255, 255, 255, 0.3);
+  border-left: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-right: 4px solid transparent;
+  float: left;
+}
+
+.ggroupCommonendpointright {
+  overflow: hidden;
+  width: 0px;
+  height: 0px;
+  top: 2px;
+  border-top: 4px solid rgba(255, 255, 255, 0.3);
+  border-left: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-right: 4px solid transparent;
+  float: right;
+}
+
+.ganttToggleButton {
+  background-color: #00b15f;
+  z-index: 2;
+  cursor: pointer;
+  position: fixed;
+  width: 40px;
+  height: 30px;
+  color: white;
+  border: 0px;
+  border-radius: 5px 5px 5px 0px;
+}
+
+.ganttHandler {
+  //width: 4px;
+  padding: 0;
+  cursor: ew-resize;
+  flex: 0 0 auto;
+  background-color: #00b15f;
+}
+
+.ganttHandler::before {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 100%;
+  //background: rgba(255, 255, 0, 1);
+  //background: #323232;
+  //background: red;
+  margin: 0 auto;
+}
+
+.gmainleft {
+  overflow: hidden;
+  flex: 0 0 auto;
+  background-color: #323232;
+  box-sizing: border-box;
+}
+
+.gmainright {
+  background-color: #323232;
+  box-sizing: border-box;
+}
+
+/*.gmainleft {
+  overflow: hidden;
+  flex: 0 0 45%;
+  background-color: #323232;
+}
+
+.gmainright {
+  background-color: #323232;
+}*/
+
+.gchartcontainer {
+  line-height: 20px;
+  height: calc(100vh - 170px);
+}
+
+.gtasktableh {
+  div {
+    font-size: 16px;
+  }
+
+  border-left: none;
+  //border: 1px solid #434343;
+  border: 1px solid rgba(#434343, 0.5);
+  background-color: #323232;
+
+  .gtaskname {
+    border-left: none;
+  }
+
+  .gselector {
+    .gformlabel {
+      border: 0px;
+      padding-left: 10px;
+      font-size: 16px;
+    }
+
+    padding-left: 10px;
+  }
+
+  span.gformlabel:hover,
+  span.gselected {
+    border: none;
+    background-color: transparent;
+    color: #00c293;
+  }
+
+  .gmajorheading div {
+    width: 100%;
+  }
+}
+
+.gtasktable {
+  border-left: none;
+  //border: 1px solid #434343;
+  border: 1px solid rgba(#434343, 0.5);
+
+  span {
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .gtaskname {
+    border-left: none;
+
+    div {
+      font-size: 14px;
+    }
+  }
+
+  .gname.ggroupitem.gitemhighlight td {
+    background-image: none;
+    background-color: #323232;
+  }
+
+  .gname.glineitem.gitemhighlight td,
+  .gname.glineitem.gitemhighlight td div {
+    background-image: none;
+    background-color: #424242;
+    background-color: #323232;
+    //background-color: red;
+    //cursor: pointer;
+  }
+
+  span.gfoldercollapse {
+    color: rgba(255, 255, 255, 0.75);
+  }
+}
+
+.gtasktableh,
+.gtasktable {
+  .gtaskname div,
+  .gtaskname {
+    cursor: pointer;
+    min-width: 300px;
+    width: 40%;
+    background-color: #323232;
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  .gtasklist {
+    border: none;
+    background-color: #323232;
+  }
+}
+
+.gcharttableh {
+  .gmajorheading {
+    background-color: #393e46;
+    font-weight: 600;
+    color: white;
+  }
+
+  div {
+    display: inline-block;
+  }
+}
+
+.gchartgrid,
+.gchartlbl {
+  //border-left: 5px solid #434343;
+  background-color: #323232;
+}
+
+.gcharttableh,
+.gcharttable {
+  .gminorheading {
+    color: #ff9025;
+    font-weight: 400;
+  }
+
+  .gminorheadingwkend {
+    color: yellow;
+    font-weight: 400;
+  }
+
+  .gminorheading div,
+  .gminorheadingwkend div {
+    display: inline-block;
+  }
+}
+
+.gcharttable {
+  .gitemhighlight td {
+    background-image: none;
+    background-color: #323232;
+  }
+
+  div.gtaskbarcontainer {
+    padding-top: 4px;
+    opacity: 0.8;
+  }
+
+  .ggroupcaption,
+  .gcaption {
+    font-size: 12px;
+    font-weight: 100;
+    right: -125px;
+  }
+}
+
+.gmajorheading,
+.gminorheading,
+.gminorheadingwkend,
+.gtaskcell,
+.gtaskcellwkend {
+  background-color: #323232;
+  color: rgba(255, 255, 255, 0.75);
+  //border: 1px solid #434343;
+  border: 1px solid rgba(#434343, 0.5);
+  font-size: 14px;
+  font-weight: 100;
+}
+
+.gtasktableh tr,
+.gcharttable tr,
+.gcharttableh tr,
+.gtasktable tr {
+  height: 35.5px !important;
+}
+
+.gtaskheading,
+.gname,
+.gtaskname,
+.gresource,
+.gduration,
+.gpccomplete,
+.gstartdate,
+.gplanstartdate,
+.gplanenddate,
+.gcost,
+.genddate {
+  //border: 1px solid #434343;
+  border: 1px solid rgba(#434343, 0.5);
+}
+
+.JSGanttToolTip {
+  .gTaskInfo {
+    background: rgb(80, 78, 78);
+    width: 300px;
+    border: #eeeded 1px solid;
+    border-radius: 5px;
+    padding: 4px 6px 4px 6px;
+    float: left;
+  }
+
+  .gTtTitle,
+  .gTaskLabel,
+  .gTaskText,
+  .gTaskNotes {
+    color: white;
+  }
+
+  .gTaskLabel {
+    font-weight: 500;
+  }
+}
+
+.rhscrpad {
+  width: 50px;
+}

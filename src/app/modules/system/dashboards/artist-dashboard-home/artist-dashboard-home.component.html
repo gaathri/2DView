@@ -1,0 +1,62 @@
+<div class="common-header-new">
+  <div class="d-flex justify-content-between db-links">
+    <div class="d-flex justify-content-between">
+      <div
+        [class.active]="isDashboardVisible"
+        class="db-link hand"
+        (click)="showDashboard()"
+      >
+        Dashboard
+      </div>
+      <div class="db-link pipe">|</div>
+      <div
+        [class.active]="isKanbanVisible"
+        class="db-link hand"
+        (click)="showKanban()"
+      >
+        Kanban
+      </div>
+    </div>
+    <!-- <div class="db-link">|</div> -->
+    <div
+      *ngIf="isValidArr(workStatuses)"
+      class="db-link hand settings last"
+      (click)="showSettings()"
+    >
+      <i nz-icon nzType="setting" nzTheme="fill"></i
+      ><span class="label">&nbsp;&nbsp;Settings</span>
+    </div>
+  </div>
+
+  <ng-container *ngIf="isDashboardVisible && isValidArr(workStatuses)">
+    <app-artist-dashboard
+      [starStatus]="starSelectedItems"
+      [overallStatus]="overallSelectedItems"
+    >
+    </app-artist-dashboard>
+  </ng-container>
+  <ng-container *ngIf="isKanbanVisible">
+    <app-kanban
+      [kanbanStatus]="kanbanSelectedItems"
+      [startDate]="startDate"
+      [endDate]="endDate"
+      #kanbanChart
+    ></app-kanban>
+    <!-- <div style="color: yellowgreen;padding: 16px;">KANBAN Page</div> 
+    <app-image [url]="'https://www.foresthillspreschool.com/wp-content/uploads/2014/04/under_construction.gif'">
+    </app-image>-->
+  </ng-container>
+</div>
+
+<!--Template content for tabel columns drawer header START-->
+<ng-template #drawerHeader let-drawerRef="drawerRef">
+  <div class="title-row">
+    <div class="left-icon">
+      <i nz-icon nzType="setting" nzTheme="fill"></i>
+    </div>
+    <div class="title-text">{{ drawerTitle }}</div>
+    <div class="right-icon">
+      <i (click)="closeForm()" nz-icon nzType="right" nzTheme="outline"></i>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,119 @@
+<div class="cal-view row" style="height: auto;">
+  <div class="col-12 px-0 py-0">
+    <div class="row">
+      <div class="col-md-12 pl-0 pr-0">
+        <div class="table-header-panel-db d-flex justify-content-between">
+          <div class="quick-filter pipe last">
+            <ng-container *ngIf="allowUserSearch">
+              <nz-select
+                *ngIf="!isUserSelected"
+                [nzDisabled]="!isValidArr(users)"
+                style="width: 300px; top: -5px;"
+                nzPlaceHolder="Search and Select User"
+                (ngModelChange)="userChangeHandler($event)"
+                [ngModel]="user"
+                nzShowSearch
+              >
+                <nz-option
+                  *ngFor="let user of users"
+                  [nzLabel]="getUserName(user)"
+                  [nzValue]="user"
+                >
+                </nz-option>
+              </nz-select>
+              <ng-container *ngIf="isUserSelected">
+                <div class="user-info">
+                  <div>
+                    <app-avatar [info]="getAvatarInfo(user)"> </app-avatar>
+                    <span
+                      [title]="user.firstName"
+                      class="px-2 text-truncate user-name"
+                      >{{ user.firstName }} {{ user.lastName }}</span
+                    >
+                  </div>
+                  <span
+                    class="highlight-yellow hand"
+                    style="margin-top: -2px;"
+                    (click)="closeUser()"
+                    >X</span
+                  >
+                </div>
+              </ng-container>
+            </ng-container>
+            <ng-container *ngIf="!allowUserSearch">
+              <span style="visibility: hidden;">&nbsp;</span>
+            </ng-container>
+          </div>
+          <div class="d-flex justify-content-between">
+            <div class="quick-filter pipe last">
+              <span
+                ><i nz-icon nzType="calendar" [nzTheme]="'outline'"></i
+              ></span>
+              <span>&nbsp;&nbsp;{{ viewDate | date: "MMMM, yyyy" }}</span>
+            </div>
+
+            <div
+              class="quick-filter hand last"
+              [class.disabled]="disabledPrev()"
+              (click)="prevMonth()"
+            >
+              <span><i nz-icon nzType="left" nzTheme="outline"></i></span>
+            </div>
+            <div
+              class="quick-filter hand last"
+              [class.disabled]="disableNext()"
+              (click)="nextMonth()"
+            >
+              <span><i nz-icon nzType="right" nzTheme="outline"></i></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="holder" *ngIf="isValidArr(formattedMonthArray)">
+  <div
+    class="dayHolder"
+    *ngFor="let _day of formattedMonthArray[monthNavIndex].date; let j = index"
+    (click)="dayClick(j, _day)"
+    [ngClass]="_day.enabled === false || isDayOff(_day) ? 'cell-na' : ''"
+  >
+    <div class="top-cell" [ngClass]="clickedDayIndex === j ? 'selected' : ''">
+      <div class="cell-date">{{ _day.day }}</div>
+      <div class="cell-day">{{ _day.weekday }}</div>
+    </div>
+    <div
+      class="bottom-cell"
+      [class.leave]="isDayOff(_day) && _day && _day.label == 'Leave'"
+      [ngClass]="getBottomClass(_day)"
+    >
+      <ng-container
+        *ngIf="_day.hours && !isDayOff(_day) && !isWeekendOrHoliday(_day)"
+      >
+        <span *ngIf="isArtistView || isUserSelected">
+          {{
+            _day.enabled
+              ? (_day.hours < 10 ? "0" : "") + _day.hours + " hrs"
+              : ""
+          }}
+        </span>
+        <span *ngIf="isArtistView || isUserSelected">
+          {{ _day.enabled ? "|" : "" }}
+        </span>
+      </ng-container>
+      <ng-container *ngIf="!isDayOff(_day) && !isWeekendOrHoliday(_day)">
+        <span>{{ getText(_day) }}</span>
+      </ng-container>
+      <ng-container *ngIf="isDayOff(_day) || isWeekendOrHoliday(_day)">
+        <span>{{ _day.label }}</span>
+      </ng-container>
+    </div>
+  </div>
+</div>
+<div *ngIf="false" class="today link" (click)="goToday()">
+  <span>
+    Today
+  </span>
+</div>

@@ -1,0 +1,57 @@
+<form
+  *ngIf="isDataReady"
+  class="form-panel"
+  nz-form
+  [formGroup]="dataForm"
+  (ngSubmit)="submitHandler()"
+  autocomplete="off"
+>
+  <nz-form-item *ngFor="let customField of getCustomFields()">
+    <nz-form-label
+      [nzRequired]="isRequired(customField.name)"
+      [nzFor]="customField.name"
+      >{{ customField.name }}</nz-form-label
+    >
+    <nz-form-control [nzErrorTip]="iNameTpl">
+      <ng-container *ngIf="getFormat(customField) == 'Integer'">
+        <input
+          [id]="customField.name"
+          [formControlName]="customField.name"
+          nz-input
+          numeric
+          numericType="number"
+          placeholder="Please provide your input."
+        />
+      </ng-container>
+
+      <ng-container *ngIf="getFormat(customField) == 'String'">
+        <input
+          [id]="customField.name"
+          [formControlName]="customField.name"
+          nz-input
+          placeholder="Please provide your input."
+        />
+      </ng-container>
+
+      <ng-container *ngIf="getFormat(customField) == 'Datetime'">
+        <nz-date-picker
+          [id]="customField.name"
+          [formControlName]="customField.name"
+          placeholder="Please provide your input."
+          [nzClassName]="'tcal'"
+          [nzFormat]="getDisplayDateFormat()"
+        >
+        </nz-date-picker>
+      </ng-container>
+
+      <ng-template #iNameTpl let-control>
+        <ng-container *ngIf="control.hasError('pattern')"
+          >This pattern is not allowed!</ng-container
+        >
+        <ng-container *ngIf="control.hasError('required')"
+          >Input is required!</ng-container
+        >
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+</form>

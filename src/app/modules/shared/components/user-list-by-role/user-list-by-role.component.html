@@ -1,0 +1,34 @@
+<div style="padding:0px">
+  <div class="row template-list" *ngFor="let info of userDetails">
+    <div class="row" style="width:100%;position: relative;padding:10px;">
+      <div class="row" style="width:100%;position: relative;
+      margin-bottom: 16px;">
+        <span style="color:white;
+      margin-bottom: 0;
+      font-size: 12px;
+      font-weight: 400;margin-left: 5px;">
+          {{ info.key }}
+        </span>
+        <span style="color: #3be582;
+      margin-bottom: 0;
+      font-size: 12px;
+      font-weight: 400;margin-left: 5px;margin-right: 5px;">
+          {{ info.value.length }}
+        </span>
+        <span class="divider-left-text"></span>
+      </div>
+      <div class="row template" *ngFor="let t of info.value; let odd = odd">
+        <div class="template-in">
+          <div>
+            <app-avatar [info]="getAvatarInfo(t)">
+            </app-avatar>
+            <span [title]="t.firstName" class="px-2 text-truncate template-name">{{ t.firstName }}
+              {{ t.lastName }}</span>
+          </div>
+          <span *ngIf="!isReadOnly" class="delete-icon" (click)="deleteTemplateHandler(info, t)">X</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <pre style="color: greenyellow">{{ userInfo | json }}</pre> -->
+</div>

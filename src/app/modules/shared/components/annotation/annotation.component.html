@@ -1,0 +1,563 @@
+<!-- <div>isCanvasCreated {{ isCanvasCreated }}</div>
+<div>showVideo {{ showVideo }}</div> -->
+<div
+  class="top-nav d-flex justify-content-between align-items-center"
+  [ngStyle]="{ width: playerWidth }"
+>
+  <div
+    class="d-flex justify-content-start align-items-center"
+    style="overflow: hidden"
+  >
+    <div class="close-wrapper">
+      <span class="close-btn" (click)="closeAnnotation()"
+        ><i nz-icon nzType="close" nzTheme="outline"></i
+      ></span>
+    </div>
+    <div style="width: 100%" class="title">
+      <span [title]="revisionInfo.taskRevisionName">
+        <!-- {{ revisionInfo.taskRevisionId }} -->
+        {{ revisionInfo.taskRevisionName }}
+      </span>
+    </div>
+  </div>
+  <div class="d-flex justify-content-between">
+    <span
+      class="nav-btn"
+      [class.disable]="isFirst"
+      (click)="handlePrev()"
+      style="padding-right: 12px"
+    >
+      <i nz-icon nzType="left" nzTheme="outline"></i>
+    </span>
+    <span class="nav-btn" [class.disable]="isLast" (click)="handleNext()">
+      <!-- style="padding-right: 12px;" -->
+      <i nz-icon nzType="right" nzTheme="outline"></i>
+    </span>
+  </div>
+</div>
+
+<ng-container *ngIf="dataReady">
+  <div
+    class="horizontalHolder"
+    [class.disabled]="blockAnnotationControls == 'block'"
+    [ngStyle]="{ width: playerWidth }"
+  >
+    <i nz-icon class="whiteColor spliter">
+      <svg viewBox="0 0 24 24">
+        <path d="M11 21H9V3H11V21M15 3H13V21H15V3Z" />
+      </svg>
+    </i>
+    <button
+      id="Select"
+      nz-button
+      class="actionBtn"
+      nzSize="large"
+      title="Select"
+      (click)="actionBtnClick('Select')"
+      [disabled]="!isCanvasCreated"
+    >
+      <i nz-icon [ngClass]="isSelect ? 'greenColor' : 'whiteColor'">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M13,6V11H18V7.75L22.25,12L18,16.25V13H13V18H16.25L12,22.25L7.75,18H11V13H6V16.25L1.75,12L6,7.75V11H11V6H7.75L12,1.75L16.25,6H13Z"
+          />
+        </svg>
+      </i>
+    </button>
+    <i nz-icon class="whiteColor spliter">
+      <svg viewBox="0 0 24 24">
+        <path d="M11 21H9V3H11V21M15 3H13V21H15V3Z" />
+      </svg>
+    </i>
+    <button
+      id="Ellipse"
+      nz-button
+      class="actionBtn"
+      nzSize="large"
+      title="Ellipse"
+      (click)="actionBtnClick('Ellipse')"
+      [disabled]="!isCanvasCreated"
+    >
+      <i nz-icon [ngClass]="isCircle ? 'greenColor' : 'whiteColor'">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"
+          />
+        </svg>
+      </i>
+    </button>
+    <button
+      id="Rectangle"
+      nz-button
+      class="actionBtn"
+      nzSize="large"
+      title="Rectangle"
+      (click)="actionBtnClick('Rectangle')"
+      [disabled]="!isCanvasCreated"
+    >
+      <i nz-icon [ngClass]="isSquare ? 'greenColor' : 'whiteColor'">
+        <svg viewBox="0 0 24 24">
+          <path d="M4,6V19H20V6H4M18,17H6V8H18V17Z" />
+        </svg>
+      </i>
+    </button>
+    <button
+      id="Freeline"
+      nz-button
+      class="actionBtn"
+      nzSize="large"
+      title="Free Line"
+      (click)="actionBtnClick('Freeline')"
+      [disabled]="!isCanvasCreated"
+    >
+      <i nz-icon [ngClass]="isPencil ? 'greenColor' : 'whiteColor'">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M6.95,14.93L11.19,9.27L19.68,2.2C20.07,1.81 20.72,1.81 21.09,2.2L21.8,2.91C22.19,3.28 22.19,3.93 21.8,4.32L14.73,12.81L9.07,17.05L6.95,14.93M8.36,17.76L6.24,15.64L3.41,17.05L2,21.29L4.12,19.17C4.32,19 4.63,19 4.83,19.17C5,19.37 5,19.68 4.83,19.88L2.71,22L6.95,20.59L8.36,17.76Z"
+          />
+        </svg>
+      </i>
+    </button>
+    <button
+      id="TextBox"
+      nz-button
+      class="actionBtn"
+      nzSize="large"
+      title="Text Box"
+      (click)="actionBtnClick('TextBox')"
+      [disabled]="!isCanvasCreated"
+    >
+      <i nz-icon [ngClass]="isFont ? 'greenColor' : 'whiteColor'">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M9.62,12L12,5.67L14.37,12M11,3L5.5,17H7.75L8.87,14H15.12L16.25,17H18.5L13,3H11Z"
+          />
+        </svg>
+      </i>
+    </button>
+    <button
+      id="Arrow"
+      nz-button
+      class="actionBtn"
+      nzSize="large"
+      title="Arrow"
+      (click)="actionBtnClick('Arrow')"
+      [disabled]="!isCanvasCreated"
+    >
+      <i nz-icon [ngClass]="isMousePointer ? 'greenColor' : 'whiteColor'">
+        <svg viewBox="0 0 24 24">
+          <path d="M5,17.59L15.59,7H9V5H19V15H17V8.41L6.41,19L5,17.59Z" />
+        </svg>
+      </i>
+    </button>
+    <i nz-icon class="whiteColor spliter">
+      <svg viewBox="0 0 24 24">
+        <path d="M11 21H9V3H11V21M15 3H13V21H15V3Z" />
+      </svg>
+    </i>
+    <button
+      id="Undo"
+      nz-button
+      class="actionBtn"
+      nzSize="large"
+      title="Undo"
+      (click)="actionBtnClick('Undo')"
+      [disabled]="!isCanvasCreated"
+    >
+      <i nz-icon class="whiteColor">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M12.5,8C9.85,8 7.45,9 5.6,10.6L2,7V16H11L7.38,12.38C8.77,11.22 10.54,10.5 12.5,10.5C16.04,10.5 19.05,12.81 20.1,16L22.47,15.22C21.08,11.03 17.15,8 12.5,8Z"
+          />
+        </svg>
+      </i>
+    </button>
+    <button
+      id="Redo"
+      nz-button
+      class="actionBtn"
+      nzSize="large"
+      title="Redo"
+      (click)="actionBtnClick('Redo')"
+      [disabled]="!isCanvasCreated"
+    >
+      <i nz-icon class="whiteColor">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M18.4,10.6C16.55,9 14.15,8 11.5,8C6.85,8 2.92,11.03 1.54,15.22L3.9,16C4.95,12.81 7.95,10.5 11.5,10.5C13.45,10.5 15.23,11.22 16.62,12.38L13,16H22V7L18.4,10.6Z"
+          />
+        </svg>
+      </i>
+    </button>
+    <button
+      id="Delete"
+      nz-button
+      class="actionBtn"
+      nzSize="large"
+      title="Delete"
+      (click)="actionBtnClick('Delete')"
+      [disabled]="!isCanvasCreated"
+    >
+      <i nz-icon class="whiteColor">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"
+          />
+        </svg>
+      </i>
+    </button>
+    <i nz-icon class="whiteColor spliter">
+      <svg viewBox="0 0 24 24">
+        <path d="M11 21H9V3H11V21M15 3H13V21H15V3Z" />
+      </svg>
+    </i>
+    <span class="bgStrokeSizeHolder">
+      <button
+        id="Stroke"
+        nz-button
+        class="actionBtn"
+        nzSize="large"
+        title="Stroke"
+        type="color"
+        (click)="actionBtnClick('Stroke')"
+        [disabled]="!isCanvasCreated"
+        [(colorPicker)]="selectedStrokeColor"
+        (colorPickerSelect)="strokeColorChange($event)"
+        [cpAlphaChannel]="'always'"
+        [cpSaveClickOutside]="'true'"
+        [cpOutputFormat]="'hex'"
+        [cpOKButton]="true"
+        [cpOKButtonClass]="'ant-btn ant-btn-primary'"
+      >
+        <!-- [ngStyle]="{ color: selectedStrokeColor }" -->
+        <i nz-icon class="whiteColor">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M15,5H17V3H15M15,21H17V19H15M11,5H13V3H11M19,5H21V3H19M19,9H21V7H19M19,21H21V19H19M19,13H21V11H19M19,17H21V15H19M3,5H5V3H3M3,9H5V7H3M3,13H5V11H3M3,17H5V15H3M3,21H5V19H3M11,21H13V19H11M7,21H9V19H7M7,5H9V3H7V5Z"
+            />
+          </svg>
+        </i>
+      </button>
+      <span class="slider" title="Stroke Size">
+        <nz-slider
+          [nzMin]="0"
+          [nzMax]="24"
+          [(ngModel)]="strokeValue"
+          title="Stroke Size"
+          (ngModelChange)="onStrokeChange($event)"
+          [nzTooltipVisible]="'never'"
+        ></nz-slider>
+      </span>
+    </span>
+    <span class="bgColorHolder">
+      <button
+        id="ColorFill"
+        nz-button
+        class="actionBtn"
+        nzSize="large"
+        title="Fill Color"
+        type="color"
+        (click)="actionBtnClick('ColorFill')"
+        [disabled]="!isCanvasCreated"
+        [(colorPicker)]="selectedColor"
+        (colorPickerSelect)="backgroundColorChange($event)"
+        [cpAlphaChannel]="'always'"
+        [cpSaveClickOutside]="'false'"
+        [cpOKButton]="true"
+        [cpOutputFormat]="'hex'"
+        [cpOKButtonClass]="'ant-btn ant-btn-primary'"
+      >
+        <!-- [cpDisableInput]="'false'" -->
+        <!-- [ngStyle]="{ color: selectedColor }" -->
+        <i nz-icon>
+          <svg viewBox="0 0 24 24">
+            <g class="fill-icon">
+              <path
+                d="M12,19.58V19.58C10.4,19.58 8.89,18.96 7.76,17.83C6.62,16.69 6,15.19 6,13.58C6,12 6.62,10.47 7.76,9.34L12,5.1M17.66,7.93L12,2.27V2.27L6.34,7.93C3.22,11.05 3.22,16.12 6.34,19.24C7.9,20.8 9.95,21.58 12,21.58C14.05,21.58 16.1,20.8 17.66,19.24C20.78,16.12 20.78,11.05 17.66,7.93Z"
+                [style.fill]="selectedColor"
+              />
+            </g>
+          </svg>
+        </i>
+      </button>
+      <!-- <span class="slider">
+        <nz-slider
+          [nzMin]="0"
+          [nzMax]="1"
+          [nzStep]="0.01"
+          [(ngModel)]="opacityValue"
+          title="Opacity"
+          (ngModelChange)="onOpacityChange($event)"
+        ></nz-slider>
+      </span> -->
+    </span>
+    <i nz-icon class="whiteColor spliter">
+      <svg viewBox="0 0 24 24">
+        <path d="M11 21H9V3H11V21M15 3H13V21H15V3Z" />
+      </svg>
+    </i>
+    <!-- <button
+    id="Save"
+    nz-button
+    class="actionBtn"
+    nzSize="large"
+    title="Save"
+    (click)="saveImg()"
+    [disabled]="!isCanvasCreated"
+  >
+    <i nz-icon class="whiteColor">
+      <svg viewBox="0 0 24 24">
+        <path
+          d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm2 16H5V5h11.17L19 7.83V19zm-7-7c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zM6 6h9v4H6z"
+        />
+      </svg>
+    </i>
+  </button> -->
+    <i
+      nz-icon
+      class="whiteColor spliter"
+      [ngStyle]="{
+        display: playerWidth === '1280px' ? 'inline-block' : 'none'
+      }"
+    >
+      <svg viewBox="0 0 24 24">
+        <path d="M11 21H9V3H11V21M15 3H13V21H15V3Z" />
+      </svg>
+    </i>
+  </div>
+
+  <div
+    class="videoHolder"
+    id="videoHolder"
+    [style.width]="playerWidth"
+    [style.height]="playerHeight"
+    #myBounds1
+  >
+    <ng-container *ngIf="showVideo">
+      <video
+        crossorigin="anonymous"
+        id="video_holder"
+        #video
+        class="video-js vjs-default-skin vjs-big-play-centered vjs-layout-large vjs-big-play-button"
+        controls
+        data-setup="{}"
+        data-res="auto"
+      ></video>
+    </ng-container>
+    <ng-container *ngIf="showImage">
+      <div
+        style="width: 100%; height: 100%"
+        class="image_holder"
+        #myImageHolder
+        id="myImageHolder"
+      >
+        <!-- display: flex;
+          justify-content: center;
+          align-items: center; -->
+        <div
+          *ngIf="imageLoaing"
+          class="d-flex justify-content-center align-items-center"
+          style="width: 100%; height: 100%"
+        >
+          <div class="spinner-border text-success" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+
+        <img
+          *ngIf="!creativeError"
+          #myImage
+          class="myImage"
+          [ngClass]="setImgClasses()"
+          crossorigin="anonymous"
+          [src]="revisionInfo.creativeUrl"
+          (load)="onImageLoad($event)"
+          (error)="onImageError()"
+          [style.visibility]="imageLoaing ? 'hidden' : 'visible'"
+        />
+
+        <div
+          *ngIf="creativeError"
+          style="width: 100%; height: 100%"
+          class="img-error"
+        >
+          <div><strong>Error in image load...!</strong></div>
+          <div>Image URL : {{ revisionInfo.creativeUrl }}</div>
+        </div>
+      </div>
+    </ng-container>
+    <div
+      #myBounds
+      class="canvasHolder"
+      [style.top]="setCanvasTop()"
+      [class.image-top]="!showVideo"
+    >
+      <canvas
+        class="canvas"
+        #canvas
+        id="myCanvas"
+        width="1"
+        height="1"
+      ></canvas>
+    </div>
+
+    <div
+      *ngIf="isCanvasCreated && showVideo && currentframe > 0 && false"
+      ngDraggable
+      class="drag-block"
+      (edge)="checkEdge($event)"
+      [bounds]="myBounds"
+      [inBounds]="inBounds"
+    >
+      <!-- [position]="position" -->
+      <!-- [style.top]="getTop()" -->
+      <!-- <p>Drag me {{ inBounds ? "in #myBounds" : "" }}</p> -->
+      <!-- <p>check your console</p> -->
+      <span>Frame Number</span>
+      <br />
+      <span>{{ currentframe }}</span>
+    </div>
+  </div>
+
+  <div class="comment-panel" [style.width]="playerWidth">
+    <div class="top">
+      <div>
+        <app-avatar [info]="getAvatarInfo()"> </app-avatar>
+      </div>
+      <div class="text-box">
+        <textarea
+          style="overflow: auto; resize: none"
+          nz-input
+          rows="3"
+          [(ngModel)]="feedbackComment"
+          placeholder="Provide your comments."
+        ></textarea>
+      </div>
+    </div>
+    <div class="row bot">
+      <div>
+        <button
+          class="comment-btn"
+          [class.btn-disabled]="disableReject"
+          [style.display]="disableReject ? 'none' : 'inline'"
+          nz-button
+          (click)="rejectHandler()"
+        >
+          <!-- nzType="primary"
+          nzGhostReject -->
+          <app-icon-picker
+            class="comment-icon"
+            nz-icon
+            iconType="reject"
+          ></app-icon-picker>
+        </button>
+        <!-- [style.display]="disableApprove ? 'none' : 'inline'" -->
+        <button
+          class="comment-btn"
+          [class.btn-disabled]="disableApprove"
+          [style.display]="disableApprove ? 'none' : 'inline'"
+          nz-button
+          (click)="approveHandler()"
+        >
+          <!-- type="submit" Approve -->
+          <app-icon-picker
+            class="comment-icon"
+            nz-icon
+            iconType="approve"
+          ></app-icon-picker>
+        </button>
+
+        <button
+          class="comment-btn"
+          [class.btn-disabled]="!feedbackComment"
+          nz-button
+          type="submit"
+          (click)="postComment()"
+        >
+          <!-- nzType="primary"Comment -->
+          <app-icon-picker
+            class="comment-icon"
+            nz-icon
+            iconType="feedback_new"
+          ></app-icon-picker>
+        </button>
+      </div>
+      <!-- <div class="col px-0">
+        <div>
+          <button
+            [style.display]="disableReject ? 'none' : 'inline'"
+            class="mr-1"
+            [class.btn-disabled]="disableReject"
+            nz-button
+            nzType="primary"
+            nzGhost
+            (click)="rejectHandler()"
+          >
+            Reject
+          </button>
+          <button
+            [class.btn-disabled]="disableApprove"
+            nz-button
+            nzType="primary"
+            type="submit"
+            (click)="approveHandler()"
+          >
+            Approve
+          </button>
+        </div>
+      </div> -->
+    </div>
+  </div>
+
+  <!-- <div class="row mt-2">
+    <div class="col px-0">
+      <div class="mb-2">
+        <button
+          [style.display]="disableReject ? 'none' : 'inline'"
+          class="mr-1"
+          [class.btn-disabled]="disableReject"
+          nz-button
+          nzType="primary"
+          nzGhost
+          (click)="rejectHandler()"
+        >
+          Reject
+        </button>
+        <button
+          [style.display]="disableApprove ? 'none' : 'inline'"
+          [class.btn-disabled]="disableApprove"
+          nz-button
+          nzType="primary"
+          type="submit"
+          (click)="approveHandler()"
+        >
+          Approve
+        </button>
+      </div>
+    </div>
+  </div> -->
+
+  <canvas
+    class="canvas screen-shot"
+    #myVideoCanvas
+    id="myVideoCanvas"
+    width="1"
+    height="1"
+  ></canvas>
+</ng-container>
+<!--Modal for delete group confirmation START-->
+<nz-modal
+  [(nzVisible)]="isAlertVisible"
+  [nzTitle]="modalTitle"
+  nzOkText="Yes"
+  nzCancelText="No"
+  (nzOnOk)="onConfirm()"
+  (nzOnCancel)="onCancel()"
+  nzOkType="primary"
+  nzClosable="false"
+  nzWrapClassName="confirm-modal"
+  nzNoAnimation="true"
+>
+  <b class="modal-content-del-prefix">{{ modalBody }}</b>
+</nz-modal>
+<!--Modal for delete group confirmation END-->

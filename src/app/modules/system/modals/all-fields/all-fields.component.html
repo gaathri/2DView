@@ -1,0 +1,91 @@
+<form
+  *ngIf="isDataReady"
+  class="form-panel"
+  nz-form
+  [formGroup]="mainForm"
+  (ngSubmit)="submitHandler()"
+  autocomplete="off"
+>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="clientId">Select Client</nz-form-label>
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <nz-select
+        id="clientId"
+        formControlName="clientId"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select client from list"
+      >
+        <!-- [(ngModel)]="showOutCopy.clientId" -->
+        <nz-option
+          *ngFor="let client of clients"
+          [nzLabel]="client.title"
+          [nzValue]="client.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <!-- <nz-form-item>
+    <nz-form-label>Select task level custom fields</nz-form-label>
+  </nz-form-item> -->
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="shotAttributes"
+      >Select Mandatory Fields For Shot Onboarding</nz-form-label
+    >
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <nz-select
+        id="shotAttributes"
+        formControlName="shotAttributes"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select shot attributes"
+        nzMode="multiple"
+      >
+        <!-- [(ngModel)]="showOutCopy.shotAttributes" -->
+        <nz-option
+          *ngFor="let attribute of shotAttributes"
+          [nzLabel]="attribute.title"
+          [nzValue]="attribute.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="server">Select Server URL</nz-form-label>
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <nz-select
+        id="server"
+        formControlName="server"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Server URL"
+      >
+        <!-- [(ngModel)]="showOutCopy.server" -->
+        <nz-option
+          *ngFor="let server of servers"
+          [nzLabel]="server.server"
+          [nzValue]="server.server"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="sourceFileLoc">Server Path</nz-form-label>
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <input
+        id="sourceFileLoc"
+        formControlName="sourceFileLoc"
+        nz-input
+        placeholder="Server Path"
+      />
+      <!-- [(ngModel)]="showOutCopy.sourceFileLoc" -->
+    </nz-form-control>
+  </nz-form-item>
+</form>
+<!-- <pre style="color: greenyellow">{{showOutCopy | json}}</pre> -->

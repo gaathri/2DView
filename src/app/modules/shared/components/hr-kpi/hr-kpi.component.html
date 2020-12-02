@@ -1,0 +1,53 @@
+<div style="height: 100%;">
+  <div class="table-header-panel-db top d-flex justify-content-between">
+    <div class="quick-filter pipe last">
+      Yearly Day Breakdown
+    </div>
+    <div class="d-flex justify-content-between">
+      <div class="quick-filter pipe last">
+        <span><i nz-icon nzType="calendar" [nzTheme]="'outline'"></i></span>
+        <span>&nbsp;&nbsp;{{ viewDate | date: "yyyy" }}</span>
+      </div>
+      <div
+        class="quick-filter hand last"
+        [class.disabled]="disabledPrev()"
+        (click)="moveBack()"
+      >
+        <span><i nz-icon nzType="left" nzTheme="outline"></i></span>
+      </div>
+      <div
+        class="quick-filter hand last"
+        [class.disabled]="disableNext()"
+        (click)="moveNext()"
+      >
+        <span><i nz-icon nzType="right" nzTheme="outline"></i></span>
+      </div>
+    </div>
+  </div>
+
+  <div [style.height]="getHeight()">
+    <div *ngIf="kpiInfo" class="flex-container">
+      <div class="box">
+        <div class="title workdays"><span>Working Days</span></div>
+        <div class="box-inner">
+          <div class="value">{{ kpiInfo.totalWorkingDays }}</div>
+          <div class="label">Days</div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="title holidays"><span>Total Holidays</span></div>
+        <div class="box-inner">
+          <div class="value">{{ kpiInfo.totalHolidays }}</div>
+          <div class="label">Days</div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="title weekends">Weekends</div>
+        <div class="box-inner">
+          <div class="value">{{ kpiInfo.weekends }}</div>
+          <div class="label">Days</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

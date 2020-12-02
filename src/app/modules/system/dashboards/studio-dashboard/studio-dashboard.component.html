@@ -1,0 +1,142 @@
+<div *ngIf="isDataReady" class="dashboard-component">
+  <div class="content-section">
+    <div class="row">
+      <div class="col-9 px-0 py-0">
+        <app-manpower-details
+          [manpowerEntity]="manpowerEntity"
+        ></app-manpower-details>
+      </div>
+      <div class="col-3 pr-0">
+        <app-artist-details
+          [artistAvailability]="artistAvailability"
+        ></app-artist-details>
+      </div>
+    </div>
+    <div class="row">
+      <div class="dashboard-left col-8 pl-0">
+        <div class="col-12 px-0 app-progress">
+          <app-progress-panel
+            [isStudio]="true"
+            [progressType]="progressType"
+            [progressEntities]="progressEntities"
+            [assetProgressEntities]="assetProgressEntities"
+            [taskProgressEntities]="taskProgressEntities"
+          >
+          </app-progress-panel>
+        </div>
+        <div class="row col-12 px-0 app-star-panel-details">
+          <div class="col-9 pl-0">
+            <app-star-panel
+              [starEntities]="starShowEntities"
+              (add)="starAdd('Show')"
+              (select)="starSelect($event, 'Show')"
+              (close)="starClose($event, 'Show')"
+            ></app-star-panel>
+          </div>
+          <div class="col-3 px-0">
+            <app-star-details [progressEntities]="shotProgressEntities">
+            </app-star-details>
+          </div>
+        </div>
+        <div class="row col-12 px-0 app-star-panel-details">
+          <div class="col-9 pl-0">
+            <app-star-panel
+              [starEntities]="starSupervisorEntities"
+              (add)="starAdd('Supervisor')"
+              (select)="starSelect($event, 'Supervisor')"
+              (close)="starClose($event, 'Supervisor')"
+            >
+            </app-star-panel>
+          </div>
+          <div class="col-3 px-0">
+            <app-star-details
+              [progressEntities]="shotProgressEntitiesBySupervisor"
+            >
+            </app-star-details>
+          </div>
+        </div>
+      </div>
+      <div
+        #activityLogPanel
+        class="dashboard-right studio-activity col-4 pl-0 py-0 pr-0"
+      >
+        <ng-container *ngIf="panelHeight > 0">
+          <app-activity-log-panel
+            [parent]="'studio'"
+            [panelHeight]="panelHeight"
+          ></app-activity-log-panel>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Modal START-->
+<nz-modal
+  nzWrapClassName="vertical-center-modal"
+  [(nzVisible)]="isVisible"
+  [nzTitle]="modalTitle"
+  nzKeyboard="false"
+  nzClosable="false"
+  nzNoAnimation="true"
+>
+  <ng-container *ngIf="addType == 'Show'">
+    <div class="d-flex justify-content-start align-items-center">
+      <div class="col-8 px-0">
+        <nz-form-item>
+          <nz-form-control>
+            <nz-select
+              nzShowSearch
+              nzAllowClear
+              nzPlaceHolder="Select Show"
+              [(ngModel)]="starShowId"
+              [nzDisabled]="!isValidArr(favoriteShows)"
+            >
+              <nz-option
+                *ngFor="let favoriteShow of favoriteShows"
+                [nzLabel]="favoriteShow.showName"
+                [nzValue]="favoriteShow.id"
+              >
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="addType == 'Supervisor'">
+    <div class="d-flex justify-content-start align-items-center">
+      <div class="col-8 px-0">
+        <nz-form-item>
+          <nz-form-control>
+            <nz-select
+              nzShowSearch
+              nzAllowClear
+              nzPlaceHolder="Select Supervisor"
+              [(ngModel)]="starSupervisorId"
+              [nzDisabled]="!isValidArr(favoriteSupervisors)"
+            >
+              <nz-option
+                *ngFor="let favoriteSupervisor of favoriteSupervisors"
+                [nzLabel]="getSupervisorName(favoriteSupervisor)"
+                [nzValue]="favoriteSupervisor.id"
+              >
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+  </ng-container>
+
+  <div *nzModalFooter>
+    <button nz-button nzType="default" (click)="onCancel()">
+      Cancel
+    </button>
+    <button nz-button nzType="primary" (click)="onConfirm()">
+      Save
+    </button>
+  </div>
+</nz-modal>
+<!--Modal END-->

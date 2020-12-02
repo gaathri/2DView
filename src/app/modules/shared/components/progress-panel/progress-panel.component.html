@@ -1,0 +1,119 @@
+<div *ngIf="progressEntities" class="task-div static-bg">
+  <div class="page-title-second-level el d-flex justify-content-between">
+    <ng-container *ngIf="isStudio">
+      <h3>Overall Progress</h3>
+    </ng-container>
+    <ng-container *ngIf="!isStudio">
+      <h3>{{ progressEntities.title }}</h3>
+    </ng-container>
+
+    <div *ngIf="isStudio" class="graph-title d-flex align-items-center">
+      <div
+        class="entity"
+        [class.active]="isActive('shot')"
+        (click)="onEntityClick('shot', true)"
+      >
+        Shot
+      </div>
+      <div
+        class="entity"
+        [class.active]="isActive('asset')"
+        (click)="onEntityClick('asset', true)"
+      >
+        Asset
+      </div>
+      <div
+        class="entity last"
+        [class.active]="isActive('task')"
+        (click)="onEntityClick('task', true)"
+      >
+        Task
+      </div>
+    </div>
+  </div>
+
+  <div class="graph-parent">
+    <ng-container *ngIf="!isStudio">
+      <div
+        *ngFor="let item of progressEntities.items; last as isLast"
+        class="graph-div"
+        [class.add-border]="!isLast"
+      >
+        <div [style.color]="getTextColor(item)" class="graph-title">
+          {{ getTitle(item) }}
+        </div>
+        <div class="graph">
+          <div class="d-flex flex-row justify-content-center">
+            <app-progress
+              [config]="getProgressConfig(item)"
+              [percentage]="getPercent(item)"
+            ></app-progress>
+          </div>
+        </div>
+        <div class="graph-value">{{ getValue(item) | number }}</div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="isStudio">
+      <ng-container *ngIf="selected == 'shot'">
+        <div
+          *ngFor="let item of progressEntities.items; last as isLast"
+          class="graph-div"
+          [class.add-border]="!isLast"
+        >
+          <div [style.color]="getTextColor(item)" class="graph-title">
+            {{ getTitle(item) }}
+          </div>
+          <div class="graph">
+            <div class="d-flex flex-row justify-content-center">
+              <app-progress
+                [config]="getProgressConfig(item)"
+                [percentage]="getPercent(item)"
+              ></app-progress>
+            </div>
+          </div>
+          <div class="graph-value">{{ getValue(item) | number }}</div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="selected == 'asset'">
+        <div
+          *ngFor="let item of assetProgressEntities.items; last as isLast"
+          class="graph-div"
+          [class.add-border]="!isLast"
+        >
+          <div [style.color]="getTextColor(item)" class="graph-title">
+            {{ getTitle(item) }}
+          </div>
+          <div class="graph">
+            <div class="d-flex flex-row justify-content-center">
+              <app-progress
+                [config]="getProgressConfig(item)"
+                [percentage]="getPercent(item)"
+              ></app-progress>
+            </div>
+          </div>
+          <div class="graph-value">{{ getValue(item) | number }}</div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="selected == 'task'">
+        <div
+          *ngFor="let item of taskProgressEntities.items; last as isLast"
+          class="graph-div"
+          [class.add-border]="!isLast"
+        >
+          <div [style.color]="getTextColor(item)" class="graph-title">
+            {{ getTitle(item) }}
+          </div>
+          <div class="graph">
+            <div class="d-flex flex-row justify-content-center">
+              <app-progress
+                [config]="getProgressConfig(item)"
+                [percentage]="getPercent(item)"
+              ></app-progress>
+            </div>
+          </div>
+          <div class="graph-value">{{ getValue(item) | number }}</div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>

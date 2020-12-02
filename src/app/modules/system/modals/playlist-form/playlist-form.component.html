@@ -1,0 +1,66 @@
+<form
+  *ngIf="isDataReady"
+  class="form-panel"
+  nz-form
+  [formGroup]="dataForm"
+  (ngSubmit)="submitHandler()"
+  autocomplete="off"
+>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="name">Playlist Name</nz-form-label>
+    <nz-form-control [nzErrorTip]="iNameTpl">
+      <input
+        id="name"
+        formControlName="name"
+        nz-input
+        [maxLength]="nameMaxLength"
+        placeholder="Playlist Name"
+      />
+      <ng-template #iNameTpl let-control>
+        <ng-container *ngIf="control.hasError('pattern')"
+          >This pattern is not allowed!</ng-container
+        >
+        <ng-container *ngIf="control.hasError('required')"
+          >Name is required!</ng-container
+        >
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="playlistType"
+      >Playlist Category</nz-form-label
+    >
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <nz-radio-group [nzDisabled]="disabled" formControlName="playlistType">
+        <label
+          *ngFor="let playlistType of playlistTypes"
+          nz-radio
+          [nzValue]="playlistType"
+          class="text-capitalize"
+          >{{ playlistType.toLowerCase() }}</label
+        >
+      </nz-radio-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Playlist Description</nz-form-label>
+    <nz-form-control>
+      <input
+        id="description"
+        formControlName="description"
+        nz-input
+        [maxLength]="descMaxLength"
+        placeholder="Playlist Description"
+      />
+    </nz-form-control>
+  </nz-form-item>
+</form>
+<div *ngIf="isDataReady" class="submit-btn-parent">
+  <button nz-button nzType="primary" (click)="submitHandler()">
+    {{ btnName }}
+  </button>
+</div>
+
+<!-- <pre style="color: greenyellow">{{ playlistOutCopy | json }}</pre> -->

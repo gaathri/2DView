@@ -1,0 +1,88 @@
+<div class="table-wrapper lg-pad item-list gantt-wrapper">
+  <div class="row">
+    <div class="col-md-12 px-0">
+      <div
+        class="table-header-panel-db d-flex justify-content-between align-items-center"
+      >
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="quick-filter">
+            <span>Gantt Chart</span>
+          </div>
+          <div class="quick-filter last" style="width: 100px;">
+            <nz-slider
+              [(ngModel)]="value1"
+              [nzDisabled]="disabled"
+              [nzTooltipVisible]="'never'"
+              (ngModelChange)="onSlider($event)"
+            ></nz-slider>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+          <!-- <div
+            class="quick-filter hand"
+            [class.active]="period == 'today'"
+            (click)="reCenter()"
+          >
+            <span class="quick-filter-text">Today</span>
+          </div> -->
+          <div
+            class="quick-filter hand"
+            [class.active]="period == 'day'"
+            (click)="dayView()"
+          >
+            <span class="quick-filter-text">Day</span>
+          </div>
+          <div
+            class="quick-filter hand"
+            [class.active]="period == 'week'"
+            (click)="weekView()"
+          >
+            <span class="quick-filter-text">Week</span>
+          </div>
+          <div
+            class="quick-filter hand"
+            [class.active]="period == 'month'"
+            (click)="monthView()"
+          >
+            <span class="quick-filter-text">Month</span>
+          </div>
+          <div
+            class="quick-filter hand"
+            [class.active]="period == 'year'"
+            (click)="yearView()"
+          >
+            <span class="quick-filter-text">Year</span>
+          </div>
+        </div>
+      </div>
+      <!-- <ng-container *ngIf="isEmptyData">
+        <div class="nodata d-flex justify-content-center">
+          No records found
+        </div>
+      </ng-container> -->
+      <ng-container *ngIf="!isEmptyData && isDataReady">
+        <gstc #scheduler [config]="config" (onState)="onState($event)"></gstc>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<!-- 
+  <button name="dayBtn" (click)="dayView()">Day</button>
+  <button name="weekBtn" (click)="weekView()">Week</button>
+  <button name="monthBtn" (click)="monthView()">Month</button>
+  <button name="yearBtn" (click)="yearView()">Year</button>
+  <button name="recenter" (click)="reCenter()">Today</button>
+  <button name="splitterPercent" (click)="splitterPercent()">
+    Resize Splitter
+  </button>
+  
+  <button name="shot" (click)="changeDataType('shot')">Shot</button>
+  <button name="asset" (click)="changeDataType('asset')">Asset</button>
+  <button name="resource" (click)="changeDataType('resource')">Resources</button>
+  
+  <div *ngIf="!isEmptyData" class="row">
+    <div class="col-12">
+      <gstc #scheduler [config]="config" (onState)="onState($event)"></gstc>
+    </div>
+  </div> -->

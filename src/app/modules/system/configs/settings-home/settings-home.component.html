@@ -1,0 +1,69 @@
+<ng-container *ngIf="isAdmin; else pl_admin">
+  <app-settings-tab></app-settings-tab>
+</ng-container>
+<ng-template #pl_admin>
+  <div class="common-header-new">
+    <div class="d-flex justify-content-between db-links">
+      <div class="d-flex justify-content-between">
+        <div class="db-link">Studio Settings</div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6 px-0 pl-settings">
+      <form
+        *ngIf="isDataReady"
+        class="form-panel"
+        nz-form
+        [formGroup]="dataForm"
+        (ngSubmit)="submitHandler()"
+        autocomplete="off"
+        style="margin-top: 20px;"
+      >
+        <nz-form-item>
+          <nz-form-label nzFor="maxUsers" nzRequired>
+            Maximum users in studio
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="worklogLimitTpl">
+            <input
+              id="maxUsers"
+              formControlName="maxUsers"
+              nz-input
+              placeholder="Maximum users in studio"
+              numeric
+              numericType="number"
+            />
+
+            <ng-template #worklogLimitTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                Please provide your input!
+              </ng-container>
+              <ng-container *ngIf="control.hasError('min')">
+                Minimum value should be {{ USERS_LIMIT_MIN }} or greater
+              </ng-container>
+              <ng-container *ngIf="control.hasError('max')">
+                Maximum value should not cross
+                {{ USERS_LIMIT_MAX }}.
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+
+      <div *ngIf="isDataReady" class="submit-btn-parent">
+        <button nz-button nzType="primary" (click)="submitHandler()">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- <form
+  *ngIf="isDataReady"
+  class="form-panel"
+  nz-form
+  [formGroup]="dataForm"
+  (ngSubmit)="submitHandler()"
+  autocomplete="off"
+> -->

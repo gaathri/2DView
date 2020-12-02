@@ -1,0 +1,530 @@
+<form
+  *ngIf="isDataReady"
+  class="form-panel"
+  nz-form
+  [formGroup]="dataForm"
+  (ngSubmit)="submitHandler()"
+  autocomplete="off"
+>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="showId">Show Name</nz-form-label>
+    <nz-form-control
+      *ngIf="!disableShowSelect"
+      nzErrorTip="Please provide your input!"
+    >
+      <nz-select
+        id="showId"
+        formControlName="showId"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Show"
+        [nzDisabled]="disableShowSelect"
+        (ngModelChange)="showChangeHandler()"
+      >
+        <!-- [nzDisabled]="!isValidArr(shows) || disableShowSelect" -->
+        <nz-option
+          *ngFor="let show of shows"
+          [nzLabel]="show.showName"
+          [nzValue]="show.id"
+        ></nz-option>
+      </nz-select>
+    </nz-form-control>
+    <nz-form-control *ngIf="disableShowSelect">
+      <input readonly class="read-only" nz-input [value]="showName" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>Task Category</nz-form-label>
+    <nz-form-control>
+      <nz-radio-group
+        [nzDisabled]="
+          mode == 'update' || disableShotSelect || disableAssetSelect
+        "
+        formControlName="taskCategory"
+        (ngModelChange)="requiredChange()"
+      >
+        <label nz-radio nzValue="shot">Shot</label>
+        <label nz-radio nzValue="asset">Asset</label>
+      </nz-radio-group>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item *ngIf="taskCategory == 'shot'">
+    <nz-form-label nzRequired nzFor="shotId">Shot Code</nz-form-label>
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <nz-select
+        id="shotId"
+        formControlName="shotId"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Shot"
+        [nzDisabled]="mode == 'update' || disableShotSelect"
+        (ngModelChange)="shotChangeHandler()"
+      >
+        <!-- [nzDisabled]="
+          !isValidArr(shots) || mode == 'update' || disableShotSelect
+        " -->
+        <nz-option
+          *ngFor="let shot of shots"
+          [nzLabel]="shot.shotCode"
+          [nzValue]="shot.id"
+        ></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item *ngIf="taskCategory == 'asset'">
+    <nz-form-label nzRequired nzFor="assetId">Asset Name</nz-form-label>
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <nz-select
+        id="assetId"
+        formControlName="assetId"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Asset"
+        [nzDisabled]="mode == 'update' || disableAssetSelect"
+        (ngModelChange)="assetChangeHandler()"
+      >
+        <!-- [nzDisabled]="
+          !isValidArr(assets) || mode == 'update' || disableAssetSelect
+        " -->
+        <nz-option
+          *ngFor="let asset of assets"
+          [nzLabel]="asset.assetName"
+          [nzValue]="asset.id"
+        ></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="taskName">Task Name</nz-form-label>
+    <nz-form-control [nzErrorTip]="iNameTpl">
+      <input
+        id="taskName"
+        formControlName="taskName"
+        nz-input
+        [maxLength]="taskNameMaxLength"
+        placeholder="Task Name"
+      />
+      <ng-template #iNameTpl let-control>
+        <ng-container *ngIf="control.hasError('pattern')"
+          >This pattern is not allowed!</ng-container
+        >
+        <ng-container *ngIf="control.hasError('required')"
+          >Name is required!</ng-container
+        >
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Task Description</nz-form-label>
+    <nz-form-control>
+      <input
+        id="description"
+        formControlName="description"
+        nz-input
+        [maxLength]="taskDescriptionMaxLength"
+        placeholder="Task Description"
+      />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Task Notes</nz-form-label>
+    <nz-form-control>
+      <input
+        id="notes"
+        formControlName="notes"
+        nz-input
+        [maxLength]="taskNotesMaxLength"
+        placeholder="Task Notes"
+      />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="taskTypeId">Task Type</nz-form-label>
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <nz-select
+        id="taskTypeId"
+        formControlName="taskTypeId"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Task Type"
+      >
+        <!-- [nzDisabled]="!isValidArr(taskTypes)" -->
+        <nz-option
+          *ngFor="let taskType of taskTypes"
+          [nzLabel]="taskType.title"
+          [nzValue]="taskType.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzFor="artistId">Assign Artist</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="artistId"
+        formControlName="artistId"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Artist"
+        [nzDisabled]="isWorkStarted()"
+      >
+        <!-- [nzDisabled]="!isValidArr(artists)" -->
+        <nz-option
+          *ngFor="let artist of artists"
+          [nzLabel]="artist.title"
+          [nzValue]="artist.id"
+        ></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzFor="accountable">Accountable</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="accountable"
+        formControlName="accountable"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Accountable"
+      >
+        <!-- [nzDisabled]="!isValidArr(supervisors)" -->
+        <nz-option
+          *ngFor="let supervisor of supervisors"
+          [nzLabel]="supervisor.title"
+          [nzValue]="supervisor.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <div class="row clearfix">
+    <div class="col-md-6 px-0">
+      <nz-form-item>
+        <nz-form-label>Start Date</nz-form-label>
+        <nz-form-control>
+          <nz-date-picker
+            id="startDate"
+            formControlName="startDate"
+            [nzClassName]="'tcal'"
+            nzPlaceHolder="Start Date"
+            (ngModelChange)="onStartDateChange($event)"
+            [nzFormat]="getDisplayDateFormat()"
+            [nzDisabled]="isWorkStarted()"
+          >
+          </nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-6 px-0">
+      <nz-form-item>
+        <nz-form-label>End Date</nz-form-label>
+        <nz-form-control>
+          <nz-date-picker
+            [nzDisabled]="isEndDateDisabled()"
+            id="endDate"
+            formControlName="endDate"
+            [nzClassName]="'tcal'"
+            nzPlaceHolder="End Date"
+            [nzDisabledDate]="disabledEndDate"
+            [nzFormat]="getDisplayDateFormat()"
+          >
+          </nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div class="row clearfix">
+    <div class="col-md-6 px-0" *ngIf="hasViewPermission('clientEta')">
+      <nz-form-item>
+        <nz-form-label>Client ETA</nz-form-label>
+        <nz-form-control>
+          <nz-date-picker
+            id="clientEta"
+            [nzDisabled]="isEndDateDisabled()"
+            formControlName="clientEta"
+            [nzClassName]="'tcal'"
+            nzPlaceHolder="Client ETA"
+            [nzDisabledDate]="disabledEndDate"
+            [nzFormat]="getDisplayDateFormat()"
+          >
+            <!-- [nzDisabledDate]="disabledClientETA" -->
+          </nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <div class="col-md-6 px-0">
+      <nz-form-item>
+        <nz-form-label>Delivery Date</nz-form-label>
+        <nz-form-control>
+          <nz-date-picker
+            id="deliveryDate"
+             [nzDisabled]="isEndDateDisabled()"
+            formControlName="deliveryDate"
+            [nzClassName]="'tcal'"
+            nzPlaceHolder="Delivery Date"
+            [nzDisabledDate]="disabledEndDate"
+            [nzFormat]="getDisplayDateFormat()"
+          >
+          </nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <nz-form-item *ngIf="hasViewPermission('clientBid')">
+    <nz-form-label>Client Bid</nz-form-label>
+    <nz-form-control>
+      <input
+        nz-input
+        id="clientBid"
+        formControlName="clientBid"
+        placeholder="Client Bid"
+        numeric
+        numericType="decimal"
+        maxValue="9999999"
+      />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item *ngIf="hasViewPermission('bidCost')">
+    <nz-form-label>Bid Cost</nz-form-label>
+    <nz-form-control>
+      <input
+        nz-input
+        id="bidCost"
+        formControlName="bidCost"
+        placeholder="Bid Cost"
+        numeric
+        numericType="decimal"
+        maxValue="9999999"
+      />
+    </nz-form-control>
+  </nz-form-item>
+  <!-- </div>
+    <div class="col-md-6 px-0"> -->
+  <nz-form-item *ngIf="hasViewPermission('biddingUnit')">
+    <nz-form-label>Bidding Unit</nz-form-label>
+    <nz-form-control>
+      <input
+        nz-input
+        id="biddingUnit"
+        formControlName="biddingUnit"
+        placeholder="Bidding Unit"
+        numeric
+        numericType="decimal"
+        maxValue="9999999"
+      />
+    </nz-form-control>
+  </nz-form-item>
+  <!-- </div>
+  </div> -->
+
+  <nz-form-item *ngIf="hasViewPermission('taskValueCost')">
+    <nz-form-label>Task Value Cost</nz-form-label>
+    <nz-form-control>
+      <input
+        id="taskValueCost"
+        formControlName="taskValueCost"
+        nz-input
+        placeholder="Task Value Cost"
+        numeric
+        numericType="decimal"
+        maxValue="9999999"
+      />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item *ngIf="hasViewPermission('deltaEta')">
+    <nz-form-label>Delta</nz-form-label>
+    <nz-form-control [nzErrorTip]="iDeltaTpl">
+      <input
+        #inputElement
+        nz-input
+        formControlName="deltaEta"
+        placeholder="Delta"
+        pattern="^-?(0|[1-9][0-9]*)(\.[0-9]*)?$"
+      />
+
+      <ng-template #iDeltaTpl let-control>
+        <ng-container *ngIf="control.hasError('pattern')"
+          >This pattern is not allowed!</ng-container
+        >
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Set Priority</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="taskPriorityId"
+        formControlName="taskPriorityId"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Task Priority"
+      >
+        <nz-option
+          *ngFor="let priority of taskPriorities"
+          [nzLabel]="priority.taskPriorityLevel"
+          [nzValue]="priority.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Set Complexity</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="complexity"
+        formControlName="complexity"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Task Complexity"
+      >
+        <nz-option
+          *ngFor="let complexity of taskcomplexities"
+          [nzLabel]="complexity.title"
+          [nzValue]="complexity.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Select Packing Template</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="packingTemplateId"
+        formControlName="packingTemplateId"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Packing Template"
+      >
+        <nz-option
+          *ngFor="let packingTemplate of packingTemplates"
+          [nzLabel]="packingTemplate.title"
+          [nzValue]="packingTemplate.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Reference Path</nz-form-label>
+    <nz-form-control>
+      <input
+        id="referencePath"
+        formControlName="referencePath"
+        nz-input
+        placeholder="Reference Path"
+        maxlength="1200"
+      />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Annotation Path</nz-form-label>
+    <nz-form-control>
+      <input
+        id="anotationPath"
+        formControlName="anotationPath"
+        nz-input
+        placeholder="Annotation Path"
+        maxlength="1200"
+      />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Location</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="location"
+        formControlName="locationId"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Location"
+      >
+        <nz-option
+          *ngFor="let location of locations"
+          [nzLabel]="location.name"
+          [nzValue]="location.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>ETA</nz-form-label>
+    <nz-form-control>
+      <nz-time-picker
+        [(ngModel)]="time"
+        nzFormat="HH:mm"
+        [ngModelOptions]="{ standalone: true }"
+        (ngModelChange)="onTimeChange($event)"
+      ></nz-time-picker>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-control>
+      <label nz-checkbox formControlName="isSubTask">
+        Is Sub Task?
+      </label>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div *ngFor="let link of linkInfo">
+  <div (click)="linkClickHandler(link)" class="full-width-button-bg">
+    <a>
+      <span class="icon-div"
+        ><i nz-icon nz-size="small" nzType="arrow-right" nzTheme="outline"></i
+      ></span>
+      <span *ngIf="link.isMandatoryFieldPresent">* </span
+      ><span>{{ link.title }}</span>
+    </a>
+  </div>
+  <div *ngIf="!link.isValid" class="link-error">
+    Please provide your input!
+  </div>
+</div>
+
+<div *ngIf="isDataReady" class="submit-btn-parent">
+  <button nz-button nzType="primary" (click)="submitHandler()">
+    {{ btnName }}
+  </button>
+</div>
+
+<ng-template #linkDrawerHeader let-drawerRef="drawerRef">
+  <div class="title-row">
+    <div class="left-icon" [ngSwitch]="mode">
+      <ng-container *ngSwitchCase="'create'">
+        <app-icon-picker iconType="add"></app-icon-picker>
+      </ng-container>
+      <ng-container *ngSwitchCase="'update'">
+        <app-icon-picker iconType="edit"></app-icon-picker>
+      </ng-container>
+    </div>
+    <div class="title-text">{{ this.title }}</div>
+    <div class="right-icon">
+      <i (click)="closeForm()" nz-icon nzType="right" nzTheme="outline"></i>
+    </div>
+  </div>
+</ng-template>
+<!-- <span style="color: greenyellow">{{ dataForm?.value | json }}</span> -->

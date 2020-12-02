@@ -1,0 +1,53 @@
+<div *ngIf="showBreadcrumb" class="row breadcrumb-title">
+
+  <!-- <span *ngIf="currentListing == 'System Settings'" class="curr">System Settings</span> -->
+  <span *ngIf="currentListing && info==''">
+    <!-- <span *ngIf="currentListing != 'listing'" class="link" (click)="linkClickHandler('listing')"> Listing </span>
+    <span *ngIf="currentListing != 'listing'" class="curr"> / </span> -->
+    <span class="curr cap">{{currentListing}}</span>
+  </span>
+
+  <!-- <span *ngIf="currentListing == 'show-listing'">
+    <span class="link" (click)="linkClickHandler('listing')"> Listing </span>
+    <span class="curr"> / Show Listing</span>
+  </span> -->
+  <span *ngIf="currentListing == 'shot-listing'">
+    <!-- <span class="link" (click)="linkClickHandler('listing')"> Listing </span>
+    <span class="curr"> / </span> -->
+    <span class="link" (click)="linkClickHandler('show-listing')">
+      Show Listing
+    </span>
+    <span class="curr"> / {{ getShowName() }}</span>
+  </span>
+
+  <span *ngIf="currentListing == 'shot-task-listing'">
+    <!-- <span class="link" (click)="linkClickHandler('listing')"> Listing </span>
+    <span class="curr"> / </span> -->
+    <span class="link" (click)="linkClickHandler('show-listing')">
+      Show Listing
+    </span>
+    <span class="curr"> / </span>
+    <span class="link" (click)="linkClickHandler('shot-listing')">
+      {{ getShowName() }}
+    </span>
+    <span class="curr"> / {{ getShotName() }}</span>
+  </span>
+
+  <span *ngIf="currentListing == 'asset-task-listing'">
+    <!-- <span class="link" (click)="linkClickHandler('listing')"> Listing </span>
+    <span class="curr"> / </span> -->
+    <span class="link" (click)="linkClickHandler('show-listing')">
+      Show Listing
+    </span>
+    <span class="curr"> / </span>
+    <span class="link" (click)="linkClickHandler('shot-listing')">
+      {{ getShowName() }}
+    </span>
+    <span class="curr"> / {{ getAssetName() }}</span>
+  </span>
+
+
+
+
+  <!-- <span *ngIf="currentListing=='listing'" class='link' (click)="linkClickHandler('listing')">Listing</span> -->
+</div>

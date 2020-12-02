@@ -1,0 +1,34 @@
+<div class="artist-details">
+    <div class="progress-monitor">
+        <div class="title" (click)="downloadImage()">Artist Availability</div>
+        <ng-container *ngIf="isDataReady">
+            <div class="d-flex justify-content-center">
+                <!-- style="width: 300px;height: 300px;" -->
+                <div style="width: 300px;height: 300px;" (window:resize)="onResize($event)">
+                    <div style="width: 300px;height: 300px;" echarts [options]="options" [autoResize]="true"
+                        style="height: 100%;" (chartInit)="onPieChartInit($event)"
+                        (chartMouseOver)="onChartEvent($event, 'chartMouseOver')">
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <div class="d-flex justify-content-around">
+            <div class="d-flex align-items-center flex-column">
+                <span style="color: #00c293">Available</span>
+                <span>{{this.artistAvailability.available | number }}</span>
+            </div>
+            <div class="breaker"></div>
+            <div class="d-flex align-items-center flex-column">
+                <span style="color: #00b1fb">Occupied</span>
+                <span>{{this.artistAvailability.occupied | number }}</span>
+            </div>
+            <div class="breaker"></div>
+            <div class="d-flex align-items-center flex-column">
+                <span style="color: #ff902b">Leave</span>
+                <span>{{this.artistAvailability.leave | number }}</span>
+            </div>
+
+        </div>
+
+    </div>
+</div>

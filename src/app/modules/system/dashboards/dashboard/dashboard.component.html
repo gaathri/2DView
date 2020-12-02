@@ -1,0 +1,27 @@
+<div [ngSwitch]="dashboardType">
+  <ng-container *ngSwitchCase="'artist'">
+    <app-artist-dashboard-home></app-artist-dashboard-home>
+  </ng-container>
+  <ng-container *ngSwitchCase="'hr'">
+    <app-hr-dashboard-home></app-hr-dashboard-home>
+  </ng-container>
+  <ng-container *ngSwitchCase="'studio'">
+    <app-studio-dashboard-home></app-studio-dashboard-home>
+  </ng-container>
+  <ng-container *ngSwitchCase="'admin'">
+    <app-admin-dashboard></app-admin-dashboard>
+  </ng-container>
+  <ng-container *ngSwitchCase="'client'">
+    <app-client-dashboard></app-client-dashboard>
+  </ng-container>
+  <!-- <ng-container *ngSwitchCase="'pa'">
+    <app-user-list></app-user-list>
+  </ng-container> -->
+  <ng-container *ngSwitchCase="'default'">
+    <app-default-listing></app-default-listing>
+  </ng-container>
+
+  <ng-container *ngSwitchDefault>
+    <app-page-not-found></app-page-not-found>
+  </ng-container>
+</div>

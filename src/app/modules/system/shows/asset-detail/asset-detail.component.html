@@ -1,0 +1,75 @@
+<div class="row breadcrumb-title">
+  <span>
+    <span class="link" (click)="linkClickHandler('show-listing')">
+      Show Listing
+    </span>
+    <span class="curr"> / </span>
+    <span class="link" (click)="linkClickHandler('shot-listing')">
+      {{ assetIn?.showName }}
+    </span>
+    <span class="curr"> / {{ assetIn?.assetName }}</span>
+  </span>
+</div>
+<div class="show-detail-component">
+  <div *ngIf="isEmptyData">
+    <!-- <app-nodata></app-nodata> -->
+    <div class="nodata d-flex justify-content-center">
+      No records found
+    </div>
+  </div>
+  <!--Shot Overview START-->
+  <nz-collapse *ngIf="isDataReady" [nzBordered]="false">
+    <nz-collapse-panel
+      #p
+      [nzHeader]="overviewPanel.name"
+      [nzActive]="overviewPanel.active"
+      [ngStyle]="overviewPanel.customStyle"
+    >
+      <div class="top-panel">
+        <app-card-view
+          (edit)="editHandler()"
+          [data]="cardData"
+          [isReadOnly]="isReadOnly"
+        ></app-card-view>
+        <ng-container *ngIf="isDataRefreshReady">
+          <app-chart-view [progressData]="assetStatus"></app-chart-view>
+        </ng-container>
+      </div>
+    </nz-collapse-panel>
+  </nz-collapse>
+  <!--Shot Overview END-->
+  <!--Shot Tabview START-->
+  <nz-tabset *ngIf="isDataReady" [nzSelectedIndex]="1">
+    <nz-tab nzTitle="Details">
+      <ng-template nz-tab>
+        <app-asset-detail-tab [assetIn]="assetIn"></app-asset-detail-tab>
+      </ng-template>
+    </nz-tab>
+    <nz-tab nzTitle="Tasks">
+      <ng-template nz-tab>
+        <app-tasklist-tab
+          (pageUpdate)="onPageUpdate($event)"
+          [isRowGroupEnabled]="false"
+          [assetIn]="assetIn"
+        ></app-tasklist-tab>
+      </ng-template>
+    </nz-tab>
+  </nz-tabset>
+  <!--Shot Tabview END-->
+</div>
+
+<!--Template content for add new drawer header START-->
+<ng-template #drawerHeader let-drawerRef="drawerRef">
+  <div class="row title-row">
+    <div class="left-icon">
+      <app-icon-picker iconType="edit"></app-icon-picker>
+    </div>
+    <div class="title-text cap">
+      Edit Asset
+    </div>
+    <div class="right-icon">
+      <i (click)="closeForm()" nz-icon nzType="right" nzTheme="outline"></i>
+    </div>
+  </div>
+</ng-template>
+<!--Template content for add new drawer header END-->

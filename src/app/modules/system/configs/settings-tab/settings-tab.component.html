@@ -1,0 +1,761 @@
+<nz-tabset
+  *ngIf="isDataReady && this.configData && this.configData.length > 0"
+  [nzTabPosition]="'left'"
+  [nzSelectedIndex]="selectedIndex"
+  (nzSelectChange)="onTabChange($event)"
+  class="settings-tab"
+>
+  <nz-tab *ngFor="let tab of tabDetails" [nzTitle]="titleTemplate2">
+    <ng-template #titleTemplate2>
+      <div class="d-flex align-items-center">
+        <i class="material-icons tab-icon">{{ tab.tabIcon }}</i>
+        <span>&nbsp;&nbsp; {{ tab.tabTitle }}</span>
+      </div>
+    </ng-template>
+    <div class="tab-title">{{ tab.tabContentTitle }}</div>
+    <ng-container *ngTemplateOutlet="getTabContentTemplate(tab.id)">
+    </ng-container>
+  </nz-tab>
+</nz-tabset>
+<ng-template #other>
+  <form
+    class="form-panel"
+    nz-form
+    [nzLayout]="'vertical'"
+    [formGroup]="otherForm"
+    (ngSubmit)="submitOtherForm()"
+    autocomplete="off"
+  >
+    <nz-form-item>
+      <nz-form-label nzFor="ffmpeg" nzRequired> FFmpeg Settings </nz-form-label>
+      <nz-form-control [nzSpan]="12" [nzErrorTip]="ffmpegTpl">
+        <textarea
+          style="overflow: auto; resize: none"
+          id="ffmpeg"
+          formControlName="ffmpeg"
+          placeholder="FFmpeg Settings"
+          nz-input
+          rows="4"
+        ></textarea>
+
+        <ng-template #ffmpegTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            Please provide your input!
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-control [nzSpan]="12">
+        <button
+          style="margin-top: 20px; float: right"
+          nz-button
+          nzType="primary"
+        >
+          Submit
+        </button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</ng-template>
+<ng-template #security>
+  <form
+    class="form-panel"
+    nz-form
+    [nzLayout]="'vertical'"
+    [formGroup]="securityForm"
+    (ngSubmit)="submitSecurityForm()"
+    autocomplete="off"
+  >
+    <div
+      style="margin-top: 20px; font-size: 14px"
+      class="tab-title ng-star-inserted"
+    >
+      Authentication
+    </div>
+
+    <nz-form-item>
+      <nz-form-label nzFor="emailExpiry" nzRequired
+        >Activation email expires in minutes</nz-form-label
+      >
+      <nz-form-control [nzSpan]="6" [nzErrorTip]="emailExpiryTpl">
+        <input
+          nz-input
+          id="emailExpiry"
+          formControlName="emailExpiry"
+          placeholder="Activation email expires in minutes"
+          numeric
+          numericType="number"
+        />
+
+        <ng-template #emailExpiryTpl let-control>
+          <ng-container *ngIf="control.hasError('required')"
+            >Please provide your input!</ng-container
+          >
+          <ng-container *ngIf="control.hasError('min')"
+            >Minimum value should be {{ EMAIL_EXPIRY_MIN }} or
+            greater</ng-container
+          >
+          <ng-container *ngIf="control.hasError('max')"
+            >Maximum value should not cross
+            {{ EMAIL_EXPIRY_MAX }}.</ng-container
+          >
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzFor="loginAttempt" nzRequired
+        >Maximum login attempt</nz-form-label
+      >
+      <nz-form-control [nzSpan]="6" [nzErrorTip]="loginAttemptTpl">
+        <input
+          nz-input
+          id="loginAttempt"
+          formControlName="loginAttempt"
+          placeholder="Maximum login attempt"
+          numeric
+          numericType="number"
+        />
+
+        <ng-template #loginAttemptTpl let-control>
+          <ng-container *ngIf="control.hasError('required')"
+            >Please provide your input!</ng-container
+          >
+          <ng-container *ngIf="control.hasError('min')"
+            >Minimum value should be {{ LOGIN_ATTEMPT_MIN }} or
+            greater</ng-container
+          >
+          <ng-container *ngIf="control.hasError('max')"
+            >Maximum value should not cross
+            {{ LOGIN_ATTEMPT_MAX }}.</ng-container
+          >
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzFor="unblockMinTime" nzRequired
+        >Minimum time to unblock in hours</nz-form-label
+      >
+      <nz-form-control [nzSpan]="6" [nzErrorTip]="unblockTpl">
+        <input
+          nz-input
+          id="unblockMinTime"
+          formControlName="unblockMinTime"
+          placeholder="Minimum time to unblock in hours"
+          numeric
+          numericType="number"
+        />
+        <ng-template #unblockTpl let-control>
+          <ng-container *ngIf="control.hasError('required')"
+            >Please provide your input!</ng-container
+          >
+          <ng-container *ngIf="control.hasError('min')"
+            >Minimum value should be {{ UNBLOCK_MIN }} or greater</ng-container
+          >
+          <ng-container *ngIf="control.hasError('max')"
+            >Maximum value should not cross {{ UNBLOCK_MAX }}.</ng-container
+          >
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzFor="sessionExpiry" nzRequired
+        >Session expiry in hours</nz-form-label
+      >
+      <nz-form-control [nzSpan]="6" [nzErrorTip]="sessionExpiryTpl">
+        <input
+          nz-input
+          id="sessionExpiry"
+          formControlName="sessionExpiry"
+          placeholder="Session expiry in hours"
+          numeric
+          numericType="number"
+        />
+
+        <ng-template #sessionExpiryTpl let-control>
+          <ng-container *ngIf="control.hasError('required')"
+            >Please provide your input!</ng-container
+          >
+          <ng-container *ngIf="control.hasError('min')"
+            >Minimum value should be {{ SESSION_EXPIRY_MIN }} or
+            greater</ng-container
+          >
+          <ng-container *ngIf="control.hasError('max')"
+            >Maximum value should not cross
+            {{ SESSION_EXPIRY_MAX }}.</ng-container
+          >
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <div
+      style="margin-top: 20px; font-size: 14px"
+      class="tab-title ng-star-inserted"
+    >
+      Password
+    </div>
+
+    <nz-form-item>
+      <nz-form-label nzFor="passwordExpiry" nzRequired
+        >Password expiry in days</nz-form-label
+      >
+      <nz-form-control [nzSpan]="6" [nzErrorTip]="passwordExpiryTpl">
+        <input
+          numeric
+          numericType="number"
+          nz-input
+          id="passwordExpiry"
+          formControlName="passwordExpiry"
+          placeholder="Password expiry in days"
+        />
+      </nz-form-control>
+      <ng-template #passwordExpiryTpl let-control>
+        <ng-container *ngIf="control.hasError('required')"
+          >Please provide your input!</ng-container
+        >
+        <ng-container *ngIf="control.hasError('min')"
+          >Minimum value should be {{ PASSWORD_EXPIRY_MIN }} or
+          greater</ng-container
+        >
+        <ng-container *ngIf="control.hasError('max')"
+          >Maximum value should not cross
+          {{ PASSWORD_EXPIRY_MAX }}.</ng-container
+        >
+      </ng-template>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzFor="passwordComplexity" nzRequired>{{
+        securitySettings.passwordComplexity.description
+      }}</nz-form-label>
+      <nz-form-control [nzSpan]="6" nzErrorTip="Please provide your input!">
+        <nz-select
+          id="passwordComplexity"
+          formControlName="passwordComplexity"
+          [nzPlaceHolder]="securitySettings.passwordComplexity.description"
+          (ngModelChange)="complexityChangeHandler($event)"
+        >
+          <nz-option
+            *ngFor="let l of securitySettings.passwordComplexity.values"
+            [nzLabel]="l.configKeyValue"
+            [nzValue]="l.id"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <div *ngIf="rules && rules.length > 0">
+      <ul>
+        <li class="rule-txt" *ngFor="let rule of rules">{{ rule.rule }}</li>
+      </ul>
+    </div>
+
+    <nz-form-item>
+      <nz-form-control [nzSpan]="12" [nzOffset]="5">
+        <button style="margin-top: 20px" nz-button nzType="primary">
+          Submit
+        </button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</ng-template>
+
+<ng-template #display>
+  <form
+    class="form-panel"
+    nz-form
+    [nzLayout]="'vertical'"
+    [formGroup]="displayForm"
+    (ngSubmit)="submitDisplayForm()"
+  >
+    <nz-form-item>
+      <nz-form-label nzFor="lang" nzRequired>Select Language</nz-form-label>
+      <nz-form-control [nzSpan]="6" nzErrorTip="Please select your language!">
+        <nz-select
+          id="lang"
+          formControlName="lang"
+          nzPlaceHolder="Select Language"
+        >
+          <nz-option
+            *ngFor="let l of displaySettings.lang.values"
+            [nzLabel]="l.configKeyValue"
+            [nzValue]="l.id"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzFor="weekStart" nzRequired>Week Starts On</nz-form-label>
+      <nz-form-control [nzSpan]="6" nzErrorTip="Please select your week start!">
+        <nz-select
+          id="weekStart"
+          formControlName="weekStart"
+          nzPlaceHolder="Week Starts On"
+        >
+          <nz-option
+            *ngFor="let l of displaySettings.weekStart.values"
+            [nzLabel]="l.configKeyValue"
+            [nzValue]="l.id"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzFor="weekEnds" nzRequired>Weekends</nz-form-label>
+      <nz-form-control [nzSpan]="6" nzErrorTip="Please select your weekends!">
+        <nz-select
+          id="weekEnds"
+          formControlName="weekEnds"
+          nzPlaceHolder="Weekends"
+          nzMode="multiple"
+          [nzMaxMultipleCount]="'2'"
+        >
+          <nz-option
+            *ngFor="let l of displaySettings.weekEnds.values"
+            [nzLabel]="l.configKeyValue"
+            [nzValue]="l.id"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzFor="dateFormat" nzRequired>Date Format</nz-form-label>
+      <nz-form-control
+        [nzSpan]="6"
+        nzErrorTip="Please select your date format!"
+      >
+        <nz-select
+          id="dateFormat"
+          formControlName="dateFormat"
+          nzPlaceHolder="Date Format"
+        >
+          <nz-option
+            *ngFor="let l of displaySettings.dateFormat.values"
+            [nzLabel]="l.configKeyValue"
+            [nzValue]="l.id"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzFor="timeFormat" nzRequired>Time Format</nz-form-label>
+      <nz-form-control
+        [nzSpan]="6"
+        nzErrorTip="Please select your time format!"
+      >
+        <nz-select
+          id="timeFormat"
+          formControlName="timeFormat"
+          nzPlaceHolder="Time Format"
+        >
+          <nz-option
+            *ngFor="let l of displaySettings.timeFormat.values"
+            [nzLabel]="l.configKeyValue"
+            [nzValue]="l.id"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzFor="timeZone" nzRequired>Time Zone</nz-form-label>
+      <nz-form-control [nzSpan]="6" nzErrorTip="Please select your time zone!">
+        <nz-select
+          id="timeZone"
+          formControlName="timeZone"
+          nzPlaceHolder="Time zone"
+        >
+          <nz-option
+            *ngFor="let l of displaySettings.timeZone.values"
+            [nzLabel]="l.configKeyValue"
+            [nzValue]="l.id"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzFor="worklogLimit" nzRequired>
+        Work log limit in days
+      </nz-form-label>
+      <nz-form-control [nzSpan]="6" [nzErrorTip]="worklogLimitTpl">
+        <input
+          nz-input
+          id="worklogLimit"
+          formControlName="worklogLimit"
+          placeholder="Work log limit in days"
+          numeric
+          numericType="number"
+        />
+
+        <ng-template #worklogLimitTpl let-control>
+          <ng-container *ngIf="control.hasError('required')"
+            >Please provide your input!</ng-container
+          >
+          <ng-container *ngIf="control.hasError('min')"
+            >Minimum value should be {{ WORKLOG_LIMIT_MIN }} or
+            greater</ng-container
+          >
+          <ng-container *ngIf="control.hasError('max')"
+            >Maximum value should not cross
+            {{ WORKLOG_LIMIT_MAX }}.</ng-container
+          >
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-control [nzSpan]="12" [nzOffset]="5">
+        <button style="margin-top: 20px" nz-button nzType="primary">
+          Submit
+        </button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</ng-template>
+
+<ng-template #smtp>
+  <form
+    class="form-panel"
+    nz-form
+    [nzLayout]="'vertical'"
+    [formGroup]="smtpForm"
+    (ngSubmit)="submitSMTPForm()"
+    autocomplete="off"
+  >
+    <nz-form-item>
+      <nz-form-label nzFor="server" nzRequired>Server</nz-form-label>
+      <nz-form-control [nzSpan]="6" nzErrorTip="Please provide your input!">
+        <input
+          nz-input
+          id="server"
+          formControlName="server"
+          placeholder="Server"
+        />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzFor="port" nzRequired>Port</nz-form-label>
+      <nz-form-control [nzSpan]="6" nzErrorTip="Please provide your input!">
+        <input
+          nz-input
+          id="port"
+          formControlName="port"
+          placeholder="Port"
+          numeric
+          numericType="number"
+        />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzFor="domain" nzRequired>From</nz-form-label>
+      <nz-form-control [nzSpan]="6" [nzErrorTip]="fNameTpl">
+        <input
+          nz-input
+          id="domain"
+          formControlName="domain"
+          placeholder="From"
+        />
+        <ng-template #fNameTpl let-control>
+          <ng-container *ngIf="control.hasError('email')"
+            >The input is not valid E-mail!</ng-container
+          >
+          <ng-container *ngIf="control.hasError('required')"
+            >Please provide your input!</ng-container
+          >
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzFor="username" nzRequired>User Name</nz-form-label>
+      <nz-form-control [nzSpan]="6" nzErrorTip="Please provide your input!">
+        <input
+          nz-input
+          id="username"
+          formControlName="username"
+          placeholder="User Name"
+        />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzFor="password" nzRequired>Password</nz-form-label>
+      <nz-form-control [nzSpan]="6" nzErrorTip="Please provide your input!">
+        <nz-input-group [nzSuffix]="suffixTemplate">
+          <input
+            [type]="smtpPasswordVisible ? 'text' : 'password'"
+            nz-input
+            formControlName="password"
+            placeholder="Password"
+          />
+        </nz-input-group>
+        <ng-template #suffixTemplate>
+          <i
+            nz-icon
+            [nzType]="smtpPasswordVisible ? 'eye-invisible' : 'eye'"
+            (click)="smtpPasswordVisible = !smtpPasswordVisible"
+          ></i>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-control [nzSpan]="12" [nzOffset]="5">
+        <button style="margin-top: 20px" nz-button nzType="primary">
+          Submit
+        </button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</ng-template>
+
+<ng-template #storage>
+  <div class="add-button" (click)="addStorageForm()">
+    <span>
+      <i nz-icon nzType="plus-circle" [nzTheme]="'fill'" class="qf-icon"></i>
+    </span>
+    <span class="quick-filter-text">&nbsp;&nbsp; Add Server Details</span>
+  </div>
+  <div *ngFor="let storageForm of storageForms; let i = index">
+    <form
+      class="form-panel"
+      nz-form
+      [nzLayout]="'vertical'"
+      [formGroup]="storageForm.form"
+      autocomplete="off"
+    >
+      <div
+        class="row clearfix"
+        style="
+          border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+          padding-bottom: 10px;
+          padding-top: 10px;
+        "
+      >
+        <div class="col-10 px-0">
+          <div class="row">
+            <div class="col-4 px-2">
+              <nz-form-item>
+                <nz-form-label nzFor="userName" nzRequired
+                  >User Name</nz-form-label
+                >
+                <nz-form-control nzErrorTip="Please provide your input!">
+                  <input
+                    nz-input
+                    id="userName"
+                    formControlName="userName"
+                    placeholder="User Name"
+                  />
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-4 px-2">
+              <nz-form-item>
+                <nz-form-label nzFor="password" nzRequired
+                  >Password</nz-form-label
+                >
+                <nz-form-control nzErrorTip="Please provide your input!">
+                  <nz-input-group [nzSuffix]="suffixTemplate2">
+                    <input
+                      [type]="storageForm.showPassword ? 'text' : 'password'"
+                      nz-input
+                      formControlName="password"
+                      placeholder="Password"
+                    />
+                  </nz-input-group>
+                  <ng-template #suffixTemplate2>
+                    <i
+                      nz-icon
+                      [nzType]="
+                        storageForm.showPassword ? 'eye-invisible' : 'eye'
+                      "
+                      (click)="
+                        storageForm.showPassword = !storageForm.showPassword
+                      "
+                    ></i>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-4 px-2">
+              <nz-form-item>
+                <nz-form-label nzFor="server" nzRequired
+                  >Server URL</nz-form-label
+                >
+                <nz-form-control nzErrorTip="Please provide your input!">
+                  <input
+                    nz-input
+                    id="server"
+                    formControlName="server"
+                    placeholder="Server URL"
+                  />
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="col-2 px-0 d-flex align-items-center justify-content-center"
+        >
+          <div
+            class="remove-button"
+            [class.disabled]="storageForms && storageForms.length == 1"
+            (click)="removeStorageForm(storageForm)"
+          >
+            <span>
+              <i
+                nz-icon
+                nzType="minus-circle"
+                [nzTheme]="'fill'"
+                class="qf-icon"
+              ></i>
+            </span>
+            <span class="quick-filter-text">&nbsp;&nbsp; Remove</span>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <button
+    style="margin-top: 20px; float: right"
+    *ngIf="storageForms && storageForms.length > 0"
+    nz-button
+    nzType="primary"
+    (click)="submitStorageForm()"
+  >
+    Submit
+  </button>
+</ng-template>
+
+<ng-template #backup>
+  <div class="add-button" (click)="addBackupForm()">
+    <span>
+      <i nz-icon nzType="plus-circle" [nzTheme]="'fill'" class="qf-icon"></i>
+    </span>
+    <span class="quick-filter-text">&nbsp;&nbsp; Add Server Details</span>
+  </div>
+  <div *ngFor="let backupForm of backupForms; let i = index">
+    <form
+      class="form-panel"
+      nz-form
+      [nzLayout]="'vertical'"
+      [formGroup]="backupForm.form"
+      autocomplete="off"
+    >
+      <div
+        class="row clearfix"
+        style="
+          border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+          padding-bottom: 10px;
+          padding-top: 10px;
+        "
+      >
+        <div class="col-10 px-0">
+          <div class="row">
+            <div class="col-4 px-2">
+              <nz-form-item>
+                <nz-form-label nzFor="userName" nzRequired
+                  >User Name</nz-form-label
+                >
+                <nz-form-control nzErrorTip="Please provide your input!">
+                  <input
+                    nz-input
+                    id="userName"
+                    formControlName="userName"
+                    placeholder="User Name"
+                  />
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-4 px-2">
+              <nz-form-item>
+                <nz-form-label nzFor="password" nzRequired
+                  >Password</nz-form-label
+                >
+                <nz-form-control nzErrorTip="Please provide your input!">
+                  <nz-input-group [nzSuffix]="suffixTemplate2">
+                    <input
+                      [type]="backupForm.showPassword ? 'text' : 'password'"
+                      nz-input
+                      formControlName="password"
+                      placeholder="Password"
+                    />
+                  </nz-input-group>
+                  <ng-template #suffixTemplate2>
+                    <i
+                      nz-icon
+                      [nzType]="
+                        backupForm.showPassword ? 'eye-invisible' : 'eye'
+                      "
+                      (click)="
+                        backupForm.showPassword = !backupForm.showPassword
+                      "
+                    ></i>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-4 px-2">
+              <nz-form-item>
+                <nz-form-label nzFor="server" nzRequired
+                  >Server Path</nz-form-label
+                >
+                <nz-form-control nzErrorTip="Please provide your input!">
+                  <input
+                    nz-input
+                    id="server"
+                    formControlName="server"
+                    placeholder="Server Path"
+                  />
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="col-2 px-0 d-flex align-items-center justify-content-center"
+        >
+          <div
+            class="remove-button"
+            [class.disabled]="backupForms && backupForms.length == 1"
+            (click)="removeBackupForm(backupForm)"
+          >
+            <span>
+              <i
+                nz-icon
+                nzType="minus-circle"
+                [nzTheme]="'fill'"
+                class="qf-icon"
+              ></i>
+            </span>
+            <span class="quick-filter-text">&nbsp;&nbsp; Remove</span>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <button
+    style="margin-top: 20px; float: right"
+    *ngIf="backupForms && backupForms.length > 0"
+    nz-button
+    nzType="primary"
+    (click)="submitBackupForm()"
+  >
+    Submit
+  </button>
+</ng-template>

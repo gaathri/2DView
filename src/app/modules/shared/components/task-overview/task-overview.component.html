@@ -1,0 +1,124 @@
+<div *ngIf="isDataReady" class="row breadcrumb-title">
+  <ng-container *ngIf="showLinks">
+    <span>
+      <span class="link" (click)="linkClickHandler('show-listing')">
+        Show Listing
+      </span>
+      <span class="curr"> / </span>
+      <ng-container *ngIf="shotIn">
+        <span class="link" (click)="linkClickHandler('shot-listing')">
+          {{ shotIn?.showName }}
+        </span>
+        <span class="curr"> / </span>
+        <span class="link" (click)="linkClickHandler('task-listing')">{{
+          shotIn?.shotCode
+        }}</span>
+      </ng-container>
+      <ng-container *ngIf="assetIn">
+        <span class="link" (click)="linkClickHandler('shot-listing')">
+          {{ assetIn?.showName }}
+        </span>
+        <span class="curr"> / </span>
+        <span class="link" (click)="linkClickHandler('task-listing')">
+          {{ assetIn?.assetName }}</span
+        >
+      </ng-container>
+      <span class="curr"> / {{ taskIn?.taskName }}</span>
+    </span>
+  </ng-container>
+  <ng-container *ngIf="!showLinks">
+    <span>
+      <span class="curr"> {{ taskIn?.taskName }}</span>
+    </span>
+  </ng-container>
+</div>
+
+<div class="show-detail-component task-collapse-panel">
+  <nz-tabset *ngIf="isDataReady" [nzSelectedIndex]="0">
+    <nz-tab nzTitle="Details">
+      <ng-template nz-tab>
+        <ng-container *ngIf="shotIn">
+          <nz-collapse [nzBordered]="false">
+            <nz-collapse-panel
+              #p
+              [nzHeader]="overviewPanel.sname"
+              [nzActive]="overviewPanel.active"
+              [ngStyle]="overviewPanel.customStyle"
+            >
+              <app-shot-detail-tab [shotIn]="shotIn"></app-shot-detail-tab>
+            </nz-collapse-panel>
+          </nz-collapse>
+        </ng-container>
+
+        <ng-container *ngIf="assetIn">
+          <nz-collapse [nzBordered]="false">
+            <nz-collapse-panel
+              #p
+              [nzHeader]="overviewPanel.aname"
+              [nzActive]="overviewPanel.active"
+              [ngStyle]="overviewPanel.customStyle"
+            >
+              <app-asset-detail-tab [assetIn]="assetIn"></app-asset-detail-tab>
+            </nz-collapse-panel>
+          </nz-collapse>
+        </ng-container>
+
+        <nz-collapse [nzBordered]="false" class="task-collapse">
+          <nz-collapse-panel
+            #p
+            [nzHeader]="overviewPanel.tname"
+            [nzActive]="overviewPanel.active"
+            [ngStyle]="overviewPanel.customStyle"
+          >
+            <app-task-detail-tab
+              [taskIn]="taskIn"
+              [taskInfo]="taskInfo"
+              [shotIn]="shotIn"
+              [assetIn]="assetIn"
+              [showName]="showName"
+            >
+            </app-task-detail-tab> </nz-collapse-panel
+        ></nz-collapse>
+      </ng-template>
+    </nz-tab>
+    <nz-tab nzTitle="Versions">
+      <ng-template nz-tab>
+        <app-versionlist-tab
+          [versionTypes]="'INTERNAL,RENDER'"
+          [taskIn]="taskIn"
+        ></app-versionlist-tab>
+      </ng-template>
+    </nz-tab>
+
+    <nz-tab nzTitle="External">
+      <ng-template nz-tab>
+        <app-versionlist-tab
+          [versionTypes]="'PUBLISH'"
+          [taskIn]="taskIn"
+        ></app-versionlist-tab>
+      </ng-template>
+    </nz-tab>
+
+    <nz-tab nzTitle="Event Logs">
+      <ng-template nz-tab>
+        <div class="dashboard-component event-log">
+          <div class="content-section">
+            <div
+              class="dashboard-right studio-activity"
+              [style.height]="getHeight()"
+            >
+              <ng-container *ngIf="panelHeight > 0">
+                <app-activity-log-panel
+                  class="log-panel"
+                  [parent]="'task'"
+                  [taskId]="taskId"
+                  [panelHeight]="panelHeight"
+                ></app-activity-log-panel>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </nz-tab>
+  </nz-tabset>
+</div>

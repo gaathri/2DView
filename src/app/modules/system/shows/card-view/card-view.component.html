@@ -1,0 +1,73 @@
+<div class="left-panel">
+  <div class="row head-panel">
+    <div class="title" style="width: 90%;">
+      <div class="d-flex justify-content-start">
+        <ng-container *ngIf="showLikeIcon()">
+          <span class="pad-right link like" (click)="likeHandler()"
+            ><i nz-icon [nzType]="getIconType()" [nzTheme]="getIconTheme()"></i
+          ></span>
+          <span class="pad-right">|</span>
+        </ng-container>
+        <p class="pad-right" [title]="data.headerTitle" class="text-truncate">
+          {{ data.headerTitle }}
+        </p>
+      </div>
+    </div>
+
+    <div *ngIf="!isReadOnly" class="label">
+      <button
+        nzTrigger="click"
+        class="btn-more"
+        nz-button
+        nz-dropdown
+        [nzDropdownMenu]="menu1"
+        nzPlacement="bottomRight"
+      >
+        <i class="icon-more" nz-icon nzType="ellipsis"></i>
+      </button>
+      <!-- <i class="fa fa-edit edit-icon"></i> Edit Details -->
+    </div>
+  </div>
+
+  <div class="row content-panel">
+    <div class="img-panel">
+      <app-image [url]="data.thumbnail"></app-image>
+    </div>
+    <div class="metrics-labels">
+      <dl class="row" style="color: white;">
+        <ng-container *ngFor="let description of data.descriptions">
+          <dt [ngClass]="description.class" class="col-sm-4 text-truncate">
+            {{ description.name }}
+          </dt>
+          <dd
+            [title]="getTitle(description.value)"
+            class="col-sm-8 text-truncate"
+          >
+            {{ getValue(description.value) }}
+          </dd>
+        </ng-container>
+      </dl>
+    </div>
+  </div>
+  <div class="foot-panel">
+    <div class="title title-green">{{ data.footerTitle }}</div>
+    <div class="label desc">
+      <p>{{ data.footerSubTitle }}</p>
+    </div>
+  </div>
+</div>
+
+<nz-dropdown-menu #menu1="nzDropdownMenu">
+  <ul nz-menu>
+    <li nz-menu-item (click)="editHandler()" *ngIf="showEditMenu()">Edit</li>
+    <li nz-menu-item (click)="backupHandler()" *ngIf="showBackupMenu()">
+      Backup
+    </li>
+    <li nz-menu-item (click)="deleteHandler()" *ngIf="showDeleteMenu()">
+      Delete
+    </li>
+
+    <!-- <li nz-menu-item>More</li>
+    <li nz-menu-item>New</li> -->
+  </ul>
+</nz-dropdown-menu>

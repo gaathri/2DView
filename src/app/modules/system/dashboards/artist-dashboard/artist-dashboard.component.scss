@@ -1,0 +1,55 @@
+.artist-db {
+    $panel-bg: #323232;
+
+    .add-pad {
+        padding: 10px;
+    }
+    
+    .col {
+        flex-grow: 0;        
+        padding-right: 0;
+        padding-left: 0;        
+    }
+    .db-progress {
+        //margin: 10px 10px 10px 10px;        
+        width: 803px;
+        height: 302px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.04);
+        background-color: $panel-bg;
+
+    }
+    .db-storage-space{
+        //margin: 10px 10px 10px 10px;        
+        width: 803px;
+        height: 162px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.04);
+        background-color: $panel-bg;
+    }
+    .db-star{
+        //margin: 10px 10px 10px 10px;
+        width: 583px;
+        height: 385px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.16);
+        background-color: $panel-bg;
+    }
+    .db-star-detail {
+        //margin: 10px 10px 10px 10px;
+        width: 200px;
+        height: 385px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.16);
+        background-color: $panel-bg;        
+    }
+    .db-activity-log {
+        //margin: 10px 10px 10px 10px;     
+        width: 517px;
+        height: 909px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.16);
+        background-color: $panel-bg;
+
+    }
+}

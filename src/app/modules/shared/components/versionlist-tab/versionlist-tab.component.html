@@ -1,0 +1,353 @@
+<div class="table-wrapper lg-pad item-list" *ngIf="!isEmptyData && isDataReady">
+  <div class="row">
+    <div class="col-md-12 px-0">
+      <div
+        class="table-header-panel-db d-flex justify-content-between align-items-center"
+      >
+        <div class="quick-filter last">
+          <span>Versions</span>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+          <div
+            class="quick-filter hand"
+            [class.last]="isReadOnly || versionTypes == 'PUBLISH'"
+          >
+            <span *ngIf="isSearching">
+              <nz-input-group [nzSuffix]="suffixTemplate">
+                <input
+                  style="height: 20px; width: 600px"
+                  type="text"
+                  nz-input
+                  [(ngModel)]="searchPattern"
+                  (keyup.enter)="searchDetails()"
+                  placeholder="Type search text"
+                />
+              </nz-input-group>
+
+              <ng-template #suffixTemplate>
+                <i
+                  nz-icon
+                  nz-tooltip
+                  class="ant-input-clear-icon"
+                  nzTheme="fill"
+                  nzType="close-circle"
+                  (click)="clearSearch()"
+                ></i>
+              </ng-template>
+            </span>
+            <span *ngIf="!isSearching" (click)="searchHandler()">
+              <span>
+                <app-icon-picker
+                  class="qf-icon"
+                  iconType="search"
+                ></app-icon-picker>
+              </span>
+              <span class="quick-filter-text">Search</span>
+            </span>
+          </div>
+
+          <div *ngIf="versionTypes !== 'PUBLISH'" class="quick-filter">
+            <nz-select
+              (ngModelChange)="vTypeChangeHandler($event)"
+              [(ngModel)]="versionType"
+              style="width: 120px"
+              [nzSize]="'small'"
+            >
+              <nz-option
+                *ngFor="let vType of versionTypeArr"
+                [nzValue]="vType"
+                [nzLabel]="vType"
+              >
+              </nz-option>
+            </nz-select>
+          </div>
+
+          <div
+            *ngIf="versionTypes !== 'PUBLISH' && isPublishDisabled()"
+            class="quick-filter hand last"
+            (click)="publishTask()"
+          >
+            <span>
+              <app-icon-picker class="qf-icon" iconType="add"></app-icon-picker>
+            </span>
+            <span class="quick-filter-text">Publish</span>
+          </div>
+        </div>
+      </div>
+      <!-- height: calc(100vh - 200px); -->
+      <ngx-datatable
+        #myTable
+        style="min-width: 100%; width: 100%; min-height: 200px !important"
+        [style.height]="getTableHeight()"
+        class="material striped expandable fullscreen"
+        [rows]="rows"
+        [columnMode]="'force'"
+        [headerHeight]="50"
+        [footerHeight]="50"
+        [rowHeight]="50"
+        [scrollbarV]="true"
+        [scrollbarH]="true"
+        [virtualization]="false"
+        [externalSorting]="true"
+        [externalPaging]="true"
+        [loadingIndicator]="isLoading"
+        [count]="page.totalElements"
+        [offset]="page.pageNumber"
+        [limit]="page.size"
+        [selectAllRowsOnPage]="false"
+        (page)="setPage($event)"
+        (select)="onSelect($event)"
+        (sort)="onSort($event)"
+      >
+        <ngx-datatable-column
+          *ngFor="let col of selectedTableColumns"
+          [name]="col.displayName"
+          [width]="getColWidth(col.name)"
+          [sortable]="col.sortable"
+        >
+          <ng-template
+            ngx-datatable-cell-template
+            let-rowIndex="rowIndex"
+            let-row="row"
+            let-value="value"
+          >
+            <div [ngSwitch]="col.name">
+              <span *ngSwitchCase="'thumbnail'">
+                <div class="edit-wrapper">
+                  <div class="img-panel table-thumb">
+                    <app-image [url]="row.thumbnail"></app-image>
+                  </div>
+                  <!-- <div class="col-2 px-0 edit" *ngIf="col.isEditable">
+                        <a href="javascript:void(0)" (click)="inlineEditHandler(row, col)"><i
+                            class="fa fa-pencil fa-lg"></i></a>
+                      </div> -->
+                </div>
+              </span>
+              <span *ngSwitchCase="'creativeUrl'">
+                <span [title]="row[col.name] ? row[col.name] : ''">
+                  <div class="edit-wrapper">
+                    <div
+                      *ngIf="row[col.name]"
+                      class="col-10 px-0 text-truncate"
+                    >
+                      <!-- <a [href]="row[col.name]" target="_blank">
+                        {{ row[col.name] }}
+                      </a> -->
+
+                      {{ row[col.name] }}
+                    </div>
+                    <div
+                      *ngIf="!row[col.name]"
+                      class="col-10 px-0 text-truncate"
+                    >
+                      -
+                    </div>
+                  </div>
+                </span>
+              </span>
+              <span *ngSwitchCase="'createDate'">
+                <span [title]="row[col.name] ? row[col.name] : ''">
+                  <div class="edit-wrapper">
+                    <div
+                      *ngIf="row[col.name]"
+                      class="col-10 px-0 text-truncate"
+                    >
+                      {{ getDisplayDate(row[col.name]) }}
+                    </div>
+                    <div
+                      *ngIf="!row[col.name]"
+                      class="col-10 px-0 text-truncate"
+                    >
+                      -
+                    </div>
+                  </div>
+                </span>
+              </span>
+              <span *ngSwitchDefault>
+                <span [title]="row[col.name] ? row[col.name] : ''">
+                  <div class="edit-wrapper">
+                    <div
+                      *ngIf="row[col.name]"
+                      class="col-10 px-0 text-truncate"
+                    >
+                      {{ row[col.name] }}
+                    </div>
+                    <div
+                      *ngIf="!row[col.name]"
+                      class="col-10 px-0 text-truncate"
+                    >
+                      -
+                    </div>
+                  </div>
+                </span>
+              </span>
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column
+          [headerClass]="'qa-header'"
+          [cellClass]="'dummy-class'"
+          name="Quick Actions"
+          [sortable]="false"
+          [frozenRight]="true"
+          [width]="150"
+        >
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <div *ngIf="showDummy" class="dummy-div"></div>
+            <div class="d-flex flex-row justify-content-end">
+              <button
+                [disabled]="isDailiesDisabled(row)"
+                title="Add to dailies"
+                class="mr-2 d-flex justify-content-center"
+                nz-button
+                nzType="primary"
+                nzSize="small"
+                (click)="dailiesHandler(row)"
+              >
+                <app-icon-picker nz-icon iconType="dailies"></app-icon-picker>
+              </button>
+
+              <button
+                [disabled]="isInternalDisabled(row)"
+                title="Add to internal"
+                class="mr-2 d-flex justify-content-center"
+                nz-button
+                nzType="primary"
+                nzSize="small"
+                (click)="internalHandler(row)"
+              >
+                <app-icon-picker nz-icon iconType="internal"></app-icon-picker>
+              </button>
+
+              <button
+                [disabled]="isExternalDisabled(row)"
+                title="Add to external"
+                class="mr-2 d-flex justify-content-center"
+                nz-button
+                nzType="primary"
+                nzSize="small"
+                (click)="externalHandler(row)"
+              >
+                <app-icon-picker nz-icon iconType="external"></app-icon-picker>
+              </button>
+
+              <button [disabled]="isNotesDisabled(row)"
+                title="Notes"
+                class="mr-2 d-flex justify-content-center"
+                nz-button
+                nzType="primary"
+                nzSize="small"
+                (click)="noteHandler(row)"
+              >
+                <app-icon-picker nz-icon iconType="notes"></app-icon-picker>
+              </button>
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-footer>
+          <ng-template
+            ngx-datatable-footer-template
+            let-rowCount="rowCount"
+            let-pageSize="pageSize"
+            let-selectedCount="selectedCount"
+            let-curPage="curPage"
+            let-offset="offset"
+            let-isVisible="isVisible"
+          >
+            <div class="page-count">
+              <nz-form-item>
+                <nz-form-control>
+                  <nz-select
+                    style="width: 75px"
+                    nzPlaceHolder="Select Page Size"
+                    [(ngModel)]="selectedPageSize"
+                    (ngModelChange)="setPageSize()"
+                  >
+                    <nz-option
+                      *ngFor="let option of pageSizeOptions"
+                      [nzLabel]="option"
+                      [nzValue]="option"
+                    ></nz-option>
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <datatable-pager
+              [pagerLeftArrowIcon]="'datatable-icon-left'"
+              [pagerRightArrowIcon]="'datatable-icon-right'"
+              [pagerPreviousIcon]="'datatable-icon-prev'"
+              [pagerNextIcon]="'datatable-icon-skip'"
+              [page]="curPage"
+              [size]="pageSize"
+              [count]="rowCount"
+              [hidden]="!(rowCount / pageSize > 1)"
+              (change)="table.onFooterPage($event)"
+            >
+            </datatable-pager>
+          </ng-template>
+        </ngx-datatable-footer>
+      </ngx-datatable>
+    </div>
+  </div>
+</div>
+
+<!--Template content for tabel columns drawer header START-->
+<ng-template #drawerHeader let-drawerRef="drawerRef">
+  <div class="row title-row">
+    <div class="left-icon">
+      <app-icon-picker iconType="notes"></app-icon-picker>
+    </div>
+    <div class="title-text">{{ drawerTitle }}</div>
+    <div class="right-icon">
+      <i (click)="closeForm()" nz-icon nzType="right" nzTheme="outline"></i>
+    </div>
+  </div>
+</ng-template>
+<!--Template content for tabel columns drawer header END-->
+
+<!--Modal for table inline edit for drop downs START-->
+<nz-modal
+  nzWrapClassName="vertical-center-modal"
+  [(nzVisible)]="isVisible"
+  [nzTitle]="getTitle()"
+  nzKeyboard="false"
+  nzClosable="false"
+  nzNoAnimation="true"
+>
+  <div>
+    <div class="d-flex justify-content-start align-items-center">
+      <div class="col-8 px-0">
+        <nz-form-item>
+          <nz-form-control>
+            <nz-select
+              nzShowSearch
+              nzAllowClear
+              nzPlaceHolder="Select playlist"
+              [(ngModel)]="playlistId"
+              [nzDisabled]="!isValidArr(playlists)"
+            >
+              <nz-option
+                *ngFor="let playlist of playlists"
+                [nzLabel]="playlist.name"
+                [nzValue]="playlist.id"
+                [nzDisabled]="playlist.isLocked == 1"
+              >
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+  </div>
+
+  <div *nzModalFooter>
+    <button nz-button nzType="default" (click)="selectCancel(myrow)">
+      Cancel
+    </button>
+    <button nz-button nzType="primary" (click)="selectConfirm(myrow)">
+      Save
+    </button>
+  </div>
+</nz-modal>
+<!--Modal for table inline edit for drop downs END-->

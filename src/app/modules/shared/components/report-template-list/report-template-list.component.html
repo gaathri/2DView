@@ -1,0 +1,275 @@
+<div class="table-wrapper sm-pad item-list" *ngIf="isDataReady">
+  <div class="row">
+    <div class="col-md-12 px-0">
+      <div
+        class="table-header-panel-db d-flex justify-content-between align-items-center"
+      >
+        <div class="quick-filter last">
+          <span>Report Templates</span>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="quick-filter hand last">
+            <span *ngIf="isSearching">
+              <nz-input-group [nzSuffix]="suffixTemplate">
+                <input
+                  style="height: 20px; width: 600px;"
+                  type="text"
+                  nz-input
+                  [(ngModel)]="searchPattern"
+                  (keyup.enter)="searchDetails()"
+                  placeholder="Type search text"
+                />
+              </nz-input-group>
+
+              <ng-template #suffixTemplate>
+                <i
+                  nz-icon
+                  nz-tooltip
+                  class="ant-input-clear-icon"
+                  nzTheme="fill"
+                  nzType="close-circle"
+                  (click)="clearSearch()"
+                ></i>
+              </ng-template>
+            </span>
+            <span *ngIf="!isSearching" (click)="searchHandler()">
+              <span>
+                <app-icon-picker
+                  class="qf-icon"
+                  iconType="search"
+                ></app-icon-picker>
+              </span>
+              <span class="quick-filter-text">Search</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <ngx-datatable
+        #myTable
+        style="
+          min-width: 100%;
+          width: 100%;
+          min-height: 300px !important;
+          height: calc(100vh - 300px);
+        "
+        class="material striped expandable fullscreen"
+        [rows]="rows"
+        [columnMode]="'force'"
+        [headerHeight]="40"
+        [footerHeight]="40"
+        [rowHeight]="40"
+        [scrollbarV]="true"
+        [scrollbarH]="true"
+        [virtualization]="false"
+        [externalSorting]="true"
+        [externalPaging]="true"
+        [loadingIndicator]="isLoading"
+        [count]="page.totalElements"
+        [offset]="page.pageNumber"
+        [limit]="page.size"
+        [selectAllRowsOnPage]="false"
+        (page)="setPage($event)"
+        (sort)="onSort($event)"
+      >
+        <ngx-datatable-column
+          *ngFor="let col of selectedTableColumns"
+          [name]="col.displayName"
+          [sortable]="col.sortable"
+        >
+          <ng-template
+            ngx-datatable-cell-template
+            let-rowIndex="rowIndex"
+            let-row="row"
+            let-value="value"
+          >
+            <div [ngSwitch]="col.name">
+              <!-- <span class="toggle-checkbox-control" *ngSwitchCase="'isActive'">
+                                <input class="toggle-checkbox" [id]="row.id" type="checkbox"
+                                    [checked]="getActiveStatus(row, col) == 'ACTIVE'" />
+                                <label class="toggle-checkbox-label" (click)="onToggleIconClick(row)"><i></i></label>
+
+                                <label [ngClass]="{
+                                            pipe: getActiveStatus(row, col) == 'ACTIVE',
+                                            'pipe-inactive':
+                                              getActiveStatus(row, col) == 'INACTIVE'
+                                          }">{{ this.getActiveStatus(row, col) }}</label>
+                            </span> -->
+              <span
+                *ngSwitchCase="'reportName'"
+                [title]="row[col.name] ? row[col.name] : ''"
+              >
+                {{ row[col.name] }}
+                <!-- <a href="javascript:void(0)" (click)="onReportNameClick(row)">{{row[col.name]}}</a> -->
+              </span>
+              <span
+                [title]="getDate(row[col.name], col.name)"
+                *ngSwitchCase="
+                  [
+                    'reportDeliveryEndDate',
+                    'dataStartDate',
+                    'dataEndDate',
+                    'nextExecutionTime'
+                  ].includes(col.name)
+                    ? col.name
+                    : ''
+                "
+              >
+                {{ getDate(row[col.name], col.name) }}
+              </span>
+
+              <span *ngSwitchCase="'reportFrequency'">
+                <span style="color: #3be582;"> {{ row[col.name] }} </span>
+                <!-- Day(s) -->
+              </span>
+              <span
+                *ngSwitchCase="'distributionEmail'"
+                style="cursor: pointer;"
+                (click)="viewRecipients(row)"
+              >
+                <span style="color: #3be582;">{{
+                  getRecipientsCount(row[col.name])
+                }}</span>
+                <!-- User(s) -->
+              </span>
+              <span *ngSwitchDefault>
+                <span [title]="row[col.name] ? row[col.name] : ''">
+                  <span *ngIf="row[col.name]">{{ row[col.name] }}</span>
+                  <span *ngIf="!row[col.name]">-</span>
+                </span>
+              </span>
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column
+          [headerClass]="'qa-header'"
+          [cellClass]="'dummy-class'"
+          name="Quick Actions"
+          [sortable]="false"
+          [width]="150"
+          [frozenRight]="true"
+        >
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <div *ngIf="showDummy" class="dummy-div config"></div>
+            <div class="d-flex flex-row justify-content-end">
+              <button
+                title="Edit"
+                class="mr-2 d-flex justify-content-center"
+                nz-button
+                nzType="primary"
+                nzSize="small"
+                (click)="editHandler(row)"
+              >
+                <app-icon-picker nz-icon iconType="edit"></app-icon-picker>
+              </button>
+              <button
+                title="View"
+                class="mr-2 d-flex justify-content-center"
+                nz-button
+                nzType="primary"
+                nzSize="small"
+                (click)="viewHandler(row)"
+              >
+                <app-icon-picker nz-icon iconType="review"></app-icon-picker>
+              </button>
+              <button
+                title="Delete"
+                class="mr-2 d-flex justify-content-center"
+                nz-button
+                nzType="primary"
+                nzSize="small"
+                (click)="deleteHandler(row)"
+              >
+                <app-icon-picker nz-icon iconType="delete"></app-icon-picker>
+              </button>
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-footer>
+          <ng-template
+            ngx-datatable-footer-template
+            let-rowCount="rowCount"
+            let-pageSize="pageSize"
+            let-selectedCount="selectedCount"
+            let-curPage="curPage"
+            let-offset="offset"
+            let-isVisible="isVisible"
+          >
+            <div class="page-count">
+              <nz-form-item>
+                <nz-form-control>
+                  <nz-select
+                    style="width: 75px;"
+                    nzPlaceHolder="Select Page Size"
+                    [(ngModel)]="selectedPageSize"
+                    (ngModelChange)="setPageSize()"
+                  >
+                    <nz-option
+                      *ngFor="let option of pageSizeOptions"
+                      [nzLabel]="option"
+                      [nzValue]="option"
+                    ></nz-option>
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <datatable-pager
+              [pagerLeftArrowIcon]="'datatable-icon-left'"
+              [pagerRightArrowIcon]="'datatable-icon-right'"
+              [pagerPreviousIcon]="'datatable-icon-prev'"
+              [pagerNextIcon]="'datatable-icon-skip'"
+              [page]="curPage"
+              [size]="pageSize"
+              [count]="rowCount"
+              [hidden]="!(rowCount / pageSize > 1)"
+              (change)="table.onFooterPage($event)"
+            >
+            </datatable-pager>
+          </ng-template>
+        </ngx-datatable-footer>
+      </ngx-datatable>
+    </div>
+  </div>
+</div>
+
+<!--Template content for tabel columns drawer header START-->
+<ng-template #drawerHeader let-drawerRef="drawerRef">
+  <div class="row title-row">
+    <div class="left-icon" [ngSwitch]="drawerTitle">
+      <ng-container *ngSwitchCase="'Report Instance List'">
+        <app-icon-picker iconType="review"></app-icon-picker>
+      </ng-container>
+      <ng-container *ngSwitchCase="'Recipients List'">
+        <app-icon-picker iconType="account"></app-icon-picker>
+      </ng-container>
+    </div>
+    <div class="title-text">{{ drawerTitle }}</div>
+    <div class="d-flex align-items-center right-icon">
+      <i (click)="closeForm()" nz-icon nzType="right" nzTheme="outline"></i>
+    </div>
+  </div>
+</ng-template>
+<!--Template content for tabel columns drawer header END-->
+
+<!--Modal for delete client confirmation START-->
+<nz-modal
+  [(nzVisible)]="isAlertVisible"
+  nzTitle="Are you sure to delete this template?"
+  nzOkText="Yes"
+  nzCancelText="No"
+  (nzOnOk)="deleteClientConfirm()"
+  (nzOnCancel)="deleteClientCancel()"
+  nzOkType="primary"
+  nzClosable="false"
+  nzWrapClassName="confirm-modal"
+  nzNoAnimation="true"
+>
+  <b class="modal-content-del-prefix" *ngIf="templateToDelete != null"
+    >Report Template Name :
+    <span class="modal-content-del-suffix">{{
+      templateToDelete.reportName
+    }}</span></b
+  >
+</nz-modal>
+<!--Modal for delete client confirmation END-->

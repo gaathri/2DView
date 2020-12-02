@@ -1,0 +1,72 @@
+<div class="right-panel chart-view-component">
+  <div class="progress-monitor">
+    <div class="title" (click)="downloadImage()">Progress Monitor</div>
+    <ng-container *ngIf="isDataReady">
+      <div class="d-flex justify-content-center">
+        <div
+          style="width: 300px; height: 300px;"
+          (window:resize)="onResize($event)"
+        >
+          <div
+            echarts
+            [options]="options"
+            [autoResize]="autoResize"
+            style="height: 100%;"
+            (chartInit)="onPieChartInit($event)"
+            (chartMouseOver)="onChartEvent($event, 'chartMouseOver')"
+          ></div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!isDataReady">
+      <app-nodata></app-nodata>
+    </ng-container>
+
+    <!-- <div *ngIf="statusValue" class="label">
+      <span>{{ statusName }} : </span>
+      <span>{{ statusValue }}</span>
+    </div> -->
+  </div>
+  <div class="progress-metrics">
+    <div class="progress-matrics-items">
+      <div class="label progress-lable">Today's Tasks <span></span></div>
+      <div class="label progress-value success-label">
+        {{ progressData.started }}
+      </div>
+    </div>
+    <div class="progress-matrics-items-divider"></div>
+
+    <ng-container *ngIf="progressData.hasOwnProperty('noOfShots')">
+      <div class="progress-matrics-items">
+        <div class="label progress-lable">Number of shots <span></span></div>
+        <div class="label progress-value primary-label2">
+          {{ progressData.noOfShots }}
+        </div>
+      </div>
+      <div class="progress-matrics-items-divider"></div>
+    </ng-container>
+
+    <div class="progress-matrics-items">
+      <div class="label progress-lable">Number of Tasks <span></span></div>
+      <div class="label progress-value primary-label">
+        {{ progressData.noOfTasks }}
+      </div>
+    </div>
+
+    <div class="progress-matrics-items-divider"></div>
+
+    <div class="progress-matrics-items">
+      <div class="label progress-lable">Number of Assets <span></span></div>
+      <div class="label progress-value danger-label">
+        {{ progressData.noOfAssets}}
+      </div>
+    </div>
+
+    <!-- <div class="progress-matrics-items">
+      <div class="label progress-lable">Tasks in deadline <span></span></div>
+      <div class="label  progress-value  danger-label">
+        {{ progressData.deadline }}
+      </div>
+    </div> -->
+  </div>
+</div>

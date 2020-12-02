@@ -1,0 +1,15 @@
+.has-error{
+    background-color: red;  
+    text-align: center;  
+}
+.is-updated {
+    background-color: green;  
+    text-align: center;  
+}
+
+ngx-datatable.scroll-vertical .datatable-body {
+    overflow-y: auto;
+}
+.ngx-datatable.scroll-vertical {
+    height: 50vh;
+}

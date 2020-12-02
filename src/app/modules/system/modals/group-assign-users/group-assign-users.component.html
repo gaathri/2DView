@@ -1,0 +1,25 @@
+<div *ngIf="isDataReady" class="add-new-show-panel">
+    <nz-form-item>
+        <nz-form-label>Select role</nz-form-label>
+        <nz-form-control>
+            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select role from list" [(ngModel)]="role"
+                (ngModelChange)="roleChangeHandler($event)" [nzDisabled]="!isValidArr(roles)">
+                <nz-option *ngFor="let role of roles" [nzLabel]="role.roleName" [nzValue]="role">
+                </nz-option>
+            </nz-select>
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label>Select from users list</nz-form-label>
+        <nz-form-control>
+            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select users from list" [(ngModel)]="userIds"
+                (ngModelChange)="userChangeHandler($event)" nzMode="multiple" [nzDisabled]="!isValidArr(users)">
+                <nz-option *ngFor="let user of users" [nzLabel]="getUserName(user)" [nzValue]="user.id">
+                </nz-option>
+            </nz-select>
+        </nz-form-control>
+    </nz-form-item>
+    <app-user-list-by-role [userDetails]="userDetails" [userInfo]="groupOutCopy.userVOs"></app-user-list-by-role>
+</div>
+<!-- <span style="color: greenyellow">{{userIds | json}}</span>
+<span style="color: greenyellow">{{this.groupOutCopy.userVOs | json}}</span> -->

@@ -1,0 +1,254 @@
+<form
+  *ngIf="isDataReady"
+  class="form-panel"
+  nz-form
+  [formGroup]="dataForm"
+  (ngSubmit)="submitHandler()"
+  autocomplete="off"
+>
+  <ng-container *ngIf="mode != 'update'">
+    <nz-form-item>
+      <nz-form-label nzRequired nzFor="showId">Show Name</nz-form-label>
+      <nz-form-control nzErrorTip="Please provide your input!">
+        <nz-select
+          id="showId"
+          formControlName="showId"
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Select Show"
+          [nzDisabled]="mode == 'update'"
+          (ngModelChange)="showChangeHandler()"
+        >
+          <nz-option
+            *ngFor="let show of shows"
+            [nzLabel]="show.showName"
+            [nzValue]="show.id"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+      <nz-form-control *ngIf="disableShowSelect">
+        <input readonly class="read-only" nz-input [value]="showName" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label>Task Category</nz-form-label>
+      <nz-form-control>
+        <nz-radio-group
+          [nzDisabled]="mode == 'update'"
+          formControlName="taskCategory"
+          (ngModelChange)="requiredChange()"
+        >
+          <label nz-radio nzValue="shot">Shot</label>
+          <label nz-radio nzValue="asset">Asset</label>
+        </nz-radio-group>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item *ngIf="taskCategory == 'shot'">
+      <nz-form-label nzRequired nzFor="shotId">Shot Code</nz-form-label>
+      <nz-form-control nzErrorTip="Please provide your input!">
+        <nz-select
+          id="shotId"
+          formControlName="shotId"
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Select Shot"
+          [nzDisabled]="mode == 'update'"
+          (ngModelChange)="shotChangeHandler($event)"
+        >
+          <nz-option
+            *ngFor="let shot of shots"
+            [nzLabel]="shot.shotCode"
+            [nzValue]="shot.id"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item *ngIf="taskCategory == 'asset'">
+      <nz-form-label nzRequired nzFor="assetId">Asset Name</nz-form-label>
+      <nz-form-control nzErrorTip="Please provide your input!">
+        <nz-select
+          id="assetId"
+          formControlName="assetId"
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Select Asset"
+          [nzDisabled]="mode == 'update'"
+          (ngModelChange)="assetChangeHandler($event)"
+        >
+          <nz-option
+            *ngFor="let asset of assets"
+            [nzLabel]="asset.assetName"
+            [nzValue]="asset.id"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </ng-container>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="taskId">Task Name</nz-form-label>
+    <nz-form-control
+      *ngIf="!disableTaskSelect"
+      nzErrorTip="Please provide your input!"
+    >
+      <nz-select
+        id="taskId"
+        formControlName="taskId"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Task"
+        [nzDisabled]="!isValidArr(tasks)"
+      >
+        <nz-option
+          *ngFor="let task of tasks"
+          [nzLabel]="task.taskName"
+          [nzValue]="task.id"
+        ></nz-option>
+      </nz-select>
+    </nz-form-control>
+    <nz-form-control *ngIf="disableTaskSelect">
+      <input readonly class="read-only" nz-input [value]="taskName" />
+    </nz-form-control>
+  </nz-form-item>
+  <div class="row clearfix">
+    <div class="col-md-6 px-0">
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="hoursWorked"
+          >Hours Worked</nz-form-label
+        >
+        <nz-form-control [nzErrorTip]="iHoursTpl">
+          <input
+            id="hoursWorked"
+            formControlName="hoursWorked"
+            nz-input
+            placeholder="Hours Worked"
+            numeric
+            numericType="number"
+          />
+        </nz-form-control>
+        <ng-template #iHoursTpl let-control>
+          <ng-container *ngIf="control.hasError('required')"
+            >Please provided your input!</ng-container
+          >
+          <ng-container *ngIf="control.hasError('min')"
+            >Minimum value should be 1 or greater</ng-container
+          >
+          <ng-container *ngIf="control.hasError('max')"
+            >Maximum value should not cross
+            {{ getHoursPerDay() }}.</ng-container
+          >
+        </ng-template>
+      </nz-form-item>
+    </div>
+    <div class="col-md-6 px-0">
+      <nz-form-item>
+        <nz-form-label nzFor="extraHoursWorked"
+          >Extra Hours Worked</nz-form-label
+        >
+        <nz-form-control [nzErrorTip]="eHoursTpl">
+          <input
+            id="extraHoursWorked"
+            formControlName="extraHoursWorked"
+            nz-input
+            placeholder="Extra Hours Worked"
+            numeric
+            numericType="number"
+          />
+          <!-- [readonly]="disableExtraHours()" -->
+        </nz-form-control>
+        <ng-template #eHoursTpl let-control>
+          <ng-container *ngIf="control.hasError('max')"
+            >Maximum value should not cross
+            {{ getExtraHoursPerDay() }}.</ng-container
+          >
+        </ng-template>
+      </nz-form-item>
+    </div>
+  </div>
+  <div class="row clearfix">
+    <div class="col-md-6 px-0">
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="completionPercentage"
+          >Progress</nz-form-label
+        >
+        <nz-form-control [nzErrorTip]="iPercentTpl">
+          <input
+            id="completionPercentage"
+            formControlName="completionPercentage"
+            nz-input
+            placeholder="Progress"
+            numeric
+            numericType="number"
+            maxValue="100"
+          />
+        </nz-form-control>
+        <ng-template #iPercentTpl let-control>
+          <ng-container *ngIf="control.hasError('required')"
+            >Please provided your input!</ng-container
+          >
+          <ng-container *ngIf="control.hasError('min')"
+            >Minimum value should be 1 or greater</ng-container
+          >
+          <ng-container *ngIf="control.hasError('max')"
+            >Maximum value should not cross 100.</ng-container
+          >
+        </ng-template>
+      </nz-form-item>
+    </div>
+
+    <div class="col-md-6 px-0">
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="loggedDate"
+          >Selected Date</nz-form-label
+        >
+        <nz-form-control nzErrorTip="Please provide your input!">
+          <input
+            id="loggedDate"
+            [value]="getLoggedDate()"
+            nz-input
+            placeholder="Select Date"
+            readonly
+          />
+          <!-- 
+            formControlName="loggedDate"
+            <nz-date-picker
+            id="loggedDate"
+            formControlName="loggedDate"
+            nzPlaceHolder="Select Date"
+            nzDisabled
+            [nzDisabledDate]="disabledDate"
+            [nzAllowClear]="false"
+            [nzFormat]="getDisplayDateFormat()"
+          >
+          </nz-date-picker> -->
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="notes">Task Details</nz-form-label>
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <!-- <input id="notes" formControlName="notes" nz-input [maxLength]="taskNotesMaxLength"
+                    placeholder="Task Details" /> -->
+      <textarea
+        formControlName="notes"
+        nz-input
+        rows="5"
+        placeholder="Provide details"
+        [maxlength]="taskNotesMaxLength"
+      ></textarea>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div *ngIf="isDataReady" class="submit-btn-parent">
+  <button nz-button nzType="primary" (click)="submitHandler()">
+    {{ btnName }}
+  </button>
+</div>
+
+<!-- <pre *ngIf="dataForm && dataForm.value" style="color: greenyellow;">{{
+  dataForm.value | json
+}}</pre> -->

@@ -1,0 +1,158 @@
+<div class="row breadcrumb-title">
+  <span
+    ><span class="link" (click)="linkClickHandler('show-listing')">
+      Show Listing </span
+    ><span class="curr"> / {{ showIn?.showName }}</span></span
+  >
+</div>
+
+<div class="show-detail-component">
+  <!-- <div class="row">
+    <h4 class="heading">Show Details</h4>
+  </div> -->
+  <div *ngIf="isEmptyData">
+    <!-- <app-nodata></app-nodata> -->
+    <div class="nodata d-flex justify-content-center">No records found</div>
+  </div>
+  <!--Show Overview START-->
+  <nz-collapse *ngIf="!isEmptyData && isDataReady" [nzBordered]="false">
+    <nz-collapse-panel
+      #p
+      [nzHeader]="overviewPanel.name"
+      [nzActive]="overviewPanel.active"
+      [ngStyle]="overviewPanel.customStyle"
+    >
+      <div class="top-panel">
+        <app-card-view
+          (like)="likeHandler()"
+          (edit)="editHandler()"
+          (backup)="backupHandler()"
+          (delete)="deleteHandler()"
+          [data]="cardData"
+          [isReadOnly]="isReadOnly"
+          [type]="'show'"
+        ></app-card-view>
+        <ng-container *ngIf="isDataRefreshReady">
+          <app-chart-view [progressData]="showStatus"></app-chart-view>
+        </ng-container>
+      </div>
+      <!-- <app-show-overview [showStatus]="showStatus" [showIn]="showIn"></app-show-overview> -->
+    </nz-collapse-panel>
+  </nz-collapse>
+  <!--Show Overview END-->
+  <!--Show Tabview START-->
+  <nz-tabset *ngIf="!isEmptyData && isDataReady" [nzSelectedIndex]="1">
+    <nz-tab nzTitle="Details">
+      <ng-template nz-tab>
+        <app-show-details-tab [showIn]="showIn"></app-show-details-tab>
+      </ng-template>
+    </nz-tab>
+    <nz-tab nzTitle="Shots">
+      <ng-template nz-tab>
+        <app-shotlist-tab
+          (pageUpdate)="onPageUpdate($event)"
+          [showIn]="showIn"
+          [isReadOnly]="isReadOnly"
+        ></app-shotlist-tab>
+      </ng-template>
+    </nz-tab>
+    <nz-tab nzTitle="Tasks">
+      <ng-template nz-tab>
+        <app-tasklist-tab
+          (pageUpdate)="onPageUpdate($event)"
+          [showIn]="showIn"
+          [isRowGroupEnabled]="true"
+          [isReadOnly]="isReadOnly"
+        ></app-tasklist-tab>
+      </ng-template>
+    </nz-tab>
+    <nz-tab nzTitle="Seasons">
+      <ng-template nz-tab>
+        <app-seasonlist-tab
+          [showIn]="showIn"
+          [isReadOnly]="isReadOnly"
+        ></app-seasonlist-tab>
+      </ng-template>
+    </nz-tab>
+    <nz-tab nzTitle="Spots">
+      <ng-template nz-tab>
+        <app-spotlist-tab
+          [showIn]="showIn"
+          [isReadOnly]="isReadOnly"
+        ></app-spotlist-tab>
+      </ng-template>
+    </nz-tab>
+    <nz-tab nzTitle="Episodes">
+      <ng-template nz-tab>
+        <app-episodelist-tab
+          [showIn]="showIn"
+          [isReadOnly]="isReadOnly"
+        ></app-episodelist-tab>
+      </ng-template>
+    </nz-tab>
+    <nz-tab nzTitle="Sequences">
+      <ng-template nz-tab>
+        <app-sequencelist-tab
+          [showIn]="showIn"
+          [isReadOnly]="isReadOnly"
+        ></app-sequencelist-tab>
+      </ng-template>
+    </nz-tab>
+    <nz-tab nzTitle="Assets">
+      <ng-template nz-tab>
+        <app-assetlist-tab
+          (pageUpdate)="onPageUpdate($event)"
+          [showIn]="showIn"
+          [isReadOnly]="isReadOnly"
+        ></app-assetlist-tab>
+      </ng-template>
+    </nz-tab>
+    <!-- <nz-tab nzTitle="Notes">
+      <ng-template nz-tab>
+        <app-notelist-tab [showIn]="showIn"></app-notelist-tab>
+      </ng-template>
+    </nz-tab> -->
+  </nz-tabset>
+  <!--Show Tabview END-->
+</div>
+
+<!--Template content for add new drawer header START-->
+<ng-template #drawerHeader let-drawerRef="drawerRef">
+  <div class="title-row">
+    <div class="left-icon" [ngSwitch]="drawerTitle">
+      <ng-container *ngSwitchCase="'Backup Show'">
+        <app-icon-picker iconType="backup"></app-icon-picker>
+      </ng-container>
+      <ng-container *ngSwitchCase="'Edit Show'">
+        <app-icon-picker iconType="edit"></app-icon-picker>
+      </ng-container>
+    </div>
+    <div class="title-text cap">
+      {{ drawerTitle }}
+    </div>
+    <div class="right-icon">
+      <i (click)="closeForm()" nz-icon nzType="right" nzTheme="outline"></i>
+    </div>
+  </div>
+</ng-template>
+<!--Template content for add new drawer header END-->
+
+<!--Modal for delete show confirmation START-->
+<nz-modal
+  [(nzVisible)]="isAlertVisible"
+  nzTitle="Are you sure to delete this show?"
+  nzOkText="Yes"
+  nzCancelText="No"
+  (nzOnOk)="deleteShowConfirm()"
+  (nzOnCancel)="deleteShowCancel()"
+  nzOkType="primary"
+  nzClosable="false"
+  nzWrapClassName="confirm-modal"
+  nzNoAnimation="true"
+>
+  <b class="modal-content-del-prefix" *ngIf="showIn != null"
+    >Show Name :
+    <span class="modal-content-del-suffix">{{ showIn.showName }}</span></b
+  >
+</nz-modal>
+<!--Modal for delete show confirmation END-->

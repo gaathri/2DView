@@ -1,0 +1,57 @@
+<div class="common-header-new">
+  <div class="d-flex justify-content-between db-links">
+    <div class="d-flex justify-content-between">
+      <div class="db-link">Dashboard</div>
+    </div>
+    <div
+      *ngIf="isDashboardVisible && isValidArr(statuses)"
+      class="db-link hand settings last"
+      (click)="showSettings()"
+    >
+      <i nz-icon nzType="setting" nzTheme="fill"></i
+      ><span class="label">&nbsp;&nbsp;Settings</span>
+    </div>
+  </div>
+</div>
+<div class="common-header">
+  <!-- <div class="d-flex justify-content-between db-links">
+        <div class="d-flex justify-content-between">
+            <div [class.active]="isDashboardVisible" class="db-link hand" (click)="showDashboard()">
+                Dashboard
+            </div>
+            <div class="db-link">|</div>
+            <div [class.active]="isDaybookVisible" class="db-link hand" (click)="showDaybook()">
+                Daybook
+            </div>
+        </div>
+        <div *ngIf="isDashboardVisible && isValidArr(statuses)" class="db-link hand settings last"
+            (click)="showSettings()">
+            <i nz-icon nzType="setting" nzTheme="fill"></i><span>&nbsp;&nbsp;Settings</span>
+        </div>
+    </div> -->
+
+  <ng-container *ngIf="isDashboardVisible && isValidArr(statuses)">
+    <app-studio-dashboard
+      [starUserStatus]="starUserSelectedItems"
+      [starStatus]="starSelectedItems"
+      [overallStatus]="overallSelectedItems"
+      [overallAssetStatus]="overallAssetSelectedItems"
+      [overallTaskStatus]="overallTaskSelectedItems"
+      [progressType]="progressType"
+    >
+    </app-studio-dashboard>
+  </ng-container>
+</div>
+
+<!--Template content for tabel columns drawer header START-->
+<ng-template #drawerHeader let-drawerRef="drawerRef">
+  <div class="title-row">
+    <div class="left-icon">
+      <i nz-icon nzType="setting" nzTheme="fill"> </i>
+    </div>
+    <div class="title-text">{{ drawerTitle }}</div>
+    <div class="right-icon">
+      <i (click)="closeForm()" nz-icon nzType="right" nzTheme="outline"></i>
+    </div>
+  </div>
+</ng-template>

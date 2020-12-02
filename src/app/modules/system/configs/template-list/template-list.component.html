@@ -1,0 +1,77 @@
+<div class="templates-list row">
+  <div *ngIf="isDataReady" class="col-md-3">
+    <div class="label mb-2">{{ title }} Template</div>
+    <div class="row template-list">
+      <div
+        class="row template"
+        *ngFor="let t of templateList; let odd = odd"
+        [ngClass]="odd ? 'odd-item' : 'even-item'"
+        [class.selected]="isSelected(t)"
+      >
+        <span
+          (click)="clickHandler(t)"
+          [title]="t.templateName"
+          class="text-truncate template-name"
+          >{{ t.templateName }}</span
+        >
+        <!-- [ngClass]="{ 'disabled': (t.isDefault==1) }" -->
+        <span
+          class="delete-icon"
+          [class.disabled]="isDisabled(t)"
+          (click)="deleteTemplateHandler(t)"
+          >X</span
+        >
+      </div>
+    </div>
+    <div *ngIf="!isReadOnly" class="row template add-list">
+      <span
+        (click)="addTemplateHandler()"
+        class="text-truncate template-name add-new"
+        >+ Add New Template</span
+      >
+    </div>
+  </div>
+  <div class="col-md-9 tasklist-tab">
+    <div class="edit-wrapper" *ngIf="selectedTemplate && !editingName">
+      <div class="label mb-2">{{ selectedTemplate?.templateName }}</div>
+      <div
+        *ngIf="!isDisabled(selectedTemplate)"
+        style="margin-top: -5px;"
+        class="edit px-2"
+      >
+        <a href="javascript:void(0)" (click)="enableNameEdit()">
+          <i class="fa fa-pencil fa-lg"></i>
+        </a>
+      </div>
+    </div>
+    <nz-form-item *ngIf="editingName">
+      <nz-form-control>
+        <input
+          nz-input
+          placeholder="Template Name"
+          autofocus
+          (blur)="updateName($event)"
+          [value]="selectedTemplate.templateName"
+        />
+      </nz-form-control>
+    </nz-form-item>
+    <ng-container
+      *ngIf="type != 'task'; then commonTemplate; else taskTemplate"
+    >
+    </ng-container>
+    <ng-template #taskTemplate>
+      <app-template-table
+        [isReadOnly]="isReadOnly"
+        [selectedTemplate]="selectedTemplate"
+      ></app-template-table>
+    </ng-template>
+    <ng-template #commonTemplate>
+      <app-template-tree-table
+        [isReadOnly]="isReadOnly"
+        [type]="type"
+        [selectedTemplate]="selectedTemplate"
+      >
+      </app-template-tree-table>
+    </ng-template>
+  </div>
+</div>

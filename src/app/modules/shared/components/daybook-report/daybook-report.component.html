@@ -1,0 +1,653 @@
+<div class="table-wrapper lg-pad item-list" *ngIf="isDataReady">
+  <div class="row">
+    <div class="col-md-12 px-0">
+      <div
+        class="table-header-panel-db d-flex justify-content-between align-items-center"
+      >
+        <div class="quick-filter last">
+          <span>Tasks</span>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="quick-filter hand">
+            <span *ngIf="isSearching">
+              <nz-input-group [nzSuffix]="suffixTemplate">
+                <input
+                  style="height: 20px; width: 500px;"
+                  type="text"
+                  nz-input
+                  [(ngModel)]="searchPattern"
+                  (keyup.enter)="searchDetails()"
+                  placeholder="Search for Task name, Shot code, Artist name"
+                />
+              </nz-input-group>
+
+              <ng-template #suffixTemplate>
+                <i
+                  nz-icon
+                  nz-tooltip
+                  class="ant-input-clear-icon"
+                  nzTheme="fill"
+                  nzType="close-circle"
+                  (click)="clearSearch()"
+                ></i>
+              </ng-template>
+            </span>
+            <span *ngIf="!isSearching" (click)="searchHandler()">
+              <span>
+                <app-icon-picker
+                  class="qf-icon"
+                  iconType="search"
+                ></app-icon-picker>
+              </span>
+              <span class="quick-filter-text">Search</span>
+            </span>
+          </div>
+
+          <div class="quick-filter hand" (click)="columnHandler()">
+            <span>
+              <app-icon-picker
+                class="qf-icon"
+                iconType="columns"
+              ></app-icon-picker>
+            </span>
+            <span class="quick-filter-text">Columns</span>
+          </div>
+
+          <div class="quick-filter hand" (click)="filterHandler()">
+            <span>
+              <app-icon-picker
+                class="qf-icon"
+                [class.highlight-yellow]="isFilterApplied"
+                iconType="filter"
+              ></app-icon-picker>
+            </span>
+            <span class="quick-filter-text">Filters</span>
+          </div>
+
+          <div class="quick-filter">
+            <div style="margin-top: -2px;">
+              <nz-radio-group
+                [(ngModel)]="type"
+                [nzSize]="'small'"
+                (ngModelChange)="radioChangeHandler($event)"
+                [nzButtonStyle]="'solid'"
+              >
+                <label nz-radio-button nzValue="shot">Shot</label>
+                <label nz-radio-button nzValue="asset">Asset</label>
+              </nz-radio-group>
+            </div>
+          </div>
+
+          <div *ngIf="!isArtist" class="quick-filter">
+            <nz-select
+              [nzDisabled]="!isValidArr(dateTypes)"
+              (ngModelChange)="dateTypeChangeHandler($event)"
+              [(ngModel)]="dateTypeId"
+              nzPlaceHolder="Select Date Type"
+              style="width: 130px;"
+              [nzSize]="'small'"
+              class="date-type1111"
+            >
+              <nz-option
+                *ngFor="let dateType of dateTypes"
+                [nzValue]="dateType.id"
+                [nzLabel]="dateType.name"
+              >
+              </nz-option>
+            </nz-select>
+          </div>
+
+          <div *ngIf="!isArtist" class="quick-filter last">
+            <div style="margin-top: -4px;">
+              <nz-date-picker
+                id="date"
+                [nzSize]="'small'"
+                [(ngModel)]="date"
+                [nzClassName]="'tcal date-type-cal'"
+                nzPlaceHolder="Select Date"
+                (ngModelChange)="onDateChange($event)"
+                [nzDisabledDate]="disabledDate"
+                [nzFormat]="getDisplayDateFormat()"
+                [nzAllowClear]="false"
+              >
+              </nz-date-picker>
+            </div>
+          </div>
+
+          <!-- <div class="quick-filter pipe">|</div> -->
+        </div>
+      </div>
+      <ngx-datatable
+        #myTable
+        style="
+          min-width: 100%;
+          width: 100%;
+          min-height: 300px !important;
+          height: calc(100vh - 200px);
+        "
+        class="material striped expandable fullscreen"
+        [class.table-group]="isRowGroupEnabled"
+        [rows]="rows"
+        [columnMode]="'force'"
+        [headerHeight]="50"
+        [footerHeight]="50"
+        [rowHeight]="50"
+        [scrollbarV]="true"
+        [scrollbarH]="true"
+        [virtualization]="false"
+        [externalSorting]="true"
+        [externalPaging]="true"
+        [loadingIndicator]="isLoading"
+        [count]="page.totalElements"
+        [offset]="page.pageNumber"
+        [limit]="page.size"
+        [selectAllRowsOnPage]="false"
+        (page)="setPage($event)"
+        (sort)="onSort($event)"
+        (reorder)="onReorder($event)"
+        [groupExpansionDefault]="isRowGroupEnabled"
+        [groupRowsBy]="groupBy"
+      >
+        <ngx-datatable-group-header
+          *ngIf="isRowGroupEnabled"
+          [rowHeight]="100"
+          #myGroupHeader
+        >
+          <ng-template
+            let-group="group"
+            let-expanded="expanded"
+            ngx-datatable-group-header-template
+          >
+            <div style="padding-left: 5px; width: 300px; margin-top: 5px;">
+              <a
+                style="color: #3be582;"
+                [class.datatable-icon-right]="!expanded"
+                [class.datatable-icon-down]="expanded"
+                title="Expand/Collapse Group"
+                (click)="toggleExpandGroup(group)"
+                >&nbsp;&nbsp;
+                <span style="color: white;">{{ getGroupName(group) }}</span>
+              </a>
+            </div>
+          </ng-template>
+        </ngx-datatable-group-header>
+
+        <ngx-datatable-column
+          *ngFor="let col of selectedTableColumns"
+          [name]="col.displayName"
+          [prop]="col.name"
+          [width]="getColWidth(col.name)"
+          [sortable]="col.sortable"
+        >
+          <ng-template
+            ngx-datatable-cell-template
+            let-rowIndex="rowIndex"
+            let-row="row"
+            let-value="value"
+          >
+            <div [ngSwitch]="col.name">
+              <span *ngSwitchCase="'shotCode'">
+                <span [title]="getTitle(row, col)">
+                  <div class="edit-wrapper">
+                    <div class="col-10 px-0 text-truncate">
+                      {{ row[col.name] }}
+                    </div>
+                  </div>
+                </span>
+              </span>
+
+              <!-- <span *ngSwitchCase="'workStatus'">
+                  <span [title]="getTitle(row, col)">
+                    <div class="edit-wrapper">
+                      <div *ngIf="row[col.name]" class="col-10 px-0 text-truncate"
+                        style="border-radius: 5px;text-align: center;"
+                        [style.background-color]="getWorkStatusColorCode(row)">
+                        <span>{{ row[col.name] }}</span>
+                      </div>
+                      <div *ngIf="!row[col.name]" class="col-10 px-0 text-truncate">
+                        -
+                      </div>
+                    </div>
+                  </span>
+                </span> -->
+
+              <span *ngSwitchCase="'workStatus'">
+                <span
+                  [title]="row[col.name] ? row[col.name] : ''"
+                  *ngIf="!editing[row.id + '-' + col.name]"
+                >
+                  <div class="edit-wrapper">
+                    <div
+                      *ngIf="row[col.name]"
+                      class="col-10 px-0 text-truncate d-flex align-items-center justify-content-center status-bubble"
+                      [style.background-color]="getWorkStatusColorCode(row)"
+                    >
+                      <span>{{ row[col.name] }}</span>
+                    </div>
+                    <div
+                      *ngIf="!row[col.name]"
+                      class="col-10 px-0 text-truncate"
+                    >
+                      -
+                    </div>
+                    <div
+                      class="col-2 px-0 edit"
+                      *ngIf="isEditableCol(col) && allowEdit(row, col)"
+                    >
+                      <a
+                        href="javascript:void(0)"
+                        (click)="inlineEditHandler(row, col)"
+                      >
+                        <i class="fa fa-pencil fa-lg"></i>
+                      </a>
+                    </div>
+                  </div>
+                </span>
+              </span>
+
+              <span *ngSwitchCase="'priority'">
+                <span [title]="getTitle(row, col)">
+                  <div class="edit-wrapper">
+                    <div
+                      *ngIf="row[col.name]"
+                      class="col-10 px-0 text-truncate font-weight-bold"
+                      [style.color]="getPriorityColorCode(row)"
+                    >
+                      <span>
+                        <b>
+                          {{ row[col.name] }}
+                        </b>
+                      </span>
+                    </div>
+                    <div
+                      *ngIf="!row[col.name]"
+                      class="col-10 px-0 text-truncate"
+                    >
+                      -
+                    </div>
+                  </div>
+                </span>
+              </span>
+
+              <span *ngSwitchCase="'taskTypeName'">
+                <span [title]="getTitle(row, col)">
+                  <div class="edit-wrapper">
+                    <div
+                      *ngIf="row[col.name]"
+                      class="col-10 px-0 text-truncate"
+                      [style.color]="getTaskTypeColorCode(row)"
+                    >
+                      <span>
+                        <b>
+                          {{ row[col.name] }}
+                        </b>
+                      </span>
+                    </div>
+                    <div
+                      *ngIf="!row[col.name]"
+                      class="col-10 px-0 text-truncate"
+                    >
+                      -
+                    </div>
+                  </div>
+                </span>
+              </span>
+
+              <!-- <span *ngSwitchCase="'startDate'"> -->
+              <span
+                *ngSwitchCase="
+                  [
+                    'startDate',
+                    'endDate',
+                    'deliveryDate',
+                    'clientEta'
+                  ].includes(col.name)
+                    ? col.name
+                    : ''
+                "
+              >
+                <span [title]="getDisplayDate(row[col.name])">
+                  <div class="edit-wrapper">
+                    <div
+                      *ngIf="row[col.name]"
+                      class="col-10 px-0 text-truncate"
+                    >
+                      <!-- {{ row[col.name] | date: "dd/MM/yyyy" }} -->
+                      {{ getDisplayDate(row[col.name]) }}
+                    </div>
+                    <div
+                      *ngIf="!row[col.name]"
+                      class="col-10 px-0 text-truncate"
+                    >
+                      -
+                    </div>
+                  </div>
+                </span>
+              </span>
+
+              <!-- <span
+                        *ngIf="row.completionPercentage"
+                        class="d-flex flex-row justify-content-start"
+                      >
+                        <span class="px-0 col-sm-2">
+                          <span *ngIf="getSpace(row.completionPercentage) == 2">
+                            <span style="visibility: hidden;">00</span>
+                          </span>
+                          <span *ngIf="getSpace(row.completionPercentage) == 1">
+                            <span style="visibility: hidden;">0</span>
+                          </span>
+                          <span
+                            >{{
+                              row.completionPercentage | number: "1.0-0"
+                            }}%</span
+                          >
+                        </span>
+                        <span class="col-sm-1">|</span>
+                        <div class="col" style="width: 100px;">
+                          <app-progress
+                            [config]="getProgressConfig(row)"
+                            [percentage]="row.completionPercentage"
+                          >
+                          </app-progress>
+                        </div>
+                      </span>
+                      <span
+                        *ngIf="!row.completionPercentage"
+                        class="d-flex flex-row justify-content-start"
+                      >
+                        <span class="px-0 col-sm-2">
+                          <span style="visibility: hidden;">00</span
+                          >{{ 0 | number: "1.0-0" }}%</span
+                        >
+                        <span class="col-sm-1">|</span>
+                        <div class="col" style="width: 100px;">
+                          <app-progress [percentage]="0"> </app-progress>
+                        </div>
+                      </span> -->
+
+              <div *ngSwitchCase="'completionPercentage'">
+                <ng-container *ngIf="!editing[row.id + '-' + col.name]">
+                  <div class="edit-wrapper">
+                    <span
+                      *ngIf="row.completionPercentage"
+                      class="d-flex flex-row justify-content-start"
+                    >
+                      <span style="padding-right: 20px;">
+                        <span *ngIf="getSpace(row.completionPercentage) == 2">
+                          <span style="visibility: hidden;">00</span>
+                        </span>
+                        <span *ngIf="getSpace(row.completionPercentage) == 1">
+                          <span style="visibility: hidden;">0</span>
+                        </span>
+                        <span
+                          >{{
+                            getPercentage(row.completionPercentage)
+                              | number: "1.0-0"
+                          }}%</span
+                        >
+                      </span>
+                      <span style="padding-right: 20px;">|</span>
+                      <div style="width: 150px; margin-top: -2px;">
+                        <app-progress
+                          [config]="getProgressConfig(row)"
+                          [percentage]="getPercentage(row.completionPercentage)"
+                        >
+                        </app-progress>
+                      </div>
+                    </span>
+                    <span
+                      *ngIf="!row.completionPercentage"
+                      class="d-flex flex-row justify-content-start"
+                    >
+                      <span style="padding-right: 20px;">
+                        <span style="visibility: hidden;">00</span
+                        >{{ 0 | number: "1.0-0" }}%</span
+                      >
+                      <span style="padding-right: 20px;">|</span>
+                      <div style="width: 150px; margin-top: -2px;">
+                        <app-progress [percentage]="0"> </app-progress>
+                      </div>
+                    </span>
+                    <div
+                      style="padding-left: 4px; margin-top: -2px;"
+                      class="edit"
+                      *ngIf="col.isEditable"
+                    >
+                      <a
+                        href="javascript:void(0)"
+                        (click)="enableEdit(row, col)"
+                      >
+                        <i class="fa fa-pencil fa-lg"></i>
+                      </a>
+                    </div>
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="editing[row.id + '-' + col.name]">
+                  <nz-form-item>
+                    <nz-form-control>
+                      <input
+                        nz-input
+                        [placeholder]="col.displayName"
+                        autofocus
+                        (blur)="updateValue(row, col, $event)"
+                        [value]="row[col.name] ? row[col.name] : ''"
+                        type="number"
+                        numeric
+                        numericType="number"
+                        maxValue="100"
+                      />
+                    </nz-form-control>
+                  </nz-form-item>
+                </ng-container>
+              </div>
+
+              <span *ngSwitchCase="'taskName'">
+                <span [title]="row[col.name] ? row[col.name] : ''">
+                  <div class="edit-wrapper">
+                    <div class="col-10 px-0 text-truncate">
+                      <a
+                        href="javascript:void(0)"
+                        (click)="onTaskNameClick(row)"
+                        >{{ row[col.name] }}</a
+                      >
+                    </div>
+                  </div>
+                </span>
+              </span>
+
+              <span *ngSwitchDefault>
+                <span [title]="getTitle(row, col)">
+                  <div class="edit-wrapper">
+                    <div
+                      *ngIf="row[col.name]"
+                      class="col-10 px-0 text-truncate"
+                    >
+                      {{ row[col.name] }}
+                    </div>
+                    <div
+                      *ngIf="!row[col.name]"
+                      class="col-10 px-0 text-truncate"
+                    >
+                      -
+                    </div>
+                  </div>
+                </span>
+              </span>
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column
+          [cellClass]="'dummy-class'"
+          name="Quick Actions"
+          [sortable]="false"
+          [frozenRight]="true"
+          [width]="150"
+          [draggable]="false"
+        >
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <div *ngIf="showDummy" class="dummy-div"></div>
+            <div class="d-flex flex-row justify-content-end">
+              <button
+                title="Notes"
+                class="mr-2 d-flex justify-content-center"
+                nz-button
+                nzType="primary"
+                nzSize="small"
+                (click)="noteHandler(row)"
+              >
+                <app-icon-picker nz-icon iconType="notes"></app-icon-picker>
+              </button>
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-footer>
+          <ng-template
+            ngx-datatable-footer-template
+            let-rowCount="rowCount"
+            let-pageSize="pageSize"
+            let-selectedCount="selectedCount"
+            let-curPage="curPage"
+            let-offset="offset"
+            let-isVisible="isVisible"
+          >
+            <div class="page-count">
+              <nz-form-item>
+                <nz-form-control>
+                  <nz-select
+                    style="width: 75px;"
+                    nzPlaceHolder="Select Page Size"
+                    [(ngModel)]="selectedPageSize"
+                    (ngModelChange)="setPageSize()"
+                  >
+                    <nz-option
+                      *ngFor="let option of pageSizeOptions"
+                      [nzLabel]="option"
+                      [nzValue]="option"
+                    ></nz-option>
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+
+            <datatable-pager
+              [pagerLeftArrowIcon]="'datatable-icon-left'"
+              [pagerRightArrowIcon]="'datatable-icon-right'"
+              [pagerPreviousIcon]="'datatable-icon-prev'"
+              [pagerNextIcon]="'datatable-icon-skip'"
+              [page]="curPage"
+              [size]="pageSize"
+              [count]="rowCount"
+              [hidden]="!(rowCount / pageSize > 1)"
+              (change)="table.onFooterPage($event)"
+            >
+            </datatable-pager>
+          </ng-template>
+        </ngx-datatable-footer>
+      </ngx-datatable>
+    </div>
+  </div>
+</div>
+<!--Template content for tabel columns drawer header START-->
+<ng-template #drawerHeader let-drawerRef="drawerRef">
+  <div class="title-row">
+    <div class="left-icon" [ngSwitch]="drawerTitle">
+      <ng-container *ngSwitchCase="'Task Notes'">
+        <app-icon-picker iconType="notes"></app-icon-picker>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="'Filter Settings'">
+        <app-icon-picker iconType="filter"></app-icon-picker>
+      </ng-container>
+      <ng-container *ngSwitchCase="'Table Columns'">
+        <app-icon-picker iconType="columns"></app-icon-picker>
+      </ng-container>
+    </div>
+    <div class="title-text">{{ drawerTitle }}</div>
+    <div class="right-icon">
+      <i (click)="closeForm()" nz-icon nzType="right" nzTheme="outline"></i>
+    </div>
+  </div>
+</ng-template>
+<!--Template content for tabel columns drawer header END-->
+
+<!--Modal for table inline edit for drop downs START-->
+<nz-modal
+  nzWrapClassName="vertical-center-modal"
+  [(nzVisible)]="isVisible"
+  [nzTitle]="modalTitle"
+  nzKeyboard="false"
+  nzClosable="false"
+  nzNoAnimation="true"
+>
+  <div *ngIf="isWorkStatusSelect; then workstatus_select"></div>
+
+  <div *nzModalFooter>
+    <button nz-button nzType="default" (click)="inlineEditCancel(myrow, mycol)">
+      Cancel
+    </button>
+    <button
+      nz-button
+      nzType="primary"
+      (click)="inlineEditConfirm(myrow, mycol)"
+    >
+      Save
+    </button>
+  </div>
+</nz-modal>
+<!--Modal for table inline edit for drop downs END-->
+
+<!--Template content for priority selection modal START-->
+<ng-template #workstatus_select>
+  <div class="d-flex justify-content-start align-items-center">
+    <div class="col-8 px-0">
+      <nz-form-item>
+        <nz-form-label>Select Work Status</nz-form-label>
+        <nz-form-control>
+          <nz-select
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="Select work status"
+            [(ngModel)]="myrow.workStatusId"
+            [nzDisabled]="!isValidArr(workStatuses)"
+            (ngModelChange)="onWorkStatusChange($event)"
+          >
+            <nz-option
+              *ngFor="let workStatus of workStatuses"
+              [nzLabel]="workStatus.name"
+              [nzValue]="workStatus.id"
+            >
+            </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+  <div
+    *ngIf="isRevisionSelect"
+    class="d-flex justify-content-start align-items-center mt-2"
+  >
+    <div class="col-8 px-0">
+      <nz-form-item>
+        <nz-form-label>Select Revision</nz-form-label>
+        <nz-form-control>
+          <nz-select
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="Select Revision"
+            [(ngModel)]="revisionId"
+          >
+            <nz-option
+              *ngFor="let revision of revisions"
+              [nzLabel]="revision.name"
+              [nzValue]="revision.id"
+            >
+            </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+</ng-template>
+<!--Template content for priority selection modal END-->

@@ -1,0 +1,28 @@
+<div *ngIf="isDataReady" class="form-panel">
+  <nz-form-item>
+    <nz-form-label>Select Department and Task</nz-form-label>
+    <nz-form-control>
+      <nz-tree-select
+        #nzTreeComponent
+        style="width: 100%;"
+        [(ngModel)]="selectedNodes"
+        [nzNodes]="departments"
+        (ngModelChange)="onChange($event)"
+        nzShowSearch
+        nzCheckable
+        nzPlaceHolder="Select from the list"
+        [nzHideUnMatched]="true"
+        nzSize="large"
+        [nzShowExpand]="true"
+        [nzAllowClear]="false"
+        [nzDropdownStyle]="{ 'max-height': '400px' }"
+        [nzMaxTagCount]="3"
+      >
+      </nz-tree-select>
+    </nz-form-control>
+  </nz-form-item>
+  <div class="submit-btn-parent">
+    <button nz-button nzType="primary" (click)="submitHandler()">Add</button>
+  </div>
+</div>
+<!-- <pre style="color: greenyellow">{{selectedNodes | json}}</pre> -->

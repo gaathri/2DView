@@ -1,0 +1,337 @@
+<ngx-datatable
+  *ngIf="selectedTemplate"
+  class="material striped"
+  [columnMode]="'flex'"
+  [headerHeight]="50"
+  [footerHeight]="50"
+  rowHeight="auto"
+  [treeFromRelation]="'parentId'"
+  [treeToRelation]="'id'"
+  [rows]="rows"
+  (treeAction)="onTreeAction($event)"
+>
+  <ngx-datatable-column
+    [sortable]="false"
+    name="Name"
+    [flexGrow]="5"
+    [isTreeColumn]="true"
+  >
+    <ng-template
+      let-rowIndex="rowIndex"
+      let-row="row"
+      let-value="value"
+      ngx-datatable-cell-template
+    >
+      <div class="d-flex flex-row justify-content-start align-items-end">
+        <div
+          *ngIf="row.treeStatus == 'expanded'; else collapsed"
+          class="mr-2 d-flex justify-content-center align-items-start folder-open"
+          nz-button
+          nzType="primary"
+          nzSize="small"
+          (click)="onTreeAction(row)"
+        >
+          <app-icon-picker
+            nz-icon
+            iconType="folder_open"
+            iconClass="folder-icon-yellow"
+          ></app-icon-picker>
+        </div>
+
+        <ng-template #collapsed>
+          <div
+            class="mr-2 d-flex justify-content-center align-items-start folder-close"
+            nz-button
+            nzType="primary"
+            nzSize="small"
+            (click)="onTreeAction(row)"
+          >
+            <app-icon-picker
+              nz-icon
+              iconType="folder"
+              iconClass="folder-icon-yellow"
+            ></app-icon-picker>
+          </div>
+        </ng-template>
+
+        <div
+          (dblclick)="enableEdit(row, 'name')"
+          class="edit-wrapper"
+          *ngIf="!editing[row.id + '-name']"
+        >
+          <div class="text-truncate">
+            <span>{{ row.name }}</span>
+          </div>
+          <div
+            *ngIf="!isDisabled(selectedTemplate) && !isDeleteDisabled(rowIndex)"
+            class="edit px-2"
+            style="margin-top: -5px;"
+          >
+            <a href="javascript:void(0)" (click)="enableEdit(row, 'name')">
+              <i class="fa fa-pencil fa-lg"></i>
+            </a>
+          </div>
+        </div>
+        <nz-form-item *ngIf="editing[row.id + '-name']">
+          <nz-form-control>
+            <input
+              [maxLength]="50"
+              nz-input
+              placeholder="Priority"
+              autofocus
+              (blur)="updateValue(row, 'name', $event)"
+              [value]="row.name"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column
+    [sortable]="false"
+    *ngIf="type == 'pack'"
+    name="Type Name"
+    [flexGrow]="2"
+  >
+    <ng-template
+      let-rowIndex="rowIndex"
+      let-row="row"
+      let-value="value"
+      ngx-datatable-cell-template
+    >
+      <div class="edit-wrapper" *ngIf="!editing[row.id + '-typeName']">
+        <div class="text-truncate">
+          <span>{{ value }}</span>
+        </div>
+        <div
+          *ngIf="!isDisabled(selectedTemplate)"
+          class="edit px-2"
+          style="margin-top: -5px;"
+        >
+          <!-- <a href="javascript:void(0)" (click)="inlineEditHandler(row, 'typeName')">
+                        <i class="fa fa-pencil fa-lg"></i>
+                    </a> -->
+          <a href="javascript:void(0)" (click)="enableEdit(row, 'typeName')">
+            <i class="fa fa-pencil fa-lg"></i>
+          </a>
+        </div>
+      </div>
+
+      <nz-form-item *ngIf="editing[row.id + '-typeName']">
+        <nz-form-control>
+          <nz-select
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="Select package type"
+            [(ngModel)]="row.typeId"
+            [nzDisabled]="!isValidArr(packingTypes)"
+            (ngModelChange)="onChange(row, 'typeName', $event)"
+          >
+            <nz-option
+              *ngFor="let packingType of packingTypes"
+              [nzLabel]="packingType.packingTypeName"
+              [nzValue]="packingType.id"
+            >
+            </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column
+    [sortable]="false"
+    *ngIf="type == 'pack'"
+    name="Attribute Name"
+    [flexGrow]="2"
+  >
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <div class="edit-wrapper" *ngIf="!editing[row.id + '-attributeName']">
+        <div class="text-truncate">
+          <span>{{ value }}</span>
+        </div>
+        <div
+          *ngIf="!isDisabled(selectedTemplate)"
+          class="edit px-2"
+          style="margin-top: -5px;"
+        >
+          <!-- <a
+            href="javascript:void(0)"
+            (click)="inlineEditHandler(row, 'attributeName')"
+          >
+            <i class="fa fa-pencil fa-lg"></i>
+          </a> -->
+          <a
+            href="javascript:void(0)"
+            (click)="enableEdit(row, 'attributeName')"
+          >
+            <i class="fa fa-pencil fa-lg"></i>
+          </a>
+        </div>
+      </div>
+
+      <nz-form-item *ngIf="editing[row.id + '-attributeName']">
+        <nz-form-control>
+          <nz-select
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="Select package attribute"
+            [(ngModel)]="row.attributeId"
+            [nzDisabled]="!isValidArr(packingAttributes)"
+            (ngModelChange)="onChange(row, 'attributeName', $event)"
+          >
+            <nz-option
+              *ngFor="let packingAttribute of packingAttributes"
+              [nzLabel]="packingAttribute.packingAttributeName"
+              [nzValue]="packingAttribute.id"
+            >
+            </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column name="Quick Actions" [sortable]="false" [flexGrow]="1">
+    <ng-template
+      let-rowIndex="rowIndex"
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      <div class="d-flex flex-row justify-content-center">
+        <!-- [disabled]="row.level > 4 || selectedTemplate.isDefault" -->
+        <button
+          [disabled]="isAddDisabled(row)"
+          class="mr-2 d-flex justify-content-center folder-add"
+          nz-button
+          nzType="primary"
+          nzSize="small"
+          (click)="addHandler(row)"
+        >
+          <app-icon-picker nz-icon iconType="folder_add"></app-icon-picker>
+        </button>
+        <!-- selectedTemplate.isDefault || rowIndex == 0 -->
+        <button
+          title="Delete"
+          [disabled]="isDeleteDisabled(rowIndex)"
+          class="mr-2 d-flex justify-content-center"
+          nz-button
+          nzType="primary"
+          nzSize="small"
+          (click)="deleteHandler(row)"
+        >
+          <app-icon-picker nz-icon iconType="delete"></app-icon-picker>
+        </button>
+      </div>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-footer *ngIf="true">
+    <ng-template
+      ngx-datatable-footer-template
+      let-rowCount="rowCount"
+      let-pageSize="pageSize"
+      let-selectedCount="selectedCount"
+      let-curPage="curPage"
+      let-offset="offset"
+    >
+      <div class="submit-btn-parent" style="margin-top: 8px;">
+        <button
+          style="margin-bottom: 8px;"
+          [disabled]="isDisabled(selectedTemplate)"
+          nz-button
+          nzType="primary"
+          (click)="saveHandler()"
+        >
+          Save
+        </button>
+      </div>
+    </ng-template>
+  </ngx-datatable-footer>
+</ngx-datatable>
+<!-- <pre style="color: greenyellow">{{rows | json}}</pre> -->
+
+<!--Modal for table inline edit for drop downs START-->
+<nz-modal
+  nzWrapClassName="vertical-center-modal"
+  [(nzVisible)]="isVisible"
+  [nzTitle]="modalTitle"
+  nzKeyboard="false"
+  nzClosable="false"
+  nzNoAnimation="true"
+>
+  <div *ngIf="isTypeSelect; then type_select"></div>
+  <div *ngIf="isAttributeSelect; then attribute_select"></div>
+  <div *nzModalFooter>
+    <button
+      nz-button
+      nzType="default"
+      (click)="inlineEditCancel(myrow, mycolName)"
+    >
+      Cancel
+    </button>
+    <button
+      nz-button
+      nzType="primary"
+      (click)="inlineEditConfirm(myrow, mycolName)"
+    >
+      Save
+    </button>
+  </div>
+</nz-modal>
+<!--Modal for table inline edit for drop downs END-->
+
+<!--Template content for package type selection modal START-->
+<ng-template #type_select>
+  <div class="d-flex justify-content-start align-items-center">
+    <div class="col-8 px-0">
+      <nz-form-item>
+        <nz-form-control>
+          <nz-select
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="Select package type"
+            [(ngModel)]="myrow.typeId"
+            [nzDisabled]="!isValidArr(packingTypes)"
+          >
+            <nz-option
+              *ngFor="let packingType of packingTypes"
+              [nzLabel]="packingType.packingTypeName"
+              [nzValue]="packingType.id"
+            >
+            </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+</ng-template>
+<!--Template content for package type selection modal END-->
+
+<!--Template content for package attribute selection modal START-->
+<ng-template #attribute_select>
+  <div class="d-flex justify-content-start align-items-center">
+    <div class="col-8 px-0">
+      <nz-form-item>
+        <nz-form-control>
+          <nz-select
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="Select package attribute"
+            [(ngModel)]="myrow.attributeId"
+            [nzDisabled]="!isValidArr(packingAttributes)"
+          >
+            <nz-option
+              *ngFor="let packingAttribute of packingAttributes"
+              [nzLabel]="packingAttribute.packingAttributeName"
+              [nzValue]="packingAttribute.id"
+            >
+            </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+</ng-template>
+<!--Template content for package attribute selection modal END-->

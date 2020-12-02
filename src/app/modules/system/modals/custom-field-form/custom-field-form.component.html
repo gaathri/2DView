@@ -1,0 +1,164 @@
+<form
+  *ngIf="isDataReady"
+  class="form-panel"
+  nz-form
+  [formGroup]="dataForm"
+  (ngSubmit)="submitHandler()"
+  autocomplete="off"
+>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="name">Name</nz-form-label>
+    <nz-form-control [nzErrorTip]="iNameTpl">
+      <input
+        id="name"
+        formControlName="name"
+        nz-input
+        [maxLength]="nameMaxLength"
+        placeholder="Name"
+      />
+      <ng-template #iNameTpl let-control>
+        <ng-container *ngIf="control.hasError('pattern')"
+          >This pattern is not allowed!</ng-container
+        >
+        <ng-container *ngIf="control.hasError('required')"
+          >Name is required!</ng-container
+        >
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="format">Select Format</nz-form-label>
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <nz-select
+        id="format"
+        formControlName="format"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Format Types"
+        [nzDisabled]="mode == 'update'"
+      >
+        <nz-option
+          *ngFor="let format of formats"
+          [nzLabel]="format.formatTypeName"
+          [nzValue]="format.formatTypeName"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <div class="row clearfix c-bot">
+    <div class="col-md-6 px-0">
+      <nz-form-item style="margin-bottom: 20px !important">
+        <nz-form-control>
+          <label
+            nz-checkbox
+            formControlName="isGolbal"
+            (ngModelChange)="requiredChange($event)"
+          >
+            Global Field
+          </label>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <div class="col-md-6 px-0">
+      <nz-form-item style="margin-bottom: 20px !important">
+        <nz-form-control>
+          <label nz-checkbox formControlName="isMandatory">
+            Mandatory Field
+          </label>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <nz-form-item
+    *ngIf="!isGolbal"
+    style="margin-bottom: 20px !important; padding-bottom: 20px"
+    class="c-bot"
+  >
+    <nz-form-label nzRequired nzFor="entityId">Show Name</nz-form-label>
+    <nz-form-control nzErrorTip="Please provide your input!">
+      <nz-select
+        id="entityId"
+        formControlName="entityId"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Show"
+      >
+        <nz-option
+          *ngFor="let show of shows"
+          [nzLabel]="show.showName"
+          [nzValue]="show.id"
+        ></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <div class="row clearfix c-bot">
+    <div class="col-md-4 px-0">
+      <nz-form-item style="margin-bottom: 20px !important">
+        <nz-form-control
+          [nzValidateStatus]="levelValidateStatus"
+          nzErrorTip="Please select anyone."
+        >
+          <label
+            nz-checkbox
+            formControlName="showLevel"
+            (ngModelChange)="onShowLevelChange($event)"
+          >
+            Show
+          </label>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-4 px-0">
+      <nz-form-item style="margin-bottom: 20px !important">
+        <nz-form-control>
+          <label
+            nz-checkbox
+            formControlName="shotLevel"
+            (ngModelChange)="onShotLevelChange($event)"
+          >
+            Shot / Asset
+          </label>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-4 px-0">
+      <nz-form-item style="margin-bottom: 20px !important">
+        <nz-form-control>
+          <label
+            nz-checkbox
+            formControlName="taskLevel"
+            (ngModelChange)="onTaskLevelChange($event)"
+          >
+            Task
+          </label>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <nz-form-item>
+    <nz-form-label>Description</nz-form-label>
+    <nz-form-control>
+      <input
+        id="description"
+        formControlName="description"
+        nz-input
+        placeholder="Description"
+      />
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div *ngIf="isDataReady" class="submit-btn-parent">
+  <button nz-button nzType="primary" (click)="submitHandler()">
+    {{ btnName }}
+  </button>
+</div>
+
+<!-- <pre style="color: greenyellow;">{{ dataForm?.value | json }}</pre> -->

@@ -1,0 +1,51 @@
+<form
+  *ngIf="isDataReady"
+  class="form-panel"
+  nz-form
+  [formGroup]="dataForm"
+  (ngSubmit)="submitHandler()"
+  autocomplete="off"
+>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="departmentName"
+      >Department Name</nz-form-label
+    >
+    <nz-form-control [nzErrorTip]="iNameTpl">
+      <input
+        id="departmentName"
+        formControlName="departmentName"
+        nz-input
+        [maxLength]="nameMaxLength"
+        placeholder="Department Name"
+      />
+      <ng-template #iNameTpl let-control>
+        <ng-container *ngIf="control.hasError('pattern')"
+          >This pattern is not allowed!</ng-container
+        >
+        <ng-container *ngIf="control.hasError('required')"
+          >Name is required!</ng-container
+        >
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Department Description</nz-form-label>
+    <nz-form-control>
+      <input
+        id="departmentName"
+        formControlName="departmentDesc"
+        nz-input
+        [maxLength]="descMaxLength"
+        placeholder="Department Description"
+      />
+    </nz-form-control>
+  </nz-form-item>
+</form>
+<div *ngIf="isDataReady" class="submit-btn-parent">
+  <button nz-button nzType="primary" (click)="submitHandler()">
+    {{ btnName }}
+  </button>
+</div>
+
+<!-- <pre style="color: greenyellow">{{ departmentOutCopy | json }}</pre> -->

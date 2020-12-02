@@ -1,0 +1,77 @@
+<ng-container *ngIf="isDataReady">
+  <div class="manpower-wrapper">
+    <div class="d-flex justify-content-between">
+      <div class="quick-filter" (click)="downloadImage()">Manpower Rundown</div>
+      <!-- <div class="page-title-second-level">
+                    
+                <h3>Manpower Rundown</h3>
+            </div> -->
+
+      <div class="d-flex justify-content-between">
+        <div class="quick-filter">Department</div>
+        <div class="quick-filter" style="margin-top: -5px;">
+          <nz-select
+            [nzShowSearch]="false"
+            [nzMaxTagCount]="1"
+            [nzMaxMultipleCount]="3"
+            [nzMode]="'multiple'"
+            (ngModelChange)="departmentChangeHandler($event)"
+            style="width: 200px;"
+            [ngModel]="selectedDepartments"
+          >
+            <nz-option
+              *ngFor="let department of departments"
+              [nzLabel]="department.departmentName"
+              [nzValue]="department"
+            ></nz-option>
+          </nz-select>
+        </div>
+        <div class="quick-filter">|</div>
+
+        <div class="quick-filter">
+          <nz-select
+            (ngModelChange)="rangeChangeHandler($event)"
+            style="width: 150px;"
+            [(ngModel)]="selectedRange"
+            [nzSize]="'small'"
+          >
+            <nz-option
+              *ngFor="let option of rangeOptions"
+              [nzLabel]="option.label"
+              [nzValue]="option.value"
+            ></nz-option>
+          </nz-select>
+        </div>
+      </div>
+    </div>
+    <ng-container *ngIf="showLineChart">
+      <div class="chart-wrapper" (window:resize)="onResize($event)">
+        <div
+          style="height: 300px;"
+          echarts
+          [options]="lineChartOptions"
+          [merge]="updateLineOptions"
+          [autoResize]="true"
+          (chartInit)="onLineChartInit($event)"
+        ></div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="showDummyChart">
+      <div class="chart-wrapper">
+        <div
+          echarts
+          [options]="lineChartOptionsDummy"
+          [autoResize]="true"
+        ></div>
+      </div>
+    </ng-container>
+    <div style="margin-top: 18px;" class="d-flex justify-content-center">
+      <div>
+        <span *ngIf="rangeData"
+          >Date Range: {{ rangeData.startDate | date: "MMM dd(EEE), yyyy" }} -
+          {{ rangeData.endDate | date: "MMM dd(EEE), yyyy" }}</span
+        >
+      </div>
+    </div>
+  </div>
+</ng-container>

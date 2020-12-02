@@ -1,0 +1,161 @@
+<!-- nzAction="https://jsonplaceholder.typicode.com/posts/" -->
+<!-- <nz-upload nzListType="picture-card" [(nzFileList)]="fileList" [nzShowButton]="fileList.length < 1"
+          [nzPreview]="handlePreview" [nzShowUploadList]="showUploadList" (nzChange)="uploadMonitor()"
+          [nzAction]="uploadAPI()">
+          <i nz-icon nzType="plus-circle" nzTheme="outline"></i>
+          <div class="ant-upload-text">Add Thumbnail</div>
+        </nz-upload>
+        <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null"
+          (nzOnCancel)="previewVisible = false">
+          <ng-template #modalContent>
+            <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
+          </ng-template>
+        </nz-modal> -->
+<!-- <nz-upload nzListType="picture-card" [(nzFileList)]="fileList" [nzShowButton]="fileList.length < 1"
+  [nzShowUploadList]="showUploadList" (nzChange)="uploadMonitor($event)" [nzAction]="uploadAPI()">
+  <i nz-icon nzType="plus-circle" nzTheme="outline"></i>
+  <div class="ant-upload-text">Add Thumbnail</div>
+</nz-upload> -->
+<!-- "'image/png, image/jpg, image/jpeg, image/tif, image/tiff, image/exr, image/dpx'" -->
+<!-- <nz-upload
+  [nzAccept]="imageFileAcceptList()"
+  nzListType="picture-card"
+  [(nzFileList)]="fileList"
+  [nzShowButton]="fileList.length < 1"
+  [nzPreview]="handlePreview"
+  [nzShowUploadList]="showUploadList"
+  (nzChange)="uploadMonitor($event)"
+  [nzAction]="uploadAPI()"
+  [nzBeforeUpload]="beforeUpload"
+>
+  
+  <i nz-icon nzType="plus-circle" nzTheme="outline"></i>
+  <div class="ant-upload-text">Add Thumbnail</div>
+</nz-upload> -->
+<!-- (nzChange)="uploadMonitor($event)" -->
+<!-- [nzAction]="uploadAPI()" -->
+<!-- [nzBeforeUpload]="beforeUpload" -->
+<!-- <nz-upload
+  [nzAccept]="imageFileAcceptList()"
+  nzListType="picture-card"
+  [(nzFileList)]="fileList"
+  [nzShowButton]="fileList.length < 1"
+  [nzPreview]="handlePreview"
+  [nzShowUploadList]="showUploadList"
+  [nzBeforeUpload]="beforeUpload"
+>
+  <i nz-icon nzType="plus-circle" nzTheme="outline"></i>
+  <div class="ant-upload-text">Add Thumbnail</div>
+</nz-upload> -->
+
+<!-- <nz-upload
+  [nzAction]="uploadAPI()"
+  [nzAccept]="imageFileAcceptList()"
+  nzListType="picture-card"
+  [(nzFileList)]="fileList"
+  [nzShowButton]="fileList.length < 1"
+  [nzPreview]="handlePreview"
+  [nzShowUploadList]="showUploadList"
+  [nzBeforeUpload]="beforeUpload"
+  (nzChange)="uploadMonitor($event)"
+>
+  <i nz-icon nzType="plus-circle" nzTheme="outline"></i>
+  <div class="ant-upload-text">Add Thumbnail</div>
+</nz-upload> -->
+
+<!-- <div
+  for="file-upload"
+  class="ant-upload ant-upload-select ant-upload-select-picture-card"
+>
+  <div class="ant-upload" role="button">
+    <i nz-icon nzType="plus-circle" nzTheme="outline"></i>
+    <input
+      id="file-upload"
+      style="display: none;"
+      type="file"
+      [accept]="imageFileAcceptList()"
+    />
+    <div class="ant-upload-text">
+      Add Thumbnail
+    </div>
+  </div>
+</div> -->
+
+<label
+  *ngIf="!imageSrc"
+  [for]="'_id' + name"
+  class="ant-upload ant-upload-select ant-upload-select-picture-card"
+>
+  <span class="ant-upload" role="button">
+    <i nz-icon nzType="plus-circle" nzTheme="outline"></i>
+  </span>
+
+  <!-- <span class="ant-upload" role="button">
+    <img
+      [src]="imageSrc"
+      style="
+        width: auto;
+        height: auto;
+        max-height: 100%;
+        max-width: 100%;
+        -o-object-fit: cover;
+        object-fit: cover;
+      "
+    />
+  </span> -->
+</label>
+<input
+  [id]="'_id' + name"
+  style="display: none;"
+  type="file"
+  [accept]="imageFileAcceptList()"
+  (change)="onFileChange($event)"
+  (click)="myInputFile.value = null"
+  #myInputFile
+  [name]="name"
+/>
+
+<div
+  class="ant-upload ant-upload-select ant-upload-select-picture-card"
+  *ngIf="imageSrc"
+  style="position: relative;"
+>
+  <!-- style="height: 150px; width: 170px; position: relative;" -->
+  <span
+    style="position: absolute; top: 4px; right: 4px; cursor: pointer;"
+    (click)="removeImage()"
+  >
+    <i nz-icon nzType="close" nzTheme="outline" style="font-size: 16px;"></i>
+  </span>
+  <span
+    (click)="handlePreview()"
+    class="ant-upload"
+    style="width: inherit; height: inherit;"
+  >
+    <img
+      [src]="imageSrc"
+      style="
+        display: block;
+        max-width: 100%;
+        max-height: 100%;
+        margin: auto;
+        position: static;
+        width: auto;
+        height: auto;
+        -o-object-fit: cover;
+        object-fit: cover;
+      "
+    />
+  </span>
+</div>
+
+<nz-modal
+  [nzVisible]="previewVisible"
+  [nzContent]="modalContent"
+  [nzFooter]="null"
+  (nzOnCancel)="previewVisible = false"
+>
+  <ng-template #modalContent>
+    <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
+  </ng-template>
+</nz-modal>

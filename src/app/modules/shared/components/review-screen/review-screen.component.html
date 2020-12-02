@@ -1,0 +1,52 @@
+<ng-container *ngIf="revisionInfo">
+  <div class="review-screen">
+    <div class="px-0 left-panel" *ngIf="hasReviewPermission()">
+      <div style="padding-right: 20px; overflow: hidden">
+        <app-annotation
+          [isFirst]="isFirst"
+          [isLast]="isLast"
+          [revisionInfo]="revisionInfo"
+          (onReviewComment)="updateReviewComment($event)"
+          (onAnnotationInit)="annotationInit($event)"
+          (onAnnotationComplete)="annotationComplete($event)"
+          (onAnnotationClose)="annotationClose($event)"
+          (onNext)="getNext($event)"
+          (onPrev)="getPrev($event)"
+        ></app-annotation>
+      </div>
+    </div>
+    <!-- style="overflow: auto;" -->
+    <div
+      *ngIf="isNotesReady"
+      [style.height]="getRightPanelHeight()"
+      class="px-0 right-panel flex-grow-1"
+    >
+      <nz-tabset [nzSelectedIndex]="0" [nzShowPagination]="false">
+        <nz-tab nzTitle="Feedback">
+          <ng-template nz-tab>
+            <div class="notes-container">
+              <app-notes
+                (onAttachClick)="getImageData($event)"
+                [mode]="'feedback'"
+                [itemId]="revisionInfo.taskRevisionId"
+                [type]="'revision'"
+                [skipAttachment]="false"
+              ></app-notes>
+            </div>
+          </ng-template>
+        </nz-tab>
+        <nz-tab nzTitle="Notes">
+          <ng-template nz-tab>
+            <div class="notes-container">
+              <app-notes
+                [mode]="'notes'"
+                [itemId]="revisionInfo.taskRevisionId"
+                [type]="'revision'"
+              ></app-notes>
+            </div>
+          </ng-template>
+        </nz-tab>
+      </nz-tabset>
+    </div>
+  </div>
+</ng-container>

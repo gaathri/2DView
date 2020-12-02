@@ -1,0 +1,644 @@
+<form
+  *ngIf="isDataReady"
+  class="form-panel"
+  nz-form
+  [formGroup]="dataForm"
+  (ngSubmit)="submitHandler()"
+  autocomplete="off"
+  [nzLayout]="'horizontal'"
+>
+  <nz-form-item *ngIf="type == 'shot'">
+    <nz-form-label>Shot Code</nz-form-label>
+    <nz-form-control>
+      <input nz-input placeholder="Shot Code" formControlName="shotCode" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <ng-container *ngIf="type == 'task'">
+    <nz-form-item *ngIf="viewType == 'shot'">
+      <nz-form-label>
+        Shot Code
+      </nz-form-label>
+      <nz-form-control>
+        <nz-select
+          id="shotIds"
+          formControlName="shotIds"
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Select Shots"
+          [nzDisabled]="!isValidArr(shots)"
+          nzMode="multiple"
+          nzMaxTagCount="3"
+        >
+          <nz-option
+            *ngFor="let shot of shots"
+            [nzLabel]="shot.shotCode"
+            [nzValue]="shot.id"
+          >
+          </nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item *ngIf="viewType == 'asset'">
+      <nz-form-label>
+        Asset Name
+      </nz-form-label>
+      <nz-form-control>
+        <nz-select
+          id="assetIds"
+          formControlName="assetIds"
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Select Assets"
+          [nzDisabled]="!isValidArr(assets)"
+          nzMode="multiple"
+          nzMaxTagCount="3"
+        >
+          <nz-option
+            *ngFor="let asset of assets"
+            [nzLabel]="asset.assetName"
+            [nzValue]="asset.id"
+          >
+          </nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item *ngIf="viewType == 'asset'">
+      <nz-form-label>
+        Asset Type
+      </nz-form-label>
+      <nz-form-control>
+        <nz-select
+          id="assetTypeIds"
+          formControlName="assetTypeIds"
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Asset Types"
+          nzMode="multiple"
+          nzMaxTagCount="3"
+        >
+          <nz-option
+            *ngFor="let assetType of assetTypes"
+            [nzLabel]="assetType.assetTypeName"
+            [nzValue]="assetType.id"
+          >
+          </nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </ng-container>
+
+  <nz-form-item *ngIf="viewType != 'asset'">
+    <nz-form-label>
+      Season Name
+    </nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="seasonIds"
+        formControlName="seasonIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Seasons"
+        [nzDisabled]="!isValidArr(seasons)"
+        nzMode="multiple"
+        nzMaxTagCount="3"
+      >
+        <nz-option
+          *ngFor="let season of seasons"
+          [nzLabel]="season.seasonName"
+          [nzValue]="season.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item *ngIf="viewType != 'asset'">
+    <nz-form-label>Episode Name</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="episodeName"
+        formControlName="episodeIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Episodes"
+        [nzDisabled]="!isValidArr(episodes)"
+        nzMode="multiple"
+        nzMaxTagCount="3"
+      >
+        <nz-option
+          *ngFor="let episode of episodes"
+          [nzLabel]="episode.episodeName"
+          [nzValue]="episode.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item *ngIf="viewType != 'asset'">
+    <nz-form-label>
+      Sequence Name
+    </nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="sequenceName"
+        formControlName="sequenceIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Sequences"
+        [nzDisabled]="!isValidArr(sequences)"
+        nzMode="multiple"
+        nzMaxTagCount="3"
+      >
+        <nz-option
+          *ngFor="let sequence of sequences"
+          [nzLabel]="sequence.sequenceName"
+          [nzValue]="sequence.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item *ngIf="viewType != 'asset'">
+    <nz-form-label>
+      Spot Name
+    </nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="spotName"
+        formControlName="spotIds"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Spots"
+        [nzDisabled]="!isValidArr(spots)"
+        nzMode="multiple"
+        nzMaxTagCount="3"
+      >
+        <nz-option
+          *ngFor="let spot of spots"
+          [nzLabel]="spot.spotName"
+          [nzValue]="spot.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item *ngIf="type != 'task'">
+    <nz-form-label>
+      Status Name
+    </nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="statusName"
+        formControlName="status"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Status"
+        [nzDisabled]="!isValidArr(statuses)"
+        nzMode="multiple"
+        nzMaxTagCount="3"
+      >
+        <nz-option
+          *ngFor="let status of statuses"
+          [nzLabel]="status.name"
+          [nzValue]="status.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <ng-container *ngIf="type == 'task'">
+    <nz-form-item>
+      <nz-form-label>Artist</nz-form-label>
+      <nz-form-control>
+        <nz-select
+          id="artistId"
+          formControlName="artistIds"
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Select artist"
+          [nzDisabled]="!isValidArr(artists)"
+          nzMode="multiple"
+          nzMaxTagCount="3"
+        >
+          <nz-option
+            *ngFor="let artist of artists"
+            [nzLabel]="artist.title"
+            [nzValue]="artist.id"
+          >
+          </nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label>Accountable</nz-form-label>
+      <nz-form-control>
+        <nz-select
+          id="accountableId"
+          formControlName="accountableIds"
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Select accountable"
+          [nzDisabled]="!isValidArr(supervisors)"
+          nzMode="multiple"
+          nzMaxTagCount="3"
+        >
+          <nz-option
+            *ngFor="let supervisor of supervisors"
+            [nzLabel]="supervisor.title"
+            [nzValue]="supervisor.id"
+          >
+          </nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label>Task Name</nz-form-label>
+      <nz-form-control>
+        <input nz-input placeholder="Task Name" formControlName="taskName" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label>
+        Task Type
+      </nz-form-label>
+      <nz-form-control>
+        <nz-select
+          id="taskTypeIds"
+          formControlName="taskTypeIds"
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Select Task Types"
+          [nzDisabled]="!isValidArr(taskPriorities)"
+          nzMode="multiple"
+          nzMaxTagCount="3"
+        >
+          <nz-option
+            *ngFor="let taskType of taskTypes"
+            [nzLabel]="taskType.taskTypeName"
+            [nzValue]="taskType.id"
+          >
+          </nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label>
+        Work Status Name
+      </nz-form-label>
+      <nz-form-control>
+        <nz-select
+          id="statusName"
+          formControlName="workStatusIds"
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Select work status"
+          [nzDisabled]="!isValidArr(workStatuses)"
+          nzMode="multiple"
+          nzMaxTagCount="3"
+        >
+          <nz-option
+            *ngFor="let workStatus of workStatuses"
+            [nzLabel]="workStatus.name"
+            [nzValue]="workStatus.id"
+          >
+          </nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label>Priority</nz-form-label>
+      <nz-form-control>
+        <nz-select
+          id="taskPriorityId"
+          formControlName="taskPriorityIds"
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Select task priority"
+          [nzDisabled]="!isValidArr(taskPriorities)"
+          nzMode="multiple"
+          nzMaxTagCount="3"
+        >
+          <nz-option
+            *ngFor="let priority of taskPriorities"
+            [nzLabel]="priority.taskPriorityLevel"
+            [nzValue]="priority.id"
+          >
+          </nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label>Complexity</nz-form-label>
+      <nz-form-control>
+        <nz-select
+          id="complexity"
+          formControlName="complexityIds"
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Select task complexity"
+          [nzDisabled]="!isValidArr(taskcomplexities)"
+          nzMode="multiple"
+          nzMaxTagCount="3"
+        >
+          <nz-option
+            *ngFor="let complexity of taskcomplexities"
+            [nzLabel]="complexity.title"
+            [nzValue]="complexity.id"
+          >
+          </nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label>Location</nz-form-label>
+      <nz-form-control>
+        <nz-select
+          id="locationId"
+          formControlName="locationIds"
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Select location"
+          [nzDisabled]="!isValidArr(locations)"
+          nzMode="multiple"
+          nzMaxTagCount="3"
+        >
+          <nz-option
+            *ngFor="let location of locations"
+            [nzLabel]="location.name"
+            [nzValue]="location.id"
+          >
+          </nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </ng-container>
+
+  <nz-form-item>
+    <div class="row clearfix">
+      <div class="col-md-6 px-0">
+        <nz-form-label>
+          Progress
+        </nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            placeholder="Progress"
+            formControlName="completionPercentage"
+            maxValue="100"
+            numeric
+            numericType="decimal"
+          />
+          <!-- type="number"
+            numeric
+            numericType="number" -->
+        </nz-form-control>
+      </div>
+
+      <div class="col-md-3 pl-3">
+        <nz-form-label>
+          Operator
+        </nz-form-label>
+        <nz-form-control style="padding-top: 4px;">
+          <nz-select
+            id="percentOperator"
+            formControlName="percentOperator"
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="Operator"
+          >
+            <nz-option
+              *ngFor="let operator of operators"
+              [nzLabel]="operator.name"
+              [nzValue]="operator.id"
+            >
+            </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </div>
+    </div>
+  </nz-form-item>
+
+  <ng-container *ngIf="type == 'task'">
+    <nz-form-item *ngIf="hasViewPermission('clientBid')">
+      <div class="row clearfix">
+        <div class="col-md-6 px-0">
+          <nz-form-label>
+            Client Bid
+          </nz-form-label>
+          <nz-form-control>
+            <input
+              nz-input
+              placeholder="Client Bid"
+              formControlName="clientBid"
+              numeric
+              numericType="decimal"
+            />
+          </nz-form-control>
+        </div>
+
+        <div class="col-md-3 pl-3">
+          <nz-form-label>
+            Operator
+          </nz-form-label>
+          <nz-form-control style="padding-top: 4px;">
+            <nz-select
+              id="clientBidOperator"
+              formControlName="clientBidOperator"
+              nzShowSearch
+              nzAllowClear
+              nzPlaceHolder="Operator"
+            >
+              <nz-option
+                *ngFor="let operator of operators"
+                [nzLabel]="operator.name"
+                [nzValue]="operator.id"
+              >
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </div>
+      </div>
+    </nz-form-item>
+
+    <nz-form-item *ngIf="hasViewPermission('artistBid')">
+      <div class="row clearfix">
+        <div class="col-md-6 px-0">
+          <nz-form-label>
+            Artist Bid
+          </nz-form-label>
+          <nz-form-control>
+            <input
+              nz-input
+              placeholder="Artist Bid"
+              formControlName="artistBid"
+              numeric
+              numericType="decimal"
+            />
+          </nz-form-control>
+        </div>
+
+        <div class="col-md-3 pl-3">
+          <nz-form-label>
+            Operator
+          </nz-form-label>
+          <nz-form-control style="padding-top: 4px;">
+            <nz-select
+              id="artistBidOperator"
+              formControlName="artistBidOperator"
+              nzShowSearch
+              nzAllowClear
+              nzPlaceHolder="Operator"
+            >
+              <nz-option
+                *ngFor="let operator of operators"
+                [nzLabel]="operator.name"
+                [nzValue]="operator.id"
+              >
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </div>
+      </div>
+    </nz-form-item>
+  </ng-container>
+
+  <nz-form-item *ngIf="isValidArr(customFields)">
+    <nz-form-label>
+      Select Custom Field
+    </nz-form-label>
+    <nz-form-control>
+      <nz-select
+        id="customFieldId"
+        formControlName="customFieldId"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select Custom Field"
+        [nzDisabled]="!isValidArr(customFields)"
+        (ngModelChange)="customFieldChangeHandler($event)"
+      >
+        <nz-option
+          *ngFor="let customField of customFields"
+          [nzLabel]="customField.name"
+          [nzValue]="customField.id"
+        >
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item *ngIf="isCustomFieldSelected()">
+    <nz-form-label>
+      Custom Field Value
+    </nz-form-label>
+    <nz-form-control>
+      <input
+        nz-input
+        placeholder="Custom Field Value"
+        formControlName="customFieldValue"
+      />
+    </nz-form-control>
+  </nz-form-item>
+
+  <ng-container *ngIf="type == 'task'">
+    <div class="row clearfix" *ngIf="hasViewPermission('startDate')">
+      <div class="col-md-8 px-0">
+        <nz-form-item>
+          <nz-form-label>
+            Start Date Range
+          </nz-form-label>
+          <nz-form-control>
+            <nz-range-picker
+              formControlName="startDateRange"
+              [nzSize]="'small'"
+              [nzFormat]="getDisplayDateFormat()"
+            >
+            </nz-range-picker>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div class="row clearfix" *ngIf="hasViewPermission('endDate')">
+      <div class="col-md-8 px-0">
+        <nz-form-item>
+          <nz-form-label>
+            End Date Range
+          </nz-form-label>
+          <nz-form-control>
+            <nz-range-picker
+              formControlName="endDateRange"
+              [nzSize]="'small'"
+              [nzFormat]="getDisplayDateFormat()"
+            >
+            </nz-range-picker>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div class="row clearfix" *ngIf="hasViewPermission('clientEta')">
+      <div class="col-md-8 px-0">
+        <nz-form-item>
+          <nz-form-label>
+            Client ETA Range
+          </nz-form-label>
+          <nz-form-control>
+            <nz-range-picker
+              formControlName="clientEtaRange"
+              [nzSize]="'small'"
+              [nzFormat]="getDisplayDateFormat()"
+            >
+            </nz-range-picker>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div class="row clearfix" *ngIf="hasViewPermission('deliveryDate')">
+      <div class="col-md-8 px-0">
+        <nz-form-item>
+          <nz-form-label>
+            Delivery Date Range
+          </nz-form-label>
+          <nz-form-control>
+            <nz-range-picker
+              formControlName="deliveryDateRange"
+              [nzSize]="'small'"
+              [nzFormat]="getDisplayDateFormat()"
+            >
+            </nz-range-picker>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+  </ng-container>
+</form>
+<div *ngIf="isDataReady" class="row submit-btn-parent">
+  <div class="col px-0">
+    <div>
+      <button
+        nz-button
+        nzType="primary"
+        type="submit"
+        (click)="submitHandler()"
+      >
+        Apply
+      </button>
+      <button class="mr-1" nz-button (click)="resetHandler()">
+        Reset
+      </button>
+    </div>
+  </div>
+</div>
+<!-- <span style="color: greenyellow">{{ dataForm?.value | json }}</span> -->
